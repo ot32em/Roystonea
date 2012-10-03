@@ -2,6 +2,7 @@
 ## PyCharm IDE
 #################
 .idea
+.idea/*
 
 #################
 ## Eclipse
