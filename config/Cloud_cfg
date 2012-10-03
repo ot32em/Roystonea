@@ -1,0 +1,7 @@
+VCloudIp = "localhost"
+CloudPort = 7004
+
+numCloudServerThreads = 50
+
+CloudComponentsPath = 'CloudComponents.py'
+

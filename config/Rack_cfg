@@ -1,0 +1,4 @@
+RackIp = "localhost"
+RackPort = 7002
+numRackServerThreads = 50
+RackBalancerPath = 'RackBalancer.py'

@@ -1,0 +1,129 @@
+''' 
+	if you use vim and cannot support python highlight because of no extension .py
+	type :set syntax=python to turn on the highlight for python
+'''
+m1a1 = ('192.168.10.1', 1000) # machine 1 address and port 1
+m1a2 = ('192.168.10.1', 1001) # machine 1 address and port 2
+m1a3 = ('192.168.10.1', 1002) # machine 1 address and port 3
+m2a1 = ('192.168.10.2', 1000) # machine 2 address and port 1
+m3a1 = ('192.168.10.3', 1000) # machine 2 address and port 1
+m3a2 = ('192.168.10.3', 1001) # machine 3 address and port 2
+
+# use the createXXXXX method to contruct dual-relation knowing info
+# the createXXXXX method caller pass "self" as parameter to its son
+# now! the son know who is his daddy
+# then father make a reference of son into its children collection variable
+# now! the father know all the sons he has
+#
+# do not use construct to create instance, it would not register into tables
+#
+cluster01 = Unit.createUnit('cluster01', m1a1, unitType='cluster')
+rack01 = cluster01.createChildRack('rack01', m1a2)
+node01 = rack01.createChildNode('node01', m1a3 )
+node02 = rack01.createChildNode('node02', m2a1 )
+rack02 = cluster01.createChildRack('rack02', m3a1)
+node03 = rack02.createChildNode('node03', m3a2 )
+
+xmlStr = 
+
+
+
+jsonStr = 	{ 
+				"name" : "cloud01",
+				"ip"   : "192.168.10.1",
+				"port" : "1001",
+				"children" :  
+				[ 
+					'name' : 'cluster01',
+					'ip'   : '192.168.10.2',
+					'port' : '1002',
+					'children' : 
+					[ 
+						{
+							'name' : "rack01" ,
+							'ip'   : '192.168.10.1',
+							'port' : '1003',
+							'children' : 
+							{ 
+								'name' : "node01",
+								'name' : "node02" 
+							}
+						},
+						{
+							'name' : 'rack02',
+							'children' : 
+							[ 
+								{ 'name' : "node03" }
+							] 
+						}
+					]
+			 	]	
+			}
+
+
+'''
+Now Experience Arch Tree for 3 machinese
+
+Cluster01 (192.168.10.1)
+    |
+    |____________________________
+    |							|
+    |							|
+  Rack01(192.168.10.1)        Rack02(192.168.10.3)
+    |							|
+    |							|
+    |-----Node01(192.168.10.1)  |-----Node03(192.168.10.3)
+    |
+    |
+    |-----Node02(192.168.10.2)
+'''
+
+'''
+Future ? Arch Tree for 15 machinese ??? maybe?? just draw for fun~~ lalala
+
+Cloud01 (192.168.10.1)
+		Cluster01 (192.168.10.1)
+				Rack01(192.168.10.1)
+						Node01(192.168.10.1)
+						Node02(192.168.10.2)
+						Node03(192.168.10.3)
+						Node04(192.168.10.4)
+						Node05(192.168.10.5)
+				Rack02(192.168.10.6)
+						Node06(192.168.10.6)
+						Node06(192.168.10.7)
+						Node06(192.168.10.8)
+						Node06(192.168.10.9)
+						Node06(192.168.10.10)
+				Rack01(192.168.10.11)
+						Node01(192.168.10.11)
+						Node02(192.168.10.12)
+						Node03(192.168.10.13)
+						Node04(192.168.10.14)
+						Node05(192.168.10.15)
+
+
+code:   ommit port for good look
+
+cloud01			= CloudUnit('cloud01', '192.168.10.1' )
+cluster01		= cloud01.createCluster('cluster01', '192.168.10.1' )
+rack01			= cluster01.createRack('rack01', '192.168.10.1' )
+node01			= rack01.createNode('node01', '192.168.10.1')
+node02			= rack01.createNode('node02', '192.168.10.2')
+node03			= rack01.createNode('node03', '192.168.10.3')
+node04			= rack01.createNode('node04', '192.168.10.4')
+node05			= rack01.createNode('node05', '192.168.10.5')
+rack02			= cluster01.createRack('rack02', '192.168.10.6' )
+node06			= rack01.createNode('node06', '192.168.10.6')
+node07			= rack01.createNode('node07', '192.168.10.7')
+node08			= rack01.createNode('node08', '192.168.10.8')
+node09			= rack01.createNode('node09', '192.168.10.9')
+node10			= rack01.createNode('node10', '192.168.10.10')
+rack03			= cluster01.createRack('rack03', '192.168.10.11' )
+node11			= rack01.createNode('node11', '192.168.10.11')
+node11			= rack01.createNode('node12', '192.168.10.12')
+node13			= rack01.createNode('node13', '192.168.10.13')
+node14			= rack01.createNode('node14', '192.168.10.14')
+node15			= rack01.createNode('node15', '192.168.10.15')
+
+'''

@@ -1,0 +1,7 @@
+PATH_SHARE_FILESYSTEM = '/var/SFS/hadoop/'
+PATH_SLAVE_PROTOTYPE = '/mnt/images/nfs/vm_prototype/hadoop.2.6.38-rc4/prototype-hdp-s01/'
+PATH_MASTER_PROTOTYPE = '/mnt/images/nfs/vm_prototype/hadoop.2.6.38-rc4/prototype-hdp-m/gentoo.img'
+FILE_FSTAB = 'fstab'
+FSTAB_CONFIG = ':/opt/hadoop /opt/hadoop   nfs v3  0   2' 
+IMAGE_NAME = 'gentoo.img'
+PATH_MOUNTPOINT = '/mnt/floppy/'

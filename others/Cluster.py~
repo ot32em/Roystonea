@@ -1,0 +1,84 @@
+'''
+This is Cluster.py
+Remember provide arguments HOST and PORT when exec Rack.py, like "python Cluster.py 140.112.1.23 4567 "
+,and convert host to int type
+
+by Elalic, 2011.08.13
+and by Ot Chen 2011.10.31
+'''
+
+from CommonHandler import CommonHandler
+from Client import send_message
+
+class Cluster(CommonHandler):
+    ''' custom init variable '''
+    CFGNAME_numServerThreads = 'numClusterServerThreads'
+    CFGNAME_LOCALFILE = 'Cluster_cfg'
+
+    def __init__(self, host, port):
+        CommonHandler.__init__(self, host, port)
+        self.dispatch_handlers.update({
+            'ClusterVirtualMachineManagerReq': self.ClusterVirtualMachineManager,
+            'GetAvailablePhysicalMachinReq': self.GetAvailablePhysicalMachine,
+            'GetAvailableVirtualMachinePrototype': self.GetAvailableVirtualMachinePrototype 
+        })
+        self.startup_functions.extend((
+            self.periodlySampleFunction,
+            self.normalSampleFunction, # It's a example to show how to add startup functions
+        ))
+
+    def periodlySampleFunction(self):
+        interval = 30 # secs
+        while True:
+            #Doing something and periodly issue
+            sleep(interval)
+
+    def normalSampleFunction(self):
+        import Client
+        res = Client.send_message( address, Message.someReq() )
+        #Doing something you want at server startup time
+        pass
+
+    def ClusterVirtualMachineManager(self, req):
+        ret = None
+        try:
+            import imp
+            tmp = imp.load_source('ClusterBalancer', self.cfg.rest.get('ClusterBalancerPath'))
+            ret = tmp.ClusterBalancer(req)
+            #ret = Message.RackHypervisorReqRt(status='Success', msg=req.id + '-' + req.owner)
+        except Exception, e:
+            #Error msg
+            print str(e)
+        return ret
+        
+    def GetAvailablePhysicalMachine(self, req):
+        ret = None
+        try:
+            import imp
+            tmp = imp.load_source('', self.cfg.rest.get('ClusterCoordinatorPath')).ClusterDatabaseSubsystem()
+            ret = tmp.GetAvailablePhysicalMachine(req, self.cfg)
+            #ret = Message.RackHypervisorReqRt(status='Success', msg=req.id + '-' + req.owner)
+        except Exception, e:
+            #Error msg
+            print str(e)
+        return ret
+
+    def GetAvailableVirtualMachinePrototype(self, req):
+        ret = None
+        try:
+            import imp
+            tmp = imp.load_source('', self.cfg.rest.get('ClusterCoordinatorPath')).ClusterPrototypeSubsystem()
+            ret = tmp.GetAvailableVirtualMachinePrototype(req, self.cfg)
+            #ret = Message.RackHypervisorReqRt(status='Success', msg=req.id + '-' + req.owner)
+        except Exception, e:
+            #Error msg
+            print str(e)
+
+if __name__ == '__main__':
+    import sys
+    if len( sys.argv ) < 3:
+        print("Need host and port supply\nFormat: python Cluster.py SERVER_HOST SERVER_PORT")
+        raise SystemExit
+    mymachine = Cluster( host=sys.argv[1], port = int( sys.argv[2] ) )
+    mymachine.run()
+

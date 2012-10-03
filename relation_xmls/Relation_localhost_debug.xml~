@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<xml>
+	<Cloud label="cloud01" host="localhost" 
+		port="6101">
+        <Cluster label="cluster01" host="localhost" port="7107">
+			<Rack label="rack01" host="localhost" port="8101">
+				<Node label="node01" host="localhost" port="9101"/>
+				<Node label="node02" host="localhost" port="9102"/>
+			</Rack>
+            <Rack label="rack02" host="localhost" port="8102">
+                <Node label="node03" host="localhost" port="9103"/>
+                <Node label="node04" host="localhost" port="9104"/>
+                <Node label="node05" host="localhost" port="9105"/>
+			</Rack>
+            <Rack label="rack03" host="localhost" port="8103">
+                <Node label="node03" host="localhost" port="9106"/>
+                <Node label="node04" host="localhost" port="9107"/>
+                <Node label="node05" host="localhost" port="9108"/>
+			</Rack>
+		</Cluster>
+		<Cluster label="cluster01" host="localhost" port="7108">
+			<Rack label="rack01" host="localhost" port="8104">
+				<Node label="node01" host="localhost" port="9109"/>
+				<Node label="node02" host="localhost" port="9110"/>
+				<Node label="node02" host="localhost" port="9111"/>
+				<Node label="node02" host="localhost" port="9112"/>
+			</Rack>
+            <Rack label="rack02" host="localhost" port="8105">
+                <Node label="node03" host="localhost" port="9113"/>
+			</Rack>
+		</Cluster>
+	</Cloud>
+</xml>

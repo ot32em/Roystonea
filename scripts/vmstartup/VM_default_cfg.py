@@ -1,0 +1,5 @@
+LOGGING_ACCOUNT = 'root'
+CMD_RESIZE_FILESYSTEM = 'sudo resize2fs '
+CMD_FILESYSTEM_CHK = 'sudo e2fsck -yf '
+CMD_XEN_CREAT_VM = 'sudo xm creat '
+CMD_DISK_DUPLICATION = 'sudo dd '

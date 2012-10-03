@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/mnt/images/nfs/new_roystonea_script/roystonea_script/Rack.py", line 195, in <module>
+    mymachine.run(console_off)
+  File "/mnt/images/nfs/new_roystonea_script/roystonea_script/CommonHandler.py", line 144, in run
+    self.startup_functions)
+  File "/mnt/images/nfs/new_roystonea_script/roystonea_script/CommonServer.py", line 24, in __init__
+    TCPServer.__init__(self, addr, RequestDispatchHandler)
+  File "/usr/lib64/python2.6/SocketServer.py", line 400, in __init__
+    self.server_bind()
+  File "/usr/lib64/python2.6/SocketServer.py", line 411, in server_bind
+    self.socket.bind(self.server_address)
+  File "<string>", line 1, in bind
+socket.error: [Errno 98] Address already in use

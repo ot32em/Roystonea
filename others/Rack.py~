@@ -1,0 +1,67 @@
+'''
+This is Rack.py, 
+Remember provide arguments HOST and PORT when exec Rack.py, like "python Rack.py 140.112.1.23 4567 "
+,and convert host to int type
+
+by Elalic, 2011.08.13
+cooperate-by Ot Chen, 2011.10.31
+'''
+
+from CommonHandler import CommonHandler 
+
+class Rack(CommonHandler):
+    ''' custom init variable '''
+    CFGNAME_LOCALFILE = 'Rack_cfg'
+    CFGNAME_numServerThreads = 'numRackServerThreads'
+
+	def __init__(self, host, port):
+        CommonHandler.__init__(self, host, port)
+		self.dispatch_handlers.update({
+			'RackHypervisorReq': self.RackVirtualMachineManager,
+			'RackNetworkingReq': self.NetworkingReqHandler,
+			'RackStorageReq': self.StorageReqHandler,
+			'RackMonitoringReq': self.MonitoringReqHandler,
+		})
+
+        self.startup_functions.extend((
+            self.periodlySampleFunction,
+            self.normalSampleFunction, # It's a example to show how to add startup functions
+        ))
+
+    def periodlySampleFunction(self):
+        interval = 30 # secs
+        while True:
+            #Doing something and periodly issue
+            sleep(interval)
+
+    def normalSampleFunction(self):
+        #Doing something you want at server startup time
+        pass
+
+	def RackVirtualMachineManager(self, req):
+		ret = None
+		try:
+			import imp
+			tmp = imp.load_source('RackBalancer', self.cfg.rest.get('RackBalancerPath'))
+			ret = tmp.RackBalancer(req)
+			#ret = Message.RackHypervisorRt(status='Success', msg=req.id + '-' + req.owner)
+		except Exception, e:
+			#Error msg
+			print str(e)
+		return ret
+		
+	def NetworkingReqHandler(self, req):
+		pass
+	def StorageReqHandler(self, req):
+		ret = Message.RackStorageRt(status='Success', msg='good.')
+		return ret
+	def MonitoringReqHandler(self, req):
+		pass
+
+if __name__ == '__main__':
+    import sys
+    host = sys.argv[1]
+    port = int( sys.argv[2] )
+	mymachine = Rack(host, port)
+	mymachine.run()
+

@@ -1,0 +1,6 @@
+Host = "localhost"
+Port = 7003
+numServerThreads = 4
+ClusterBalancerPath = 'ClusterBalancer.py'
+ClusterCoordinatorPath = 'ClusterComponents.py'
+

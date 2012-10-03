@@ -1,0 +1,5 @@
+'''This is Node cfg'''
+NodeIp = "localhost"
+Node = 7001
+numNodeServerThreads = 6
+

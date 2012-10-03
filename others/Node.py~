@@ -1,0 +1,59 @@
+'''
+This is Node.py
+Remember provide arguments HOST and PORT when exec Rack.py, like "python Node.py 140.112.1.23 4567 "
+,and convert host to int type
+
+by Elalic, 2011.08.13
+and by Ot Chen 2011.10.31
+'''
+
+from CommonHandler import CommonHandler 
+
+class Node(CommonHandler):
+    ''' custom init variable '''
+    CFGNAME_LOCALFILE = 'Node_cfg'
+    CFGNAME_numServerThreads = 'numNodeServerThreads'
+
+    def __init__(self, host, port):
+        CommonHandler.__init__(self, host, port)
+
+        self.dispatch_handlers.update({
+            'NodeHypervisorReq': self.HypervisorReqHandler,
+            'NodeNetworkingReq': self.NetworkingReqHandler,
+            'NodeStorageReq': self.StorageReqHandler,
+            'NodeMonitoringReq': self.MonitoringReqHandler,
+        })
+        self.startup_functions.extend((
+            self.periodlySampleFunction,
+            self.normalSampleFunction, # It's a example to show how to add startup functions
+        ))
+    def periodlySampleFunction(self):
+        interval = 30 # secs
+        while True:
+            #Doing something and periodly issue
+            sleep(interval)
+
+    def normalSampleFunction(self):
+        #Doing something you want at server startup time
+        pass
+
+    def HypervisorReqHandler(self, req):
+        import imp
+        ret = Message.NodeHypervisorRt(status='Success', msg=req.id + '-' + req.owner)
+        return ret
+
+    def NetworkingReqHandler(self, req):
+        pass
+    def StorageReqHandler(self, req):
+        ret = Message.NodeStorageRt(status='Success', msg='good.')
+        return ret
+    def MonitoringReqHandler(self, req):
+        pass
+
+if __name__ == '__main__':
+    import sys
+    host = sys.argv[1]
+    port = int( sys.argv[2] )
+    mymachine = Node( host, port )
+    mymachine.run()
+

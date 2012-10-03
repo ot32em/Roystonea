@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<xml>
+	<Cloud label="cloud01" host="192.168.10.1" 
+		port="1001">
+		<Cluster label="cluster01" host="192.168.10.1" port="1002">
+			<Rack label="rack01" host="192.168.10.1" port="1003">
+				<Node label="node01" host="192.168.10.1" port="1004"/>
+				<Node label="node02" host="192.168.10.2" port="1001"/>
+			</Rack>
+            <Rack label="rack02" host="192.168.10.3" port="1001">
+                <Node label="node03" host="192.168.10.3" port="1002"/>
+			</Rack>
+		</Cluster>
+	</Cloud>
+</xml>
