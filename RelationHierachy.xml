@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<xml>
+    <Coordinator host="roystonea01" port="1401" />
+    <SubsystemManager host="roystonea01" port="1402" />
+    <PlacementAlgorithm host="roystonea01" port="1403" />
+
+    <Cloud host="roystonea01" label="cloud01" port="1001">
+        <Cluster host="roystonea01" label="cluster01" port="1101">
+            <Rack host="roystonea01" label="rack01" port="1201">
+                <Node host="roystonea01" label="node01" port="1301" />
+                <Node host="roystonea02" label="node02" port="1302" />
+            </Rack>
+            <Rack host="roystonea03" label="rack02" port="1201">
+                <Node host="roystonea03" label="node03" port="1301" />
+            </Rack>
+        </Cluster>
+    </Cloud>
+</xml>
+<!--
+hosts,
+    roystonea01=192.168.10.1=140.112.28.240
+    roystonea02=192.168.10.2
+    roystonea03=192.168.10.3
+
+Cooridnator/SubsystemManager/Algorithm (PM1)
+                Cluster( PM1 )
+                           v
+         v- - - - - - - v - - - - - - - - -v
+    Rack01(PM1)            Rack02(PM3)
+        | -> Node01(PM1)      |-> Node03 (PM3)
+        |-> Node02(PM2)
+
+!-->
