@@ -36,13 +36,13 @@ class Algorithm(CommonHandler):
         # first-fit to scheduule VM on PM
         for pm in pm_resource_list:
             if vm_cpu <= pm['cpu'] and vm_mem <= pm['mem'] and vm_disk <= pm['disk']:
-                print 'put vm' + str(vm_id) + ' on ' + pm['hostname']
+                print( 'put vm' + str(vm_id) + ' on ' + pm['hostname'])
                 return pm['hostname']
 
         return 'No host machine for VM'
 
     def sayHello(self):
-        print 'Hello'
+        print ('Hello')
     
 if __name__ == '__main__':
     host, port, console_off = passArguments()
