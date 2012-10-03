@@ -5,6 +5,7 @@
     <list id="eb95eee4-2c53-4f05-aecd-9a0632ca35d1" name="New changelist" comment="" />
     <ignored path="Roystonea.iws" />
     <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +34,7 @@
       <file leaf-file-name="royctl.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/royctl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="0" selection-start="32" selection-end="32" vertical-scroll-proportion="0.08623298">
+            <state line="6" column="3" selection-start="136" selection-end="136" vertical-scroll-proportion="0.17246597">
               <folding />
             </state>
           </provider>
@@ -137,9 +138,9 @@
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="recentsLimit" value="5" />
-    <property name="options.lastSelected" value="project.propVCSSupport.VCSs.Git" />
+    <property name="options.lastSelected" value="project.propVCSSupport.Ignored.Files" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.idea" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
   </component>
@@ -519,7 +520,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/royctl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="0" selection-start="32" selection-end="32" vertical-scroll-proportion="0.08623298">
+        <state line="6" column="3" selection-start="136" selection-end="136" vertical-scroll-proportion="0.17246597">
           <folding />
         </state>
       </provider>
