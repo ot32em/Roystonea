@@ -28,6 +28,7 @@ print LOGGING_PATH
 
 # log_owner = sys._getframe(1).f_globals.get('__name__')
 log_owner = inspect.stack()[1][1][:-3]
+print log_owner
 
 logger = logging.getLogger(log_owner + '.py')
 logger.setLevel(logging.DEBUG)
