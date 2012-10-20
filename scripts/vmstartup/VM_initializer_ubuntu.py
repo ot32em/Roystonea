@@ -3,7 +3,6 @@ from VM_ubuntu_cfg import *
 import string
 import pexpect
 import sys
-import os
 from template import template
 
 class VM_initializer_ubuntu(VM_initializer):
