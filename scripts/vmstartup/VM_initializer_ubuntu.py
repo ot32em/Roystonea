@@ -4,7 +4,7 @@ import string
 import pexpect
 import sys
 import os
-import pystache
+from template import template
 
 class VM_initializer_ubuntu(VM_initializer):
 				# 		  23,   r99944038,   4,    1,4096,  250,   4, roystonea03
@@ -20,22 +20,14 @@ class VM_initializer_ubuntu(VM_initializer):
         print(pexpect.run('cp '+ PATH_PROTOTYPE_IMAGE + self.vm_path))
 
     def creatConfig(self):
-        template = open(os.path.join(os.path.dirname(__file__), 'templates/ubuntu_xen.mustache')).read()
         values = {
                 'memory'     : str(self.memory),
                 'num_cpu'    : str(self.num_cpu),
                 'name'       : self.vm_name,
                 'image_path' : self.vm_path + self.image_name
                 }
-        result =  pystache.render(template, values)
-
         config_path = self.vm_path+self.vm_name+'.cfg'
-        config = open(config_path, 'w')
-        if config:
-            config.write(result)
-            config.close()
-        else:
-            return
+        template('ubuntu_xen.mustache', config_path, values)
 
     def start(self):
         self.creatDirectories()
