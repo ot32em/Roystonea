@@ -28,3 +28,6 @@ class VM_initializer(object):
 
     def creatVM(self):
         pexpect.run(CMD_XEN_CREAT_VM + self.vm_path + self.vm_name+'.cfg')
+
+	def shutdownVM(self):
+		pexpect.run(CMD_XEN_SHUTDOWN_VM + self.vm_name)

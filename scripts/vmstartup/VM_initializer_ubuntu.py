@@ -4,6 +4,7 @@ import pexpect
 from VM_ubuntu_cfg import *
 
 class VM_initializer_ubuntu(VM_initializer):
+				# 		  23,   r99944038,   4,    1,4096,  250,   4, roystonea03
     def __init__(self, vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine):
         super(VM_initializer_ubuntu, self).__init__(vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine)
         self.image_name = IMAGE_NAME
@@ -23,7 +24,7 @@ class VM_initializer_ubuntu(VM_initializer):
             config.writelines('vcpus = ' + str(self.num_cpu) + '\n')
             config.writelines("vif = [ '' ]\n")
             config.writelines('extra = "ip=::::' + self.vm_name + '::dhcp"\n')
-            config.writelines('name = "vm' + str(self.vm_id) + '"\n')
+			config.writelines('name = "%(name)s"\n' % ({'name': self.vm_name}))
             config.writelines("disk=['tap:aio:" + self.vm_path+self.image_name + ",xvda1,w']\n")
             config.close()
         else:
@@ -35,6 +36,10 @@ class VM_initializer_ubuntu(VM_initializer):
         self.resizeImage()
         self.creatVM()
 
+	def shutdown(self):
+		self.shutdownVM()
+
 if __name__ == "__main__":
-    test = VM_initializer_ubuntu(97, 'illegalkao', 97, 97, 512, 10, 1, 'roystonea03')
-    test.start()
+    # test = VM_initializer_ubuntu(97, 'illegalkao', 97, 97, 512, 10, 1, 'roystonea03')
+    # test.start()
+	print "Hello world"

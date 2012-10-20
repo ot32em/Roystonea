@@ -55,7 +55,7 @@ class Node(CommonHandler):
         elif req.type == 'ubuntu':
             VM_initializer = VM_initializer_ubuntu(
                     req.vm_id, req.owner, req.group_num, req.vm_num, req.mem, req.disk, req.cpu, None)
-            #VM_initializer.start()
+            # VM_initializer.start()
 
         elif req.type == 'hbase':
             pass    
