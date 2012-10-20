@@ -3,7 +3,7 @@ from VM_ubuntu_cfg import *
 import string
 import pexpect
 import sys
-from template import template
+import template
 
 class VM_initializer_ubuntu(VM_initializer):
 				# 		  23,   r99944038,   4,    1,4096,  250,   4, roystonea03
@@ -26,7 +26,7 @@ class VM_initializer_ubuntu(VM_initializer):
                 'image_path' : self.vm_path + self.image_name
                 }
         config_path = self.vm_path+self.vm_name+'.cfg'
-        template('ubuntu_xen.mustache', config_path, values)
+        template.template('ubuntu_xen.mustache', config_path, values)
 
     def start(self):
         self.creatDirectories()
