@@ -20,8 +20,10 @@ To get the detail of logging:
 import logging
 # import sys
 import inspect
+import os
+import roystonea
 
-LOGGING_PATH = "log/"
+LOGGING_PATH = os.path.join(roystonea.ROYSTONEA_ROOT, "log/")
 
 # log_owner = sys._getframe(1).f_globals.get('__name__')
 log_owner = inspect.stack()[1][1][:-3]

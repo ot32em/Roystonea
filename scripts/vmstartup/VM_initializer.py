@@ -2,8 +2,13 @@ import pexpect
 import string
 import libvirt
 import sys
-from logger import logger
+import os
 from VM_default_cfg import *
+
+# TODO this code is only for test perpose
+ROYSTONEA_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../")
+sys.path.append(ROYSTONEA_ROOT)
+from Roystonea.logger import logger
 
 class VM_initializer(object):
     account_name = LOGGING_ACCOUNT
