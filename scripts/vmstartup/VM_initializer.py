@@ -27,10 +27,10 @@ class VM_initializer(object):
         print(pexpect.run(CMD_RESIZE_FILESYSTEM + self.vm_path + self.image_name))
 
     def creatVM(self):
-        pexpect.run(CMD_XEN_CREAT_VM + self.vm_path + self.vm_name+'.cfg')
+        print pexpect.run(CMD_XEN_CREAT_VM + self.vm_path + self.vm_name+'.cfg')
 
     def shutdownVM(self):
-        pexpect.run(CMD_XEN_SHUTDOWN_VM + self.vm_name)
+        print pexpect.run(CMD_XEN_SHUTDOWN_VM + self.vm_name)
 
     def listVM(self):
-        pexpect.run(CMD_XEN_LIST_VM)
+        print pexpect.run(CMD_XEN_LIST_VM)
