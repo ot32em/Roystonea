@@ -24,7 +24,7 @@ class VM_initializer_ubuntu(VM_initializer):
             config.writelines('vcpus = ' + str(self.num_cpu) + '\n')
             config.writelines("vif = [ '' ]\n")
             config.writelines('extra = "ip=::::' + self.vm_name + '::dhcp"\n')
-			config.writelines('name = "%(name)s"\n' % ({'name': self.vm_name}))
+            config.writelines('name = "%(name)s"\n' % ({'name': self.vm_name}))
             config.writelines("disk=['tap:aio:" + self.vm_path+self.image_name + ",xvda1,w']\n")
             config.close()
         else:
@@ -36,10 +36,10 @@ class VM_initializer_ubuntu(VM_initializer):
         self.resizeImage()
         self.creatVM()
 
-	def shutdown(self):
-		self.shutdownVM()
+    def shutdown(self):
+        self.shutdownVM()
 
 if __name__ == "__main__":
     # test = VM_initializer_ubuntu(97, 'illegalkao', 97, 97, 512, 10, 1, 'roystonea03')
     # test.start()
-	print "Hello world"
+    print "Hello world"
