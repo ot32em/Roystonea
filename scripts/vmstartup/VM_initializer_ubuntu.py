@@ -19,7 +19,7 @@ class VM_initializer_ubuntu(VM_initializer):
         print(pexpect.run('cp '+ PATH_PROTOTYPE_IMAGE + self.vm_path))
 
     def creatConfig(self):
-        template = open('templates/ubuntu_xen.mustache').read()
+        template = open(os.path.join(os.path.dirname(__file__), 'templates/ubuntu_xen.mustache')).read()
         values = {
                 'memory'     : str(self.memory),
                 'num_cpu'    : str(self.num_cpu),
