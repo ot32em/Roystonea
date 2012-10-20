@@ -29,6 +29,7 @@ class VM_initializer_ubuntu(VM_initializer):
                 }
         result =  pystache.render(template, values)
 
+        config_path = self.vm_path+self.vm_name+'.cfg'
         config = open(config_path, 'w')
         if config:
             config.wite(result)
