@@ -2,7 +2,7 @@ import os
 import pystache
 
 def template(source, destination, values):
-    source = open(os.path.join(os.path.dirname(__file__), "templates/%s", source)).read()
+    source = open(os.path.join(os.path.dirname(__file__), "templates/%s" % (source))).read()
     destination_file = open(destination, 'w')
 
     content =  pystache.render(source, values)
