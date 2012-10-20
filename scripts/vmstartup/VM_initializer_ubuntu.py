@@ -3,6 +3,7 @@ from VM_ubuntu_cfg import *
 import string
 import pexpect
 import sys
+import os
 import pystache
 
 class VM_initializer_ubuntu(VM_initializer):
