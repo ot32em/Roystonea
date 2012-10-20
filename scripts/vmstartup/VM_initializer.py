@@ -57,7 +57,7 @@ class VM_initializer(object):
         if self.conn.shutdown(domain) < 0:
             logger.error("VM %(name)s shutdown fail!" % ({'name': self.vm_name}))
 
-    def getDomain():
+    def getDomain(self):
         if self.domain == None:
             try:
                 self.domain = self.conn.lookupByName(self.vm_name)
