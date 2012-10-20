@@ -24,6 +24,7 @@ import os
 import roystonea
 
 LOGGING_PATH = os.path.join(roystonea.ROYSTONEA_ROOT, "log/")
+print LOGGING_PATH
 
 # log_owner = sys._getframe(1).f_globals.get('__name__')
 log_owner = inspect.stack()[1][1][:-3]
