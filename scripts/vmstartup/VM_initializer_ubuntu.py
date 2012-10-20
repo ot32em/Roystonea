@@ -32,7 +32,7 @@ class VM_initializer_ubuntu(VM_initializer):
         config_path = self.vm_path+self.vm_name+'.cfg'
         config = open(config_path, 'w')
         if config:
-            config.white(result)
+            config.write(result)
             config.close()
         else:
             return
