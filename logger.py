@@ -24,16 +24,14 @@ import os
 import roystonea
 
 LOGGING_PATH = os.path.join(roystonea.ROYSTONEA_ROOT, "log/")
-print LOGGING_PATH
 
 # log_owner = sys._getframe(1).f_globals.get('__name__')
 log_owner = inspect.stack()[1][1][:-3]
-print log_owner
 
 logger = logging.getLogger(log_owner + '.py')
 logger.setLevel(logging.DEBUG)
 
-file_handler = logging.FileHandler(LOGGING_PATH + log_owner + ".log")
+file_handler = logging.FileHandler(os.path.join(LOGGING_PATH, "system.log")
 console_handler = logging.StreamHandler()
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
