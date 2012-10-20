@@ -31,7 +31,7 @@ log_owner = inspect.stack()[1][1][:-3]
 logger = logging.getLogger(log_owner + '.py')
 logger.setLevel(logging.DEBUG)
 
-file_handler = logging.FileHandler(os.path.join(LOGGING_PATH, "system.log")
+file_handler = logging.FileHandler(os.path.join(LOGGING_PATH, "system.log"))
 console_handler = logging.StreamHandler()
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
