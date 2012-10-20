@@ -1,8 +1,9 @@
 from VM_initializer import VM_initializer
+from VM_ubuntu_cfg import *
 import string
 import pexpect
-from VM_ubuntu_cfg import *
 import sys
+import pystache
 
 class VM_initializer_ubuntu(VM_initializer):
 				# 		  23,   r99944038,   4,    1,4096,  250,   4, roystonea03
@@ -18,15 +19,18 @@ class VM_initializer_ubuntu(VM_initializer):
         print(pexpect.run('cp '+ PATH_PROTOTYPE_IMAGE + self.vm_path))
 
     def creatConfig(self):
-        config_path = self.vm_path+self.vm_name+'.cfg'
+        template = open('templates/ubuntu_xen.mustache').read()
+        values = {
+                'memory'     : str(self.memory),
+                'num_cpu'    : str(self.num_cpu),
+                'name'       : self.vm_name,
+                'image_path' : self.vm_path + self.image_name
+                }
+        result =  pystache.render(template, values)
+
         config = open(config_path, 'w')
         if config:
-            config.writelines('memory = ' + str(self.memory) + '\n')
-            config.writelines('vcpus = ' + str(self.num_cpu) + '\n')
-            config.writelines("vif = [ '' ]\n")
-            config.writelines('extra = "ip=::::' + self.vm_name + '::dhcp"\n')
-            config.writelines('name = "%(name)s"\n' % ({'name': self.vm_name}))
-            config.writelines("disk=['tap:aio:" + self.vm_path+self.image_name + ",xvda1,w']\n")
+            config.wite(result)
             config.close()
         else:
             return

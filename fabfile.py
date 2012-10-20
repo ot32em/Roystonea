@@ -11,6 +11,10 @@ APP_NAME = 'Roystonea'
 DEPLOY_TO = '/home/%(user)s/deploy' % ({'user': env.user})
 APP_ROOT = os.path.join(DEPLOY_TO, APP_NAME)
 
+def install():
+	run("curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | sudo python")
+	run("sudo pip install pystache")
+
 def deploy():
 	clone_from_github()
 
