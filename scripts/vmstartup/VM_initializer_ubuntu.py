@@ -25,8 +25,8 @@ class VM_initializer_ubuntu(VM_initializer):
                 'name'       : self.vm_name,
                 'image_path' : self.vm_path + self.image_name
                 }
-        config_path = self.vm_path+self.vm_name+'.cfg'
-        template('ubuntu_xen.mustache', config_path, values)
+        # config_path = self.vm_path+self.vm_name+'.xml'
+        self.config_xml = template('ubuntu.xml.mustache', values)
 
     def start(self):
         self.creatDirectories()

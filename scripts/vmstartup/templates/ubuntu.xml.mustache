@@ -1,0 +1,14 @@
+<domain type='xen' >
+    <name>{{name}}</name>
+    <os>
+        <type>linux</type>
+    </os>
+    <memory>{{memory}}</memory>
+    <vcpu>{{num_cpu}}</vcpu>
+    <devices>
+        <disk type='file'>
+            <source file='{{image_path}}'/>
+            <target dev='xvda1'/>
+        </disk>
+    </devices>
+</domain>
