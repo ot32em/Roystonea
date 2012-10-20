@@ -2,6 +2,7 @@ from VM_initializer import VM_initializer
 import string
 import pexpect
 from VM_ubuntu_cfg import *
+import sys
 
 class VM_initializer_ubuntu(VM_initializer):
 				# 		  23,   r99944038,   4,    1,4096,  250,   4, roystonea03
@@ -40,6 +41,7 @@ class VM_initializer_ubuntu(VM_initializer):
         self.shutdownVM()
 
 if __name__ == "__main__":
-    # test = VM_initializer_ubuntu(97, 'illegalkao', 97, 97, 512, 10, 1, 'roystonea03')
-    # test.start()
-    print "Hello world"
+    test = VM_initializer_ubuntu(97, 'illegalkao', 97, 97, 512, 10, 1, 'roystonea03')
+    command = sys.argv[1]
+    vm_ubuntu_method = getattr(test, command)
+    vm_ubuntu_method()

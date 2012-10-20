@@ -31,3 +31,6 @@ class VM_initializer(object):
 
     def shutdownVM(self):
         pexpect.run(CMD_XEN_SHUTDOWN_VM + self.vm_name)
+
+    def listVM(self):
+        pexpect.run(CMD_XEN_LIST_VM)

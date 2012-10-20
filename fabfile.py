@@ -29,10 +29,6 @@ def clone_from_github():
 
 # VM Test
 # ubuntu
-def vm_ubuntu_start():
+def vm_ubuntu(command):
 	with cd(APP_ROOT):
-		run("sudo python scripts/vmstartup/VM_initializer_ubuntu.py start")
-
-def vm_ubuntu_stop():
-	with cd(APP_ROOT):
-		run("sudo python scripts/vmstartup/VM_initializer_ubuntu.py shutdown")
+		run("sudo python scripts/vmstartup/VM_initializer_ubuntu.py %(command)s" % ({'command': command}))
