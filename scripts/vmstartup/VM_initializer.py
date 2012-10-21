@@ -4,10 +4,6 @@ import libvirt
 import sys
 import os
 from VM_default_cfg import *
-
-# TODO this code is only for test perpose
-ROYSTONEA_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../")
-sys.path.append(ROYSTONEA_ROOT)
 from logger import logger
 
 class VM_initializer(object):
