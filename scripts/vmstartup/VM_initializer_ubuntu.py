@@ -37,8 +37,11 @@ class VM_initializer_ubuntu(VM_initializer):
     def shutdown(self):
         self.shutdownVM()
 
-if __name__ == "__main__":
+def test():
     test = VM_initializer_ubuntu(97, 'illegalkao', 97, 97, 512, 10, 1, 'roystonea03')
     command = sys.argv[1]
     vm_ubuntu_method = getattr(test, command)
     vm_ubuntu_method()
+
+if __name__ == "__main__":
+    test()

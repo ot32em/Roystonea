@@ -33,6 +33,11 @@ def clone_from_github():
 
 # VM Test
 # ubuntu
+def test_ubuntu():
+    vm_ubuntu("start")
+    vm_ubuntu("listVM")
+    vm_ubuntu("shutdown)
+
 def vm_ubuntu(command):
 	with cd(APP_ROOT):
-		run("sudo python scripts/vmstartup/VM_initializer_ubuntu.py %(command)s" % ({'command': command}))
+		run("sudo python royctl.py vmstartup.VM_initializer_ubuntu test(%(command)s)" % ({'command': command}))

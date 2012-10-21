@@ -1,5 +1,5 @@
 import sys
-
+import imp
 
 '''
     some tool
@@ -12,7 +12,9 @@ def handleArguments(arg):
     elif arg[1] in stopCommands():
         stop()
     elif arg[1] in runCommads():
-        run()
+        script_name = arg[2]
+        message = arg[3]
+        run(script_name, message)
     elif arg[1] in terminalCommands():
         terminal()
 
@@ -69,8 +71,15 @@ def start():
 def stop():
     print('stop')
 
-def run():
-    print('run')
+def run(script_name, message):
+    package_name = "scripts.%s" % (script_name)
+    scripts = __import__(package_name)
+    target = eval(package_name)
+
+    print("run %(script_name)s.%(message)s()" % ({'script_name': script_name, 'message': message}))
+    getattr(target, message)()
+        
+
 
 def status():
     print('terminal')
