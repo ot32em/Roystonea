@@ -76,12 +76,8 @@ def run(script_name, message):
     scripts = __import__(package_name)
     target = eval(package_name)
 
-    print("run %(script_name)s.%(message)s()" % ({'script_name': script_name, 'message': message}))
-    method = getattr(target, message)
-    print method
-    method()
-        
-
+    print("run %(script_name)s.%(message)s" % ({'script_name': script_name, 'message': message}))
+    eval("target.%s" % messages)
 
 def status():
     print('terminal')
