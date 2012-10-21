@@ -77,7 +77,9 @@ def run(script_name, message):
     target = eval(package_name)
 
     print("run %(script_name)s.%(message)s()" % ({'script_name': script_name, 'message': message}))
-    getattr(target, message)()
+    method = getattr(target, message)
+    print method
+    method()
         
 
 
