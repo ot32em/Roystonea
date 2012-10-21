@@ -40,4 +40,4 @@ def test_ubuntu():
 
 def vm_ubuntu(command):
 	with cd(APP_ROOT):
-		run("sudo python royctl.py vmstartup.VM_initializer_ubuntu test(%(command)s)" % ({'command': command}))
+		run("sudo python royctl.py vmstartup.VM_initializer_ubuntu 'test(%(command)s)'" % ({'command': command}))
