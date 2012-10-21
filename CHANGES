@@ -1,0 +1,16 @@
+2012-10-01 ~~ 2012-10-07
+    by Ray Shih:
+        view source code
+
+2012-10-08 ~~ 2012-10-14
+    by Ray Shih:
+        view source code and learning xen and libvirt
+        
+
+2012-10-15 ~~ 2012-10-21
+    by Ray Shih:
+        導入mustache當做設定檔template system
+        改寫成libvirt python binding (for ubuntu vm)
+        建立自動化測試for ubuntu vm on libvirt
+        實作 royctl run 介面
+            sudo royctl.py run {{package_name}} "{{execute_method_include_params}}"
