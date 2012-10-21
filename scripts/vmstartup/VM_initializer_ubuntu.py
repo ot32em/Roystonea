@@ -40,6 +40,8 @@ class VM_initializer_ubuntu(VM_initializer):
 def test(command):
     test = VM_initializer_ubuntu(97, 'illegalkao', 97, 97, 512, 10, 1, 'roystonea03')
     vm_ubuntu_method = getattr(test, command)
+    print command
+    print vm_ubuntu_method
     vm_ubuntu_method()
 
 if __name__ == "__main__":
