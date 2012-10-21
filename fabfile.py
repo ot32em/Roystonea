@@ -36,7 +36,7 @@ def clone_from_github():
 def test_ubuntu():
     vm_ubuntu("start")
     vm_ubuntu("listVM")
-    vm_ubuntu("shutdown)
+    vm_ubuntu("shutdown")
 
 def vm_ubuntu(command):
 	with cd(APP_ROOT):
