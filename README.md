@@ -5,17 +5,37 @@ A Cloud Computing System with Pluggable Component Architecture.
 Implemented via python script.
 
 
+## Daemons in system
+*Coordinator - checking user input and operate corresponding action
+*Subsystem Manager - update physical machine performance inforation in Database
+*Algorithm - Provide fit location the virtual machine should locate
+
+
+## Installation
+in etc/default_cfg
+```
+install_dir = "/usr/share/roystonea/" # for a example
+```
+in every physical machine involving in Roystonea
+you should place the roystonea package in install directory
+```
+# ls /usr/share/
+Roystonea
+```
+
+
 ## Usage
-
-* Step1: 
-    Configure your system hierachy by xml file(see below).
-
-* Step2: 
-    royctl.py start [hierachy.xml]
+```
+# cd /usr/share/roystonea
+# ./royctl.py start [hierachy.xml]
+```
 
 
 ## Hierachy XML Example
-
+```
+# ls
+# hierachy.xml
+```
 ![Hierachy Diagram](http://cloud.github.com/downloads/ot32em/Roystonea/hierachy2.png)
 
 
