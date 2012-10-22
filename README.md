@@ -16,6 +16,7 @@ Implemented via python script.
 
 ## Hierachy XML
 
-
+example:
+![Hierachy Diagram](140.112.28.240/pub/hierachy.png)
 
 
