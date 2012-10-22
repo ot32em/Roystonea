@@ -1,3 +1,0 @@
-import sys
-for arg in sys.args :
-    print("args[%s] : %s " % ( arg, sys.args[arg] ) )
