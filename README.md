@@ -17,6 +17,7 @@ Implemented via python script.
 ## Hierachy XML
 
 example:
-![Hierachy Diagram](140.112.28.240/pub/hierachy.png)
+![Hierachy Diagram](https://cloud.github.com/downloads/ot32em/Roystonea/hierachy%20(1).png)
+
 
 
