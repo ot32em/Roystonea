@@ -1,14 +1,18 @@
 2012-10-01 ~~ 2012-10-07
     by Ray Shih:
         view source code
-	by Brian Hu:
+    by Brian Hu:
 		view source code
+    by 陳政瑋
+        Port Roystonea Project to GitHub
 
 2012-10-08 ~~ 2012-10-14
     by Ray Shih:
         view source code and learning xen and libvirt
     by Brian Hu:
 		view source code and learning iptables
+    by 陳政瑋
+        check licence, writing PMM.py(PM management daemon)
 
 2012-10-15 ~~ 2012-10-21
     by Ray Shih:
@@ -22,3 +26,6 @@
 		write logger.py, other scripts can use logger simply by importing logger now
 		implement Coordinator.py( there are still some issues about mysql db)
 		move Coordinator's configuration from the script itself to config file, so it's much more plugable now
+    
+    by 陳政瑋
+        讓 commmon handler daemon process 的 parent 不再是 admin login 的 shell。
