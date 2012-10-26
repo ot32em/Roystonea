@@ -1,11 +1,11 @@
-from VM_initializer import VM_initializer
+from vm_manager_base import VMManagerBase
 import string
 import pexpect
-from VM_apache_cfg import *
+from ubuntu import *
 
-class VM_initializer_apache(VM_initializer):
+class VMApacheManager(VMManagerBase):
     def __init__(self, vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine):
-        super(VM_initializer_apache, self).__init__(vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine)
+        super(VMApacheManager, self).__init__(vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine)
 
         self.image_name = IMAGE_NAME
         self.vm_name = owner+'-'+str(group_num)+'-'+str(vm_num)
@@ -18,17 +18,15 @@ class VM_initializer_apache(VM_initializer):
         print(temp)
 
     def creatConfig(self):
-        config_path = self.vm_path+self.vm_name+'.cfg'
-        config = open(config_path, 'w')
-        if config:
-            config.writelines("kernel = '"+ PATH_DOMU_KERNEL + "'\n")
-            config.writelines('memory = ' + str(self.memory) + '\n')
-            config.writelines('vcpus = ' + str(self.num_cpu) + '\n')
-            config.writelines("vif = ['']\n")
-            config.writelines('name = "'+str(self.vm_id)+'"\n')
-            config.writelines("disk=['tap:aio:"+self.vm_path+self.image_name+",xvda1,w']\n")
-            config.writelines('extra = "root=/dev/xvda1 ro console=hvc0 ip=::::'+ self.vm_name + '::dhcp"\n')
-            config.close()
+        values = {
+                'name'       : self.vm_name,
+                'kernel'     : PATH_DOMU_KERNEL,
+                'memory'     : str(self.memory * 1024),
+                'num_cpu'    : str(self.num_cpu),
+                'image_path' : self.vm_path + self.image_name
+                }
+
+        self.config_xml = template('apache.xml.mustache', values)
 
     def start(self):
         self.creatDirectories()
@@ -36,6 +34,13 @@ class VM_initializer_apache(VM_initializer):
         self.resizeImage()
         self.creatVM()
 
+    def shutdown(self):
+        self.shutdownVM()
+
+def test(command):
+    test = VMApacheManager(95, 'illegalkao', 95, 95, 512, 20, 1, 'roystonea03')
+    vm_apache_method = getattr(test, command)
+    vm_apache_method()
+
 if __name__ == "__main__":
-     test = VM_initializer_apache(95, 'illegalkao', 95, 95, 512, 20, 1, 'roystonea03')
-     test.start()
+    test()

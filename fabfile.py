@@ -33,11 +33,11 @@ def clone_from_github():
 
 # VM Test
 # ubuntu
-def test_ubuntu():
-    vm_ubuntu("start")
-    vm_ubuntu("listVM")
-    vm_ubuntu("shutdown")
+def test_vm(vm_type):
+    _test_vm(vm_type, "start")
+    _test_vm(vm_type, "listVM")
+    _test_vm(vm_type, "shutdown")
 
-def vm_ubuntu(command):
+def _test_vm(vm_type, command):
 	with cd(APP_ROOT):
-		run("sudo python royctl.py run vm_manager.vm_ubuntu_manager 'test(\"%(command)s\")'" % ({'command': command}))
+        run("sudo python royctl.py run vm_manager.vm_%(vm_type)s_manager 'test(\"%(command)s\")'" % ({'vm_type': vm_type, 'command': command}))

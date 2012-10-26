@@ -25,7 +25,7 @@ class VMUbuntuManager(VMManagerBase):
                 'name'       : self.vm_name,
                 'image_path' : self.vm_path + self.image_name
                 }
-        # config_path = self.vm_path+self.vm_name+'.xml'
+
         self.config_xml = template('ubuntu.xml.mustache', values)
 
     def start(self):
