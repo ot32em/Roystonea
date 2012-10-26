@@ -29,3 +29,11 @@
     
     by 陳政瑋
         讓 commmon handler daemon process 的 parent 不再是 admin login 的 shell。
+
+2012-10-22 ~~ 2012-10-28
+    by Ray Shih:
+        Todo:
+            refactor the vm_initialize
+            implement the apache vm
+            Deal with request of init a vm
+            
