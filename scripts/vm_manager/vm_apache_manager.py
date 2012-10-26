@@ -1,7 +1,7 @@
 from vm_manager_base import VMManagerBase
 import string
 import pexpect
-from ubuntu import *
+from etc.vm_manager.apache import *
 
 class VMApacheManager(VMManagerBase):
     def __init__(self, vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine):
