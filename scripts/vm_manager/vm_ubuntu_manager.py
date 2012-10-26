@@ -1,11 +1,11 @@
-from vm_manager import VMManager
+from vm_manager_base import VMManagerBase
 from VM_ubuntu_cfg import *
 import string
 import pexpect
 import sys
 from template import template
 
-class VMUbuntuManager(VMManager):
+class VMUbuntuManager(VMManagerBase):
 				# 		  23,   r99944038,   4,    1,4096,  250,   4, roystonea03
     def __init__(self, vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine):
         super(VMUbuntuManager, self).__init__(vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine)

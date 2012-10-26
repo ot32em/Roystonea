@@ -6,7 +6,7 @@ import os
 from VM_default_cfg import *
 from logger import logger
 
-class VMManager(object):
+class VMManagerBase(object):
     account_name = LOGGING_ACCOUNT
     logger       = None
     remote       = None
