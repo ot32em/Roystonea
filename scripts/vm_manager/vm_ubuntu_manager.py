@@ -1,8 +1,8 @@
-from vm_manager_base import VMManagerBase
-from etc.vm_manager.ubuntu import *
 import string
 import pexpect
-import sys
+
+from vm_manager_base import VMManagerBase
+from etc.vm_manager.ubuntu import *
 from template import template
 
 class VMUbuntuManager(VMManagerBase):
