@@ -1,14 +1,14 @@
-from VM_initializer import VM_initializer
+from vm_manager import VMManager
 from VM_ubuntu_cfg import *
 import string
 import pexpect
 import sys
 from template import template
 
-class VM_initializer_ubuntu(VM_initializer):
+class VMUbuntuManager(VMManager):
 				# 		  23,   r99944038,   4,    1,4096,  250,   4, roystonea03
     def __init__(self, vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine):
-        super(VM_initializer_ubuntu, self).__init__(vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine)
+        super(VMUbuntuManager, self).__init__(vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine)
         self.image_name = IMAGE_NAME
         self.vm_name = owner + '-' + str(group_num) + '-' + str(vm_num)
         self.vm_path = PATH_SHARE_FILESYSTEM + owner + '/' + self.vm_name + '/'

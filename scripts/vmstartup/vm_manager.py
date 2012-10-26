@@ -6,7 +6,7 @@ import os
 from VM_default_cfg import *
 from logger import logger
 
-class VM_initializer(object):
+class VMManager(object):
     account_name = LOGGING_ACCOUNT
     logger       = None
     remote       = None
@@ -27,6 +27,9 @@ class VM_initializer(object):
         self.disk_size = disk_size
         self.num_cpu = num_cpu
         self.hostmachine = hostmachine
+        self.connectHypervisor()
+    
+    def connectHypervisor(self):
         self.conn = libvirt.open(None)
         if self.conn == None:
             logger.error("Hypervisor connection fail!")
@@ -38,20 +41,22 @@ class VM_initializer(object):
         print(pexpect.run(CMD_RESIZE_FILESYSTEM + self.vm_path + self.image_name))
 
     def creatVM(self):
-        # print pexpect.run(CMD_XEN_CREAT_VM + self.vm_path + self.vm_name+'.cfg')
         try:
             self.domain = self.conn.createXML(self.config_xml, 0)
         except:
             logger.error("VM creation fail!")
 
     def shutdownVM(self):
-        # print pexpect.run(CMD_XEN_SHUTDOWN_VM + self.vm_name)
         domain = self.getDomain()
         if not domain: 
             return
 
         if domain.shutdown() < 0:
             logger.error("VM %(name)s shutdown fail!" % ({'name': self.vm_name}))
+
+    def destroyVM(self):
+        # TODO
+        pass 
 
     def getDomain(self):
         if self.domain == None:
@@ -63,4 +68,5 @@ class VM_initializer(object):
         return self.domain
 
     def listVM(self):
-        print pexpect.run(CMD_XEN_LIST_VM)
+        print pexpect.run(CMD_XEN_LIST_VM) # TODO change to virsh
+
