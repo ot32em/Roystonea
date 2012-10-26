@@ -32,8 +32,8 @@
 
 2012-10-22 ~~ 2012-10-28
     by Ray Shih:
+        refactor the vm_initializer to vm_manager
         Todo:
-            refactor the vm_initialize
             implement the apache vm
             Deal with request of init a vm
             

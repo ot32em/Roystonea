@@ -1,5 +1,5 @@
 from vm_manager_base import VMManagerBase
-from VM_ubuntu_cfg import *
+from etc.vm_manager.ubuntu import *
 import string
 import pexpect
 import sys
