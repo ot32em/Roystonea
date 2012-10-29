@@ -23,10 +23,6 @@ import pexpect
 class Coordinator(CommonHandler):
     from etc import Coordinator_cfg
     ''' custom init variable '''
-    FILENAME_MY_CONFIG = FILENAME_MY_CONFIG
-    num_rthreads = num_rthreads
-    level = level
-    
     def __init__(self, host, port):
         CommonHandler.__init__(self, host, port)
         self.dispatch_handlers.update({
@@ -172,8 +168,8 @@ class Coordinator(CommonHandler):
         return 1
 
         if connect:
-            log.info('Start.')
-            log.info('Database connected.')
+            logger.info('Start.')
+            logger.info('Database connected.')
             while 1:
                 query_portreq = "SELECT * FROM %s WHERE state='adding' \
                         OR state='deleting 'ORDER BY hostport"%(porttb)
@@ -198,7 +194,7 @@ class Coordinator(CommonHandler):
                                 WHERE hostport=%s"%(porttb, newport, vmip, oldhostport)
                             db.query(query)
                         else :
-                            log.error('No more port!')
+                            logger.error('No more port!')
                     elif (fetched_req_data[0][idx_state] == 'deleting') :
                         #delete port
                         vmip = fetched_req_data[0][idx_ip]
@@ -206,7 +202,7 @@ class Coordinator(CommonHandler):
                         query = "DELETE FROM %s WHERE hostport=%s"%(porttb, oldhostport)
                         db.query(query)
                     else :
-                        log.error("I don't know what's wrong!")
+                        logger.error("I don't know what's wrong!")
 
                 fetched_req_data = req_res.fetch_row()
             time.sleep(sleep_time)

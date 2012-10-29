@@ -41,5 +41,7 @@
                 Found that class CommonHandler need refactor (some package dependent or file is dead)
                 example error messages:  =皿=
                     IOError: [Errno 2] No such file or directory: '/mnt/images/nfs/new_roystonea_script/teddy_roystonea_script/default_cfg'
-
+	by Brian Hu:
+		learning how to deploy through fabric
+		setting up testing environment of portmapping on remote machine (not complete yet)
         
