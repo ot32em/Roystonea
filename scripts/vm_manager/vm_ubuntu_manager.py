@@ -1,14 +1,14 @@
-from VM_initializer import VM_initializer
-from VM_ubuntu_cfg import *
 import string
 import pexpect
-import sys
+
+from vm_manager_base import VMManagerBase
+from etc.vm_manager.ubuntu import *
 from template import template
 
-class VM_initializer_ubuntu(VM_initializer):
+class VMUbuntuManager(VMManagerBase):
 				# 		  23,   r99944038,   4,    1,4096,  250,   4, roystonea03
     def __init__(self, vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine):
-        super(VM_initializer_ubuntu, self).__init__(vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine)
+        super(VMUbuntuManager, self).__init__(vm_id, owner, group_num, vm_num, memory, disk_size, num_cpu, hostmachine)
         self.image_name = IMAGE_NAME
         self.vm_name = owner + '-' + str(group_num) + '-' + str(vm_num)
         self.vm_path = PATH_SHARE_FILESYSTEM + owner + '/' + self.vm_name + '/'
@@ -25,7 +25,7 @@ class VM_initializer_ubuntu(VM_initializer):
                 'name'       : self.vm_name,
                 'image_path' : self.vm_path + self.image_name
                 }
-        # config_path = self.vm_path+self.vm_name+'.xml'
+
         self.config_xml = template('ubuntu.xml.mustache', values)
 
     def start(self):
@@ -38,7 +38,7 @@ class VM_initializer_ubuntu(VM_initializer):
         self.shutdownVM()
 
 def test(command):
-    test = VM_initializer_ubuntu(97, 'illegalkao', 97, 97, 512, 10, 1, 'roystonea03')
+    test = VMUbuntuManager(97, 'illegalkao', 97, 97, 512, 10, 1, 'roystonea03')
     vm_ubuntu_method = getattr(test, command)
     vm_ubuntu_method()
 

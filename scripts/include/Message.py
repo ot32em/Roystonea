@@ -290,3 +290,8 @@ class ReceiveFromAlgorithm():
         self.pm_destination = args["pm_destination"]
         self.remain_memory = args["remain_memory"]
         self.remain_disk = args["remain_disk"]
+
+''' Test '''
+class Test():
+    def __init__(self, **args):
+        self.message = args["message"]

@@ -11,8 +11,9 @@ by Elalic, Ot Chen, llegalkao, Teddy, 2012/03/07
 from scripts.include.CommonHandler import  passArguments
 from scripts.include.Client import *
 
-from VM_initializer_ubuntu import VM_initializer_ubuntu
-from scripts.include import CommonHandler, Message
+# from vm_manager.vm_ubuntu_manager import VMUbuntuManager
+from scripts.include.CommonHandler import CommonHandler
+from scripts.include import Message
 
 class Node(CommonHandler):
     ''' custom init variable '''
@@ -24,10 +25,14 @@ class Node(CommonHandler):
         CommonHandler.__init__(self, host, port)
         self.dispatch_handlers.update({
             'RackVirtualMachineManagerCreateVMreq': self.RackVirtualMachineManagerCreateVM,
+            'Test': self.test
         })
         self.startup_functions.extend((
             self.sayHello,
         ))
+
+    def test(self, req):
+        print req.message
     
     def RackVirtualMachineManagerCreateVM(self, req):
         
@@ -53,9 +58,15 @@ class Node(CommonHandler):
             res = send_message(coordinator_address, msg)
 
         elif req.type == 'ubuntu':
-            VM_initializer = VM_initializer_ubuntu(
-                    req.vm_id, req.owner, req.group_num, req.vm_num, req.mem, req.disk, req.cpu, None)
-            # VM_initializer.start()
+            ubuntu = VMUbuntuManager(
+                    req.vm_id, 
+                    req.owner, 
+                    req.group_num, 
+                    req.vm_num, 
+                    req.mem, 
+                    req.disk, 
+                    req.cpu, 
+                    None)
 
         elif req.type == 'hbase':
             pass    
@@ -74,6 +85,10 @@ class Node(CommonHandler):
     def sayHello(self):
         print 'hello'
 
+
+def start(host, port):
+    node = Node(host, port)
+    node.run(True)
 
 if __name__ == '__main__':
     host, port, console_off = passArguments() 

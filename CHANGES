@@ -29,3 +29,17 @@
     
     by 陳政瑋
         讓 commmon handler daemon process 的 parent 不再是 admin login 的 shell。
+
+2012-10-22 ~~ 2012-10-28
+    by Ray Shih:
+        refactor the vm_initializer to vm_manager
+        implement the apache vm
+
+        Todo: refactor CommonHandler
+        Pending:
+            Deal with request of init a vm
+                Found that class CommonHandler need refactor (some package dependent or file is dead)
+                example error messages:  =皿=
+                    IOError: [Errno 2] No such file or directory: '/mnt/images/nfs/new_roystonea_script/teddy_roystonea_script/default_cfg'
+
+        
