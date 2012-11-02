@@ -11,43 +11,38 @@ class ThreadPoolMixIn(ThreadingMixIn):
     #can be override
     numThreads = 4
     allow_reuse_address = True  # seems to fix socket.error on server restart
-    __shutdown_signal = False
+    # __shutdown_signal = False # Whats this ???
+
+    def start_thread(self, **kwargs):
+        if self.threads == None: self.threads = list()
+
+        t = threading.Thread(target = kwargs['target'])
+        t.setDaemon(True)
+        t.start()
+        self.threads.append(t)
 
     def serve_forever(self):
         '''
         Handle one request at a time until doomsday.
         '''
         # set up the threadpool
-        self.threads = list()
-        self.requests = Queue(self.numThreads)
-        self.shutdown_event=threading.Event()
+        self.requests       = Queue()
 
+        # Handler Thread
         for x in range(self.numThreads):
-            t = threading.Thread(target = self.process_request_thread)
-            t.setDaemon(True)
-            t.start()
-            self.threads.append(t)
+            self.start_thread(target = self.process_request_thread)
+
+        # Main Thread
         self.threads.append(threading.current_thread())
         
-        # server main loop
-        '''while True:
-            print("main thread is listening ")
-            self.handle_request() # collect every requests incomming and put it in queue
-                                  # then, let thread in pool to pick them up to handle
-            print("main thread listen recv %s request" % times)
-            times += 1 '''
-        t = threading.Thread(target = self.collect_requests)
-        t.setDaemon(True)
-        t.start()
-        self.threads.append(t)
+        # Collector Thread
+        self.start_thread(target = self.collect_requests)
 
-        t = threading.Thread(target = self.wait_die_by_int )
-        t.setDaemon(True)
-        t.start()
-        self.threads.append(t)
+        # Wait for die signal Thread
+        self.start_thread(target = self.wait_die_by_int )
 
-        
         # create event for waiting shutdown request to trigger shutdown_event.set()
+        self.shutdown_event = threading.Event()
         self.shutdown_event.wait()
         self.server_close()
     
@@ -69,22 +64,8 @@ class ThreadPoolMixIn(ThreadingMixIn):
         '''
         obtain request from queue instead of directly from server socket
         '''
-
         while True: 
-            # original version of following code is:
-            # ThreadingMixIn.process_request_thread( self, *self.get_request() )
-            # because I can not yet understand the wildcard symbol '*' as prefix of self.get_request()
-            # and I usually forget what process_request_thread is doing
-            # So I write it explicily to let me know what is happening
-            request, child_address = self.get_request()
-            try:
-                self.finish_request( request, child_address )
-            except Exception:
-                self.handle_error( request, child_address )
-            finally:
-                self.shutdown_request( request )
-
-
+            ThreadingMixIn.process_request_thread( self, *self.get_request() )
     
     def handle_request(self):
         '''
