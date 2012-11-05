@@ -3,7 +3,7 @@ from cuisine import *
 import os
 
 env.hosts = ['140.112.28.240']
-env.user = "rayshih"
+env.user = "royuser"
 env.forward_agent = True
 
 GIT_REPOSITORY = 'git@github.com:ot32em/Roystonea.git'
@@ -33,10 +33,13 @@ def clone_from_github():
 
 # VM Test
 # ubuntu
-def test_vm(vm_type):
-    _test_vm(vm_type, "start")
-    _test_vm(vm_type, "listVM")
-    _test_vm(vm_type, "shutdown")
+def test_vm(vm_type, action=None):
+    if action:
+        _test_vm(vm_type,action)
+    else:
+        _test_vm(vm_type, "start")
+        _test_vm(vm_type, "listVM")
+        _test_vm(vm_type, "shutdown")
 
 def _test_vm(vm_type, command):
     with cd(APP_ROOT):

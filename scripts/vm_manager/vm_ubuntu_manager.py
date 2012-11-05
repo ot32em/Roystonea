@@ -38,7 +38,7 @@ class VMUbuntuManager(VMManagerBase):
         self.shutdownVM()
 
 def test(command):
-    test = VMUbuntuManager(97, 'illegalkao', 97, 97, 512, 10, 1, 'roystonea03')
+    test = VMUbuntuManager(1, 'royuser', 1, 1, 512, 10, 1, 'roystonea03')
     vm_ubuntu_method = getattr(test, command)
     vm_ubuntu_method()
 

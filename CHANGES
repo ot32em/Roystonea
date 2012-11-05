@@ -45,3 +45,11 @@
 		learning how to deploy through fabric
 		setting up testing environment of portmapping on remote machine (not complete yet)
         
+    by 陳政瑋
+        建立 實作用的操作網站，殼寫好。預計下禮拜可供測試。
+
+2012-10-29 ~~ 2012-11-04
+    by Ray Shih:
+        Refactoring ThreadPoolMixIn (will be used with CommonHandler)
+        Figure out the stucture after refactoring the CommonHandler (which will be the base of NodeHandler, etc)
+        Read PMM.py since need more detail for refactoring
