@@ -3,7 +3,7 @@ from cuisine import *
 import os
 
 env.hosts = ['140.112.28.240']
-env.user = "rayshih"
+env.user = "royuser"
 env.forward_agent = True
 
 GIT_REPOSITORY = 'git@github.com:ot32em/Roystonea.git'
