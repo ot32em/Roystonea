@@ -26,8 +26,40 @@ SubsystemManager:
 Algorithm:
     
 '''
+# Common Package #
+class VmInfo():
+    def __init__(self, **kargs):
+        self.vmid = kargs['vmid']
+        self.groupnum= kargs['groupnum']
+        self.vmnum = kargs['vmnum']
+        self.vmname = kargs['vmname']
+
+        self.owner = kargs['owner']
+        self.vmtype = kargs['vmtype']
+        self.config_cpu = kargs['config_cpu']
+        self.config_mem = kargs['config_memory']
+        self.config_disk = kargs['config_disk']
+        self.time_life = kargs['time_life']
 
 '''Node'''
+
+class CreateVmByNodeReq():
+    def __init__(self, **kargs):
+        self.vmid = kargs['vmid']
+        self.owner= kargs['owner']
+        self.cpu = kargs['cpu']
+        self.mem = kargs['mem']
+        self.disk = kargs['disk']
+
+class CreateVmByRackReq():
+    def __init__(self, **kargs):
+        self.vmid = kargs['vmid']
+        self.owner= kargs['owner']
+        self.cpu = kargs['cpu']
+        self.mem = kargs['mem']
+        self.disk = kargs['disk']
+
+
 class NodeVirtualMachineManagerCreateVMres():
     def __init__(self, **kargs):
         self.vm_id = kargs['vm_id']

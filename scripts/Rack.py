@@ -8,12 +8,12 @@ ex. "python Rack.py 192.168.10.1 10000"
 by Elalic, Ot Chen, Radstar Yeh, Teddy, 2012/03/07
 '''
 
-from scripts.include.CommonHandler import  passArguments
-from scripts.include.Client import *
+from include.CommonHandler import passArguments
+from include.Client import *
 from time import sleep
 import socket
-
-from scripts.include import CommonHandler, Message
+from include.CommonHandler import CommonHandler
+from include import Message, Client
 
 class Rack(CommonHandler):
     ''' custom init variable '''
@@ -26,11 +26,35 @@ class Rack(CommonHandler):
         self.dispatch_handlers.update({
             'ClusterVirtualMachineManagerCreateVMreq': self.ClusterVirtualMachineManagerCreateVM,
             'NodeVirtualMachineManagerCreateVMres': self.NodeVirtualMachineManagerCreateVM,
+            'CreateVmByRackReq': self.CreateVmByRack,
+            
 		})
         self.startup_functions.extend((
             self.sayHello, # hello function
+            self.testSendReqToNode_CreateVmByNodeReq,
         ))
     
+    def CreateVmByRack(self, CreateVmByRackReq):
+        req = CreateVmByRackReq
+        destNodeAddress = self.selectNodeByAlgorithm( CreateVmByRackReq.vm )
+        createVmByNodeReq = Message.CreateVmByNodeReq(vmid=req.vmid,
+                                                      owner=req.owner,cpu=req.cpu,
+                                                      mem=req.mem, disk=req.disk)
+        Client.sendonly_message( createvmByNodeReq, destNodeAddress)
+    
+    def testSendReqToNode_CreateVmByNodeReq(self):
+        return
+        createVmByNodeReq = Message.CreateVmByNodeReq( vmid=1000, owner="ot32em", cpu=2, mem=1024, disk=40)
+        testDestNode = ("140.112.28.240", 8001)
+        Client.sendonly_message( testDestNode, createVmByNodeReq)
+        
+
+    def selectNodeByAlgorithm(self, vm):
+        selectNodeReq = Message.SelectNodeReq(vm)
+        selectNodeRes = Client.send( selectNodeReq, algorithm.address )
+        return selectNodeRes.node
+
+
     def ClusterVirtualMachineManagerCreateVM(self, req):
         try:
             # 1. send msg to coordinator to request resource information

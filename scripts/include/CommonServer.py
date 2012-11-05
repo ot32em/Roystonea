@@ -5,8 +5,8 @@ from Queue import Queue
 import threading, socket
 from threading import Event
 from time import sleep
-from scripts.include import Message
-from scripts.include.PM import *
+from include import Message
+from include.PM import *
 
 class CommonServer(TCPServer):
     '''

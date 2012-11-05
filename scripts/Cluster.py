@@ -33,6 +33,18 @@ class Cluster(CommonHandler):
             self.sayHello, # hello function 
         ))
    
+    # @author ot32em
+    def CreateVmByCluster(self, CreateVmByClusterReq):
+        destRack = self.selectRackByAlgorithm(vm)
+        CreateVmByRackReq = Message.CreateVmByRackReq(vm)
+        Client.sendonly( CreateVmByRackReq, DestRack.address)
+
+    # @author ot32em
+    def selectRackByAlgorithm(self, vm)
+        selectRackReq = Message.SelectRackReq(vm)
+        selectRackRes = Client.send( selectRrackReq, algorithm.address )
+        return selectRackRes.rack
+        
     def DatabaseSubsystemCreateVM(self, req):
        
         # use vm_num to decide how to round robin to Rack

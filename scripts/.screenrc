@@ -1,0 +1,58 @@
+# 關閉啟動訊息。
+startup_message off
+
+# 加入狀態列。
+caption always "%{=u .r} %-w%<%{=ub .Y}%n %t%{=u .r}%+w "
+hardstatus alwaysignore
+hardstatus alwayslastline "%{= .K} [%l]%<%=%{= .Y}$USER%{= .R}@%H %=%{= .m} %Y/%m/%d%{= .M} %0c "
+
+# 將預設編碼設為 UTF-8。
+defutf8 on
+
+# Dynamic title
+shelltitle '$ |bash'
+
+# Diable vbell( no sound when you type wrong)
+vbell off
+
+
+#  Main functional
+
+
+# Optional functional
+
+# - Alt + r : 清理當前視窗。 (C-a c)
+bindkey "^[c" clear
+
+# - Alt + s : 進入複製/捲動模式。 (C-a esc)
+bindkey "^[s" copy
+
+# - Alt + i : 顯示所有執行中的 screen。 (C-a *)
+bindkey "^[i" displays
+
+
+# Naviation functional 
+
+bindkey "^[1" prev
+bindkey "^[2" next
+bindkey "^[3" title 
+bindkey "^[0" screen
+
+bindkey -k k8 lockscreen
+bindkey "^[d" detach
+bindkey "^[-" kill
+
+
+# === 分割(Split) ===
+
+# - Alt + o : 水平分割當前視窗。 (C-a S) 
+bindkey "^[s" split
+
+# - Alt + e : 垂直分割當前視窗。 (C-a |) 
+bindkey "^[v" split -v
+
+# - Alt + q : 關閉當前分割區。 (C-a X)
+bindkey "^[w" remove
+
+# - Alt + w : 切換當前分割區。 (C-a tab)
+bindkey "^[f" focus

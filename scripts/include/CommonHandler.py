@@ -2,7 +2,8 @@ import time
 from time import sleep
 import socket
 import copy
-from scripts.include import CommonServer, Client, Message
+from include.CommonServer import CommonServer
+from include import Client, Message
 
 '''
       +---------------+
@@ -130,8 +131,7 @@ class CommonHandler():
     # Instantiate the server instance , and start it.
         self.server = CommonServer(self.addr, 
                                    self.level,
-                                   self.num_rthreads, 
-                                   self.dispatch_handlers, 
+                                   self.num_rthreads, self.dispatch_handlers, 
                                    self.startup_functions)
         self.server.serve_forever(console_off)
 
@@ -139,6 +139,7 @@ class CommonHandler():
 
     def loadConfig(self):  
     # Load default config first, then load my-config to overwrite data with the name
+        return
 
         # Let cfg_dict be the global_variable space in execfile method performing.
         cfg_dict = dict()

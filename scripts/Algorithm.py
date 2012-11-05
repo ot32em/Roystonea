@@ -25,6 +25,28 @@ class Algorithm(CommonHandler):
         self.startup_functions.extend((
             self.sayHello, # hello function
         ))
+
+
+    def SelectRack(self, SelectRackReq):
+        
+        #ask pm resource
+
+        #get current adding vm
+
+        #run algorithm to pickup a placement
+
+        #return correspond place
+
+    def SelectNode(self, SelectNodeReq):
+
+        #ask pm resource
+
+        #get current adding vm
+
+        #run algorithm to pickup a placement
+
+        #return corresponding place
+
    
     def RackAlgorithm(self, req):
         vm_id = req.vm_id
