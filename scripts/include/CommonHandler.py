@@ -1,151 +1,42 @@
-# old, to be refactored script
-if False:
-    import time
-    from time import sleep
-    import socket
-    import copy
-    from scripts.include import CommonServer, Client, Message
+import time
+from time import sleep
+import socket
+import copy
+from include.CommonServer import CommonServer
+from include import Client, Message
 
-    '''
-          +---------------+
-          | CommonHandler |
-          +---------------+
-            |      +----------+
-            |----> | Cloud.py |
-            |      +----------+
-            |      +------------+
-            |----> | Cluster.py |
-            |      +------------+
-            |      +---------+
-            |----> | Rack.py |
-            |      +---------+
-            |      +---------+
-            |----> | Node.py |
-                   +---------+
-
-
-            CommonHandler <---- dispatch_handlers, Human writes api here.
-                  |
-                run()
-                  |
-                  V
-            CommonServer  <-----  request, server listen request put pool
-                  |
-         processPoolRequest()
-                  |
-                  V
-         RequestDispatchClass
-                  |
-              handle() ----------> res = dispatch_handlers[req.__class__.__name__](req)
-                                   send_back( res)
-                
+'''
+      +---------------+
+      | CommonHandler |
+      +---------------+
+        |      +----------+
+        |----> | Cloud.py |
+        |      +----------+
+        |      +------------+
+        |----> | Cluster.py |
+        |      +------------+
+        |      +---------+
+        |----> | Rack.py |
+        |      +---------+
+        |      +---------+
+        |----> | Node.py |
+               +---------+
 
 
-
-         +-----------------------------------------------------------------------------------+
-         | Important:                                                                        |
-         |    Launching each handler script NEED give host and port of server as parameter   |
-         |    ex: python Cloud.py 140.112.123.234 7003                                       |
-         +-----------------------------------------------------------------------------------+
-          
-         CommonHandler
-            class variables
-                > FILENAME_DEFAULT_CONFIG @ string, default config filename.
-                > FILENAME_MY_CONFIG @ string, specific local config filename.
-
-                > dispatch_handlers @ dictionary, key is message format name, value is function binding.
-                > startup_handlers @ list, entry is function binding.
-                > num_rthreads @ int, how many threads handler the request in pool.
-
-            object variables:
-                > host @ string, ip or domain name.
-                > port @ int, port.
-                > addr @ 2-tuple with (host, port).
-
-                > pm_relation @ PM_Entry class, 
-                    pm_relation.label @ string, server's codename.
-                    pm_relation.addr @ 2-tuple of self's address.
-                    pm_relation.parent_addr @ 2-tuple of parent's address.
-                    pm_relation.children_addrs @ list of children's addresses.
-
-                > config @ dictionary, 
-                    key @ string, config's name, 
-                    value @ string, config's value, 
-                    inited by performing loadConfig().
-
-            object methods:
-                > run 
-                    Instanciate server and run it. 
-                    Pass 1.dispatch_handlers, 2.startup_functions, and 3.RequestDispatchClass to server.
-                > setConfig/loadConfig
-                    Load config file to config variable. storing about static information.
-
-
-    '''
-
-    class CommonHandler():
-    # Provide platform to write functions of two type , startup function and 
-    # request-based functions.
-
-        FILENAME_CONFIG_DIR = '/mnt/images/nfs/new_roystonea_script/teddy_roystonea_script/'
-        FILENAME_DEFAULT_CONFIG = 'default_cfg'
-        FILENAME_MY_CONFIG = ''
-        level = 'prototype'
-
-        num_rthreads = 4
-
-        # Functions bound in startup_functions will perform at server start.
-
-        def __init__(self, host, port):
-            self.host = host
-            self.port = int(port)
-            self.addr = (host, int(port))
-
-            # Record Label, Addr, Parent Addr, Children Addrs and something about hierachy
-
-            self.loadConfig()  # load some static setting stored in file.
-
-            # Functions bound in dispatch_handlers will be triggered by request to perform.
-            self.dispatch_handlers= { 
-                'CmdShutdownTheChildrenReq': self.CmdShutdownTheChildren, # Shutdown remote machine 's children.
-                'CmdShutdownChildrenReq': self.CmdShutdownChildren, # Shutdown self's children
-                'CmdShutdownTheReq': self.CmdShutdownThe,       # Shutdown specific machine
-                'CmdShutdownReq': self.CmdShutdown,             # Recv shutdown order.
-                'CmdFreezeRThreadReq': self.CmdFreezeRThread,   # Freeze the current thread who catch this request.
-                'CmdGetPingReq': self.CmdGetPing,                  # Ping other CommonHandler-based machine, and return msg.
-                'CmdPingReq': self.CmdBePinged,                    # Be ping, just return emtpy for testing network status.
-                'CmdGetPMRelationReq': self.CmdGetPMRelation,   # Return the current pm_relation.
-                'CmdSetPMRelationReq': self.CmdSetPMRelation,   # Set the pm_relation.
-                'CmdGetThePMRelationReq': self.CmdGetThePMRelation,
-                'CmdSetThePMRelationReq': self.CmdSetThePMRelation,
-                'CmdGetChildrenPMRelationsReq': self.CmdGetChildrenPMRelations,
-                'CmdUpdatePMRelationReq': self.CmdUpdatePMRelation,
-                'CmdGetParentReq': self.CmdGetParent,           # Get the parent address.
-                'CmdSetParentReq': self.CmdSetParent,           # Set the parent address.
-                'CmdGetChildrenReq': self.CmdGetChildren,       # Get the children addresses as list.
-                'CmdSetChildrenReq': self.CmdSetChildren,       # Set the children addresses.
-                'CmdAddChildReq' : self.CmdAddChild,
-            }
-            self.startup_functions= [ self.showPMRelation , ]
-
-        def run(self, console_off=False ):
-        # Instantiate the server instance , and start it.
-            self.server = CommonServer(self.addr, 
-                                       self.level,
-                                       self.num_rthreads, 
-                                       self.dispatch_handlers, 
-                                       self.startup_functions)
-            self.server.serve_forever(console_off)
-
-        ''' Class methods '''
-
-        def loadConfig(self):  
-        # Load default config first, then load my-config to overwrite data with the name
-
-            # Let cfg_dict be the global_variable space in execfile method performing.
-            cfg_dict = dict()
-            cfg_filename = self.FILENAME_CONFIG_DIR + self.FILENAME_DEFAULT_CONFIG
-            execfile(cfg_filename, cfg_dict)
+        CommonHandler <---- dispatch_handlers, Human writes api here.
+              |
+            run()
+              |
+              V
+        CommonServer  <-----  request, server listen request put pool
+              |
+     processPoolRequest()
+              |
+              V
+     RequestDispatchClass
+              |
+          handle() ----------> res = dispatch_handlers[req.__class__.__name__](req)
+                               send_back( res)
             
             # Let local setting overwrite default setting
             if self.FILENAME_MY_CONFIG :
@@ -168,11 +59,110 @@ if False:
                 self.config.update(cfg_dict)
 
 
-        ''' Main methods ''' 
-        def setThePMRelation(self, addr, pm_relation):
-            req = Message.CmdSetPMRelationReq( pm_relation = pm_relation )
-            res = Client.send_message( addr, pm_relation )
-            return res
+     +-----------------------------------------------------------------------------------+
+     | Important:                                                                        |
+     |    Launching each handler script NEED give host and port of server as parameter   |
+     |    ex: python Cloud.py 140.112.123.234 7003                                       |
+     +-----------------------------------------------------------------------------------+
+      
+     CommonHandler
+        class variables
+            > FILENAME_DEFAULT_CONFIG @ string, default config filename.
+            > FILENAME_MY_CONFIG @ string, specific local config filename.
+
+            > dispatch_handlers @ dictionary, key is message format name, value is function binding.
+            > startup_handlers @ list, entry is function binding.
+            > num_rthreads @ int, how many threads handler the request in pool.
+
+        object variables:
+            > host @ string, ip or domain name.
+            > port @ int, port.
+            > addr @ 2-tuple with (host, port).
+
+            > pm_relation @ PM_Entry class, 
+                pm_relation.label @ string, server's codename.
+                pm_relation.addr @ 2-tuple of self's address.
+                pm_relation.parent_addr @ 2-tuple of parent's address.
+                pm_relation.children_addrs @ list of children's addresses.
+
+            > config @ dictionary, 
+                key @ string, config's name, 
+                value @ string, config's value, 
+                inited by performing loadConfig().
+
+        object methods:
+            > run 
+                Instanciate server and run it. 
+                Pass 1.dispatch_handlers, 2.startup_functions, and 3.RequestDispatchClass to server.
+            > setConfig/loadConfig
+                Load config file to config variable. storing about static information.
+
+
+'''
+
+class CommonHandler():
+# Provide platform to write functions of two type , startup function and 
+# request-based functions.
+
+    FILENAME_CONFIG_DIR = '/mnt/images/nfs/new_roystonea_script/teddy_roystonea_script/'
+    FILENAME_DEFAULT_CONFIG = 'default_cfg'
+    FILENAME_MY_CONFIG = ''
+    level = 'prototype'
+
+    num_rthreads = 4
+
+    # Functions bound in startup_functions will perform at server start.
+
+    def __init__(self, host, port):
+        self.host = host
+        self.port = int(port)
+        self.addr = (host, int(port))
+
+        # Record Label, Addr, Parent Addr, Children Addrs and something about hierachy
+
+        self.loadConfig()  # load some static setting stored in file.
+
+        # Functions bound in dispatch_handlers will be triggered by request to perform.
+        self.dispatch_handlers= { 
+            'CmdShutdownTheChildrenReq': self.CmdShutdownTheChildren, # Shutdown remote machine 's children.
+            'CmdShutdownChildrenReq': self.CmdShutdownChildren, # Shutdown self's children
+            'CmdShutdownTheReq': self.CmdShutdownThe,       # Shutdown specific machine
+            'CmdShutdownReq': self.CmdShutdown,             # Recv shutdown order.
+            'CmdFreezeRThreadReq': self.CmdFreezeRThread,   # Freeze the current thread who catch this request.
+            'CmdGetPingReq': self.CmdGetPing,                  # Ping other CommonHandler-based machine, and return msg.
+            'CmdPingReq': self.CmdBePinged,                    # Be ping, just return emtpy for testing network status.
+            'CmdGetPMRelationReq': self.CmdGetPMRelation,   # Return the current pm_relation.
+            'CmdSetPMRelationReq': self.CmdSetPMRelation,   # Set the pm_relation.
+            'CmdGetThePMRelationReq': self.CmdGetThePMRelation,
+            'CmdSetThePMRelationReq': self.CmdSetThePMRelation,
+            'CmdGetChildrenPMRelationsReq': self.CmdGetChildrenPMRelations,
+            'CmdUpdatePMRelationReq': self.CmdUpdatePMRelation,
+            'CmdGetParentReq': self.CmdGetParent,           # Get the parent address.
+            'CmdSetParentReq': self.CmdSetParent,           # Set the parent address.
+            'CmdGetChildrenReq': self.CmdGetChildren,       # Get the children addresses as list.
+            'CmdSetChildrenReq': self.CmdSetChildren,       # Set the children addresses.
+            'CmdAddChildReq' : self.CmdAddChild,
+        }
+        self.startup_functions= [ self.showPMRelation , ]
+
+    def run(self, console_off=False ):
+    # Instantiate the server instance , and start it.
+        self.server = CommonServer(self.addr, 
+                                   self.level,
+                                   self.num_rthreads, self.dispatch_handlers, 
+                                   self.startup_functions)
+        self.server.serve_forever(console_off)
+
+    ''' Class methods '''
+
+    def loadConfig(self):  
+    # Load default config first, then load my-config to overwrite data with the name
+        return
+
+        # Let cfg_dict be the global_variable space in execfile method performing.
+        cfg_dict = dict()
+        cfg_filename = self.FILENAME_CONFIG_DIR + self.FILENAME_DEFAULT_CONFIG
+        execfile(cfg_filename, cfg_dict)
         
         def getChildrenPMRelations(self):
             pm_relations = list()

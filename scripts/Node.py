@@ -8,12 +8,12 @@ ex. "python Node.py 192.168.10.1 10000"
 by Elalic, Ot Chen, llegalkao, Teddy, 2012/03/07
 '''
 
-from scripts.include.CommonHandler import  passArguments
-from scripts.include.Client import *
+from include.CommonHandler import  passArguments
+from include.Client import *
 
 # from vm_manager.vm_ubuntu_manager import VMUbuntuManager
-from scripts.include.CommonHandler import CommonHandler
-from scripts.include import Message
+from include.CommonHandler import CommonHandler
+from include import Message
 
 class Node(CommonHandler):
     ''' custom init variable '''
@@ -25,6 +25,7 @@ class Node(CommonHandler):
         CommonHandler.__init__(self, host, port)
         self.dispatch_handlers.update({
             'RackVirtualMachineManagerCreateVMreq': self.RackVirtualMachineManagerCreateVM,
+            'CreateVmByNodeReq': self.CreateVmByNode,
             'Test': self.test
         })
         self.startup_functions.extend((
@@ -33,6 +34,13 @@ class Node(CommonHandler):
 
     def test(self, req):
         print req.message
+    
+    def CreateVmByNode(self, createVmByNodeReq):
+        req = createVmByNodeReq
+        print "accept a createvmByNodeReq"
+        print "vmid: %s , vmowner: %s, cpu: %s, mem: %s, disk: %s" % (req.vmid, req.owner, req.cpu, req.mem, req.disk)
+        
+        pass
     
     def RackVirtualMachineManagerCreateVM(self, req):
         
