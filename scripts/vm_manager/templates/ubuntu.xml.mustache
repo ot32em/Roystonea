@@ -5,6 +5,14 @@
     </os>
     <memory>{{memory}}</memory>
     <vcpu>{{num_cpu}}</vcpu>
+    <network>
+        <name>default</name>
+        <bridge name="{{name}}" />
+        <forward mode="nat" />
+        <ip>
+            <dhcp />
+        </ip>
+    </network>
     <devices>
         <disk type='file'>
             <source file='{{image_path}}'/>
