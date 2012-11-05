@@ -8,22 +8,23 @@ ex. "python Coordinator.py 192.168.10.1 10000"
 by Teddy, 2012/03/07
 '''
 
-from scripts.include.CommonHandler import  passArguments
-from scripts.include.Client import *
+from include.CommonHandler import passArguments
+from include.CommonHandler import CommonHandler
+from include import Client, Message
 from time import sleep
+import time
 import socket
-
 import MySQLdb as mdb
 import sys
-from scripts.include import CommonHandler, Message
-
-from logger import logger
+from include.logger import logger
 import pexpect
 
+
 class Coordinator(CommonHandler):
-    from etc import Coordinator_cfg
     ''' custom init variable '''
     def __init__(self, host, port):
+        self.FILENAME_MY_CONFIG = 'Coordinator_cfg.py'
+
         CommonHandler.__init__(self, host, port)
         self.dispatch_handlers.update({
             'RackAlgorithmResourceInformationReq': self.RackAlgorithmResourceInformation,
@@ -31,16 +32,70 @@ class Coordinator(CommonHandler):
             'NodeDatabaseSubsystemAddPortReq': self.NodeDatabaseSubsystemAddPort,
         })
         self.startup_functions.extend((
-            self.databaseSubsystem,      
+            #self.databaseSubsystem,      
+            self.CreateVmByCheckingDatabase,
             self.sayHello,          # hello function
         ))
         # database imformation, use config to replace this part
-        self.db_host = db_host
-        self.db_account = db_account
-        self.db_password = db_password
-        self.db_name = db_name
+        self.db_host = self.config['db_host']
+        self.db_account = self.config['db_account']
+        self.db_password = self.config['db_password']
+        self.db_name = self.config['db_name']
 
-        self.cmd_iptables = cmd_iptables
+        self.cmd_iptables = self.config['cmd_iptables']
+
+    
+    def CreateVmByCheckingDatabase(self):
+        timeval = 5
+        vms = [ 
+                { "vmid": 100, "groupid": 1, "vmsubid": 1, "ownerid": "1", "vmtype": "ubuntu", 
+                    "config_cpu": "1", "config_memory": "1024", "config_disk": "40", "config_lifetime": "192" },
+                { "vmid": 101, "groupid": 2, "vmsubid": 1, "ownerid": "1", "vmtype": "apache", 
+                    "config_cpu": "2", "config_memory": "256", "config_disk": "20", "config_lifetime": "192" },
+                { "vmid": 102, "groupid": 3, "vmsubid": 1, "ownerid": "1", "vmtype": "hadoop", 
+                    "config_cpu": "3", "config_memory": "2048", "config_disk": "80", "config_lifetime": "192" },
+                { "vmid": 103, "groupid": 3, "vmsubid": 2, "ownerid": "1", "vmtype": "hadoop", 
+                    "config_cpu": "4", "config_memory": "2048", "config_disk": "80", "config_lifetime": "192" }
+            ]
+
+        vmseq = [ vms[0], None, None, vms[1], None, vms[2], vms[3]] # every 5 secs
+        i = 0
+
+        print("start detect in 3 secs")
+        time.sleep(1)
+        print("start detect in 2 secs")
+        time.sleep(1)
+        print("start detect in 1 secs")
+        time.sleep(1)
+
+        while 1 :
+            if i < len(vmseq) :
+                vm = vmseq[i]
+                i = i + 1
+                if vm != None :
+                    print("detect new vm create from user!")
+                    dir(vm)
+                    req = Message.CreateVmByRackReq( vmid=vm['vmid'], groupid=vm['groupid'], vmsubid=vm['vmsubid'], ownerid=vm['ownerid'],
+                                                  vmtype=vm['vmtype'], config_cpu=vm['config_cpu'], config_memory=vm['config_memory'], 
+                                                  config_disk=vm['config_disk'], config_lifetime=vm['config_lifetime'])
+                    destRackAddress = ("140.112.28.240", 7001)
+                    Client.sendonly_message( destRackAddress, req )
+
+            time.sleep(timeval)
+        return
+        db_host = "140.112.28.240"
+        db_name = "roystonea_2012"
+        db_user = "root"
+        db_password = "87888"
+        timeval = 5
+        while 1:
+            con = mdb.connect(db_host, db_user, db_password, db_name)
+            cur = con.cursor(mdb.cursors.DictCursor)
+            cur.execute( 'SELECT * FROM vm WHERE vmstatus = "prepare_to_starts"a')
+            
+            rows = cur.fetchall()
+            time.sleep(timeval)
+
    
     # receive msg from Rack to query imformation from database
     def RackAlgorithmResourceInformation(self, req):
@@ -131,7 +186,7 @@ class Coordinator(CommonHandler):
                         
                         # Cluster's address
                         address = 'roystonea01', 9500
-                        sendonly_message(address, msg)
+                        Client.sendonly_message(address, msg)
                         
                     except socket.error as e:
                         print 'socket error'

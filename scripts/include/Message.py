@@ -46,18 +46,28 @@ class VmInfo():
 class CreateVmByNodeReq():
     def __init__(self, **kargs):
         self.vmid = kargs['vmid']
-        self.owner= kargs['owner']
-        self.cpu = kargs['cpu']
-        self.mem = kargs['mem']
-        self.disk = kargs['disk']
+        self.groupid = kargs['groupid']
+        self.vmsubid = kargs['vmsubid']
+        self.ownerid= kargs['ownerid']
 
+        self.vmtype= kargs['vmtype']
+        self.config_cpu = kargs['config_cpu']
+        self.config_memory = kargs['config_memory']
+        self.config_disk = kargs['config_disk']
+        self.config_lifetime = kargs['config_lifetime']
+        
 class CreateVmByRackReq():
     def __init__(self, **kargs):
         self.vmid = kargs['vmid']
-        self.owner= kargs['owner']
-        self.cpu = kargs['cpu']
-        self.mem = kargs['mem']
-        self.disk = kargs['disk']
+        self.groupid = kargs['groupid']
+        self.vmsubid = kargs['vmsubid']
+        self.ownerid= kargs['ownerid']
+
+        self.vmtype= kargs['vmtype']
+        self.config_cpu = kargs['config_cpu']
+        self.config_memory = kargs['config_memory']
+        self.config_disk = kargs['config_disk']
+        self.config_lifetime = kargs['config_lifetime']
 
 
 class NodeVirtualMachineManagerCreateVMres():

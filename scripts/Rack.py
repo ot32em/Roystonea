@@ -31,23 +31,16 @@ class Rack(CommonHandler):
 		})
         self.startup_functions.extend((
             self.sayHello, # hello function
-            self.testSendReqToNode_CreateVmByNodeReq,
         ))
     
     def CreateVmByRack(self, CreateVmByRackReq):
-        req = CreateVmByRackReq
-        destNodeAddress = self.selectNodeByAlgorithm( CreateVmByRackReq.vm )
-        createVmByNodeReq = Message.CreateVmByNodeReq(vmid=req.vmid,
-                                                      owner=req.owner,cpu=req.cpu,
-                                                      mem=req.mem, disk=req.disk)
-        Client.sendonly_message( createvmByNodeReq, destNodeAddress)
-    
-    def testSendReqToNode_CreateVmByNodeReq(self):
-        return
-        createVmByNodeReq = Message.CreateVmByNodeReq( vmid=1000, owner="ot32em", cpu=2, mem=1024, disk=40)
-        testDestNode = ("140.112.28.240", 8001)
-        Client.sendonly_message( testDestNode, createVmByNodeReq)
-        
+        print "accept a createVmByRackReq from Coordinator"
+        print("vmid: " + CreateVmByRackReq.vmid) 
+
+        req = CreateVmByRackReq # for shorter alias
+        destNodeAddress = ("140.112.28.240", 8001)
+#        destNodeAddress = self.selectNodeByAlgorithm( CreateVmByRackReq.vm )
+#
 
     def selectNodeByAlgorithm(self, vm):
         selectNodeReq = Message.SelectNodeReq(vm)

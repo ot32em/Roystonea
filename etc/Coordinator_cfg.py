@@ -7,7 +7,7 @@ else:
     db_host = 'localhost'
 db_account = 'root'
 db_password = '87888'
-db_name = 'roystonea_roystonea'
+db_name = 'roystonea_2012'
 """ other config  """
 level = "coordinator"
 num_rthreads = 4
