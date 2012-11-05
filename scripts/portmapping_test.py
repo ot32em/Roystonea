@@ -1,4 +1,6 @@
-def portmapping(self, vmname, vmip, vmport, hostport, action):
+import socket
+
+def portmapping(vmname, vmip, vmport, hostport, action):
     if action == 'a':
         iptables_cmd = '%s %s PREROUTING -p tcp --dport %s -j DNAT --to %s:%s' \
                 %(self.cmd_iptables, '-A', hostport, vmip, vmport)
@@ -62,7 +64,10 @@ def portmapping(self, vmname, vmip, vmport, hostport, action):
             fetched_req_data = req_res.fetch_row()
         time.sleep(sleep_time)
 
-def test():
+# action should be 'a' or 'd'
+def test(action):
     print 'test from portmapping_test.py'
-    # portmapping(self, vmname, vmip, vmport, hostport, action):
+    vm_name = 'royuser-1-1'
+    vm_ip = socket.gethostbyname(vm_name)
+    portmapping(vm_name, vm_ip, 22, 2022, action)
 
