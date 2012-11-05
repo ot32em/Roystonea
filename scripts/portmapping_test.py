@@ -65,7 +65,7 @@ def portmapping(vmname, vmip, vmport, hostport, action):
         time.sleep(sleep_time)
 
 # action should be 'a' or 'd'
-def test(action):
+def try_pm(action):
     print 'test from portmapping_test.py'
     vm_name = 'royuser-1-1'
     vm_ip = socket.gethostbyname(vm_name)

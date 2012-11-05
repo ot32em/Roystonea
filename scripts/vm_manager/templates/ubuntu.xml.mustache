@@ -5,6 +5,9 @@
     </os>
     <memory>{{memory}}</memory>
     <vcpu>{{num_cpu}}</vcpu>
+    <interface type='network'>
+        <source network='default'/>
+    </interface>
     <devices>
         <disk type='file'>
             <source file='{{image_path}}'/>

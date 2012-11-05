@@ -49,9 +49,9 @@ def test_portmapping(action):
         _test_portmapping(action)
         test_vm('ubuntu', 'shutdown')
 
-def _test_portmapping(action):
+def tmp_test_portmapping(action):
     with cd(APP_ROOT):
-        run("sudo python royctl.py run portmapping_test 'test(\"%(action)s\")'" % ({'action': action}))
+        run("sudo python royctl.py run portmapping_test 'try_pm(\"%(action)s\")'" % ({'action': action}))
 
 def _test_vm(vm_type, command):
     with cd(APP_ROOT):
