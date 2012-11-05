@@ -143,7 +143,7 @@ class Coordinator(CommonHandler):
             print 'Error %d: %s' %(e.args[0], e.args[1])
             sys.exit(1)
     
-    def PortMapping(self, vmname, vmip, vmport, hostport, action):
+    def portmapping(self, vmname, vmip, vmport, hostport, action):
         if action == 'a':
             iptables_cmd = '%s %s PREROUTING -p tcp --dport %s -j DNAT --to %s:%s' \
                     %(self.cmd_iptables, '-A', hostport, vmip, vmport)

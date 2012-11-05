@@ -41,6 +41,9 @@ def test_vm(vm_type, action=None):
         _test_vm(vm_type, "listVM")
         _test_vm(vm_type, "shutdown")
 
+def test_portmapping():
+    run("sudo python royctl.py run portmapping_test 'test()'")
+
 def _test_vm(vm_type, command):
     with cd(APP_ROOT):
         run("sudo python royctl.py run vm_manager.vm_%(vm_type)s_manager 'test(\"%(command)s\")'" % ({'vm_type': vm_type, 'command': command}))
