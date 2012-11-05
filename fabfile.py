@@ -33,10 +33,13 @@ def clone_from_github():
 
 # VM Test
 # ubuntu
-def test_vm(vm_type):
-    _test_vm(vm_type, "start")
-    _test_vm(vm_type, "listVM")
-    _test_vm(vm_type, "shutdown")
+def test_vm(vm_type, action=None):
+    if action:
+        _test_vm(vm_type,action)
+    else:
+        _test_vm(vm_type, "start")
+        _test_vm(vm_type, "listVM")
+        _test_vm(vm_type, "shutdown")
 
 def _test_vm(vm_type, command):
     with cd(APP_ROOT):
