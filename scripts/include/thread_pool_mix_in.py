@@ -9,8 +9,10 @@ class ThreadPoolMixIn(ThreadingMixIn):
     use a thread pool instead of a new thread on every request
     '''
     #can be override
+    threads = []
     numThreads = 4
     allow_reuse_address = True  # seems to fix socket.error on server restart
+    shutdown_event = None
     # __shutdown_signal = False # Whats this ???
 
     def start_thread(self, **kwargs):
@@ -38,20 +40,13 @@ class ThreadPoolMixIn(ThreadingMixIn):
         # Collector Thread
         self.start_thread(target = self.collect_requests)
 
-        # Wait for die signal Thread
-        self.start_thread(target = self.wait_die_by_int )
-
         # create event for waiting shutdown request to trigger shutdown_event.set()
         self.shutdown_event = threading.Event()
         self.shutdown_event.wait()
         self.server_close()
     
-    def wait_die_by_int(self):
-        print("Server is waitting your exit signal by typing 'exit', 'bye', or 'shutdown' " )
-        while True :
-            cmd = raw_input('>') 
-            if cmd.lower() in ( 'shutdown', 'exit', 'bye', 'stop' )  :
-                self.shutdown_event.set()
+    def shutdown(self):
+        self.shutdown_event.set()
 
     
     def collect_requests(self):

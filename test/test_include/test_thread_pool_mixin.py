@@ -1,6 +1,7 @@
 import SocketServer
 import threading
 import socket
+from Roystonea.scripts.include.thread_pool_mix_in import ThreadPoolMixIn
 
 class MyTCPHandler(SocketServer.BaseRequestHandler):
     def handle(self):
@@ -12,7 +13,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
 
         self.request.sendall(self.data)
 
-class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
+class ThreadedTCPServer(ThreadPoolMixIn, SocketServer.TCPServer):
     pass
 
 HOST, PORT = "localhost", 9999
