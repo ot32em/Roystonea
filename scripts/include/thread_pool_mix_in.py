@@ -46,6 +46,7 @@ class ThreadPoolMixIn(ThreadingMixIn):
         self.server_close()
     
     def shutdown(self):
+        while self.shutdown_event == None: pass
         self.shutdown_event.set()
 
     
