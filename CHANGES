@@ -53,3 +53,5 @@
         Refactoring ThreadPoolMixIn (will be used with CommonHandler)
         Figure out the stucture after refactoring the CommonHandler (which will be the base of NodeHandler, etc)
         Read PMM.py since need more detail for refactoring
+	by Brian Hu:
+		study how to set up test environment with Ray
