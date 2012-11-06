@@ -1,12 +1,16 @@
 import SocketServer
 import pickle
 import threading
-import Message
+import message
 from time import sleep
 from thread_pool_mix_in import ThreadPoolTCPServer
 
 class BaseServer:
     ''' Base Class for RPC
+
+    Class variable:
+        level: specify the type of server
+            prototype, node, rack, cluster
 
     Usage:
         rpc = BaseServer()
@@ -100,11 +104,11 @@ class BaseServer:
                     self.request.send(pickle.dumps(ret))
                 
                 except pickle.UnpicklingError:
-                    error_req = Message.Error(msg='Unregonized Serial Data. Can not unpick it. Data Length: %d' % len(data) )
+                    error_req = message.Error(msg='Unregonized Serial Data. Can not unpick it. Data Length: %d' % len(data) )
                     self.request.send(pickle.dumps( error_req ) )
 
                 except KeyError:
-                    error_req = Message.Error(msg='Unacceptable Request Name(Not in DispatchDict). Request Name %s' % message_name )
+                    error_req = message.Error(msg='Unacceptable Request Name(Not in DispatchDict). Request Name %s' % message_name )
                     self.request.send(pickle.dumps( error_req ) )
 
 

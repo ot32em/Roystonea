@@ -1,4 +1,4 @@
-from Roystonea.scripts.include import Message
+from Roystonea.scripts.include import message
 from Roystonea.scripts.include.base_server import BaseServer
 from Roystonea.scripts.include import client
 import pickle
@@ -32,7 +32,7 @@ class CmdHello:
     def __init__(self, name):
         self.name = name
 
-Message.CmdHello = CmdHello
+message.CmdHello = CmdHello
 
 def test_unpack_and_execute():
     cmd = CmdHello("world")
