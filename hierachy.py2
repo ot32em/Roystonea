@@ -1,0 +1,83 @@
+from rootpath import ROYSTONEA_ROOT
+import os
+import xml.dom.minidom as xml
+
+xmlfile = os.path.join(ROYSTONEA_ROOT, 'etc/RelationHierachy.xml')
+print xmlfile
+
+dom = xml.parse(xmlfile)
+print dom.documentElement.tagName
+
+
+
+
+
+class DaemonUnit():
+    def __init__(self, name, host, port):
+        self.name = name
+        self.host = host 
+        self.port = port 
+
+class TreeDaemonUnit(DaemonUnit):
+    def __init__(self, name, host, port, ):
+        DaemonUnit(self, name, host,port)
+        self.parent = None 
+        self.children = children
+    def addChlid( treeUnit ):
+        treeUnit.parent = self
+        self.children[ treeUnit.name ] = treeUnit
+    def removeChild( name ):
+        self.children[ name ].parent = None
+        del self.children[ name ]
+
+class NodeDaemonUnit(TreeDaemonUnit):
+    # hostmachine: host as string
+    def __init__(self, name, host, port, hostmachine=""):
+        TreeDaemonUnit( name, host, port, [] )
+        self.hostmachine = hostmachine
+
+class Location():
+    def __init__(self, filename="etc/RelationHierachy.xml"):
+        self.xmlfilename = os.path.join( ROYSTONEA_ROOT, filename )
+        self.dom = xml.parse( self.xmlfilename )
+
+        self.daemons = dict()
+        self.daemonNames = ["Algorithm", "SubsystemManager", "Coordinator"]
+        self.treeDaemonNames = ["Cloud", "Cluster", "Rack", "Node" ]
+
+    def traverse(self, node)
+        if( node.nodeType != node.ELEMENT_NODE ):
+            return
+        if( node.tagName not in self.daemonNames and
+            node.tagName not in self.treeDaemonNames ):
+            return 
+
+        name = self.getAttrValue( node, "name")
+        host = self.getAttrValue( node, "host")
+        port = self.getAttrValue( node, "port")
+
+
+        daemon = None
+        if node.tagName in self.treeDaemonNames:
+            if node.tagName == "Node":
+                hostmachine = self.getAttriValue( node, "hostmachine" )
+                daemon = NodeDaemonUnit( name, host, port, hostmachine )
+            else:
+                daemon = TreeDaemonunit( name, host, port )
+        else:
+            daemon = DaemonUnit( name, host, port )
+        self.daemons[ name ] = daemon
+
+            
+
+        def getAttrValue(node, attrName):
+            val = node.getAttribute(attrName)
+            if val == None :
+                raise Exception( 
+            "Config File Error: The Daemon Setting has no {attribute} attribute with tagName: {tagName}" %
+                    (attribute = name, tagName = node.tagName  ) )
+            return val
+                
+
+
+

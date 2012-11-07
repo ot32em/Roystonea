@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<daemons>
+    <Coordinator name="coordinator" 
+        host="roystonea01" port="1401" />
+    <SubsystemManager name="subsystem" 
+        host="roystonea01" port="1402" />
+    <Algorithm name="alg" host="roystonea01" port="1403" />
+    <AlgorithmImp name="algimp" host="roystonea01" port="1403" />
+
+    <Cluster name="cluster01" host="roystonea01" port="1101">
+        <Rack name="rack01" host="roystonea01" port="1201">
+            <Node name="node01" host="roystonea01" 
+                port="1301" hostmachine="roystonea01" />
+            <Node name="node02" host="roystonea02" 
+                port="1302" hostmachine="roystonea02" />
+        </Rack>
+        <Rack name="rack02" host="roystonea03" port="1201">
+            <Node name="node03" host="roystonea03" 
+                port="1301" hostmachine="roystonea03" />
+        </Rack>
+    </Cluster>
+</daemons>
+<!--
+hosts,
+    roystonea01=192.168.10.1=140.112.28.240
+    roystonea02=192.168.10.2
+    roystonea03=192.168.10.3
+
+Cooridnator/SubsystemManager/Algorithm (PM1)
+                Cluster( PM1 )
+                           v
+         v- - - - - - - v - - - - - - - - -v
+    Rack01(PM1)            Rack02(PM3)
+        | -> Node01(PM1)      |-> Node03 (PM3)
+        |-> Node02(PM2)
+
+!-->
