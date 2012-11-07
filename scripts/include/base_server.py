@@ -32,7 +32,7 @@ class BaseServer(ThreadBaseMixIn, object):
         self.handle_functions = {}
         self.server = None
         self.living_threads = {}
-        self.request_count = 0
+        self.request_count = 1
         self.request_context = {}
 
     def addr(self):
