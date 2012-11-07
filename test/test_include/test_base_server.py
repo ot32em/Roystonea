@@ -4,8 +4,10 @@ from Roystonea.scripts.include import client
 import pickle
 import threading
 from time import sleep
+import random
 
-HOST, PORT = "localhost", 5000
+HOST = "localhost"
+PORT = random.randrange(20000, 30000)
 
 # handle functions for test
 def hello(data, client_address):

@@ -1,6 +1,7 @@
 import SocketServer
 import threading
 import socket
+import random
 from Roystonea.scripts.include.thread_pool_mix_in import ThreadPoolMixIn
 
 class MyTCPHandler(SocketServer.BaseRequestHandler):
@@ -16,7 +17,8 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
 class ThreadedTCPServer(ThreadPoolMixIn, SocketServer.TCPServer):
     pass
 
-HOST, PORT = "localhost", 9999
+HOST = "localhost"
+PORT = random.randrange(20000, 30000)
 server = ThreadedTCPServer((HOST, PORT), MyTCPHandler)
 
 def server_thread():

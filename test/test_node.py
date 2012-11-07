@@ -4,9 +4,12 @@ from Roystonea.scripts.include import client
 from support import message_factory
 from mock import MagicMock, ANY
 import threading
+import random
+from time import sleep
 
-HOST = "localhost"
-PORT = 6000
+
+HOST = "127.0.0.1"
+PORT = random.randrange(20000, 30000)
 
 def test_node():
     message = message_factory.create("NodeCreateVMReq")
@@ -27,6 +30,8 @@ def test_node():
 
     # client
     try:
+        sleep(3)
+
         ret = client.send_message((HOST, PORT), message)
         assert ret == "hello world"
 
