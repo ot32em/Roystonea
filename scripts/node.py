@@ -14,7 +14,8 @@ class Node(BaseServer):
 
     def createVMReqHandler(self, msg, client_address=None):
         status = "ok"
-        client.sendonly_message(msg.caller_address, message.NodeCreateVMRes(msg.vmid, status))
+        res_msg = self.create_message(message.NodeCreateVMRes, [msg.vmid, status], context=msg)
+        self.send_message(msg.caller_address, res_msg)
 
 
 

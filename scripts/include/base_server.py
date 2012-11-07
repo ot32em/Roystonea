@@ -167,10 +167,13 @@ class BaseServer(ThreadBaseMixIn, object):
     def number_of_living_threads(self):
         return len(self.living_threads)
 
-    def create_message(self, msg_class, values):
+    def create_message(self, msg_class, values, context=None):
         _values = values[:]
         if "Req" in msg_class.__name__:
             _values += [self.addr(), self.request_count]
+        elif "Res" in msg_class.__name__ and context:
+            _values += [context.request_id]
+
         self.request_count+=1
 
         return msg_class(*_values)
