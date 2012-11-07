@@ -4,8 +4,9 @@ import threading
 import message
 from time import sleep
 from thread_pool_mix_in import ThreadPoolTCPServer
+from thread_base_mix_in import ThreadBaseMixIn
 
-class BaseServer:
+class BaseServer(ThreadBaseMixIn, object):
     ''' Base Class for RPC
 
     Class variable:
@@ -35,7 +36,16 @@ class BaseServer:
         ''' Get address: (host, port) '''
         return (self.host, int(self.port))
 
+    def register_handle_functions(self):
+        ''' This function should override by chile class '''
+        pass
+
+    def register_start_functions(self):
+        pass
+
     def run(self):
+        self.register_handle_functions()
+        self.register_start_functions()
         self.server = ThreadPoolTCPServer(self.addr(), self.createHandlerClass())
         self.server.serve_forever()
 
@@ -100,7 +110,7 @@ class BaseServer:
             def _unpack_and_execute(self, data):
                 message_name = "Undefined"
                 try: # try statement for converting serialized data to object-structure data
-                    message_name, ret = self.master.unpack_and_execute(data)
+                    message_name, ret = self.master.unpack_and_execute(data, self.client_address)
                     self.request.send(pickle.dumps(ret))
                 
                 except pickle.UnpicklingError:
@@ -111,12 +121,11 @@ class BaseServer:
                     error_req = message.Error(msg='Unacceptable Request Name(Not in DispatchDict). Request Name %s' % message_name )
                     self.request.send(pickle.dumps( error_req ) )
 
-
         BaseServerHandler.master = self # let handler access master
 
         return BaseServerHandler
 
-    def unpack_and_execute(self, data):
+    def unpack_and_execute(self, data, client_address=None):
         ''' Use pickle.loads to unpack the data and send to registered handle function '''
         recvobj = pickle.loads(data)
 
@@ -127,7 +136,7 @@ class BaseServer:
         short_name = t.name
         recvobj_class_name = recvobj.__class__.__name__
         t.name = short_name+" handling {request_type}".format(request_type = recvobj_class_name)
-        return recvobj_class_name, self.handle_functions[recvobj_class_name](recvobj)  # processing request using functions binding in $dispatch_handlers
+        return recvobj_class_name, self.handle_functions[recvobj_class_name](recvobj, client_address)  # processing request using functions binding in $dispatch_handlers
 
     def register_handle_function(self, name, function):
         '''
@@ -149,8 +158,8 @@ class BaseServer:
           rpcbase.unregister_handler_function("CmdTest")
         '''
 
-        self.handle_functions.pop(name)
+        if self.handle_functions.has_key(name):
+            self.handle_functions.pop(name)
 
     def number_of_living_threads(self):
         return len(self.living_threads)
-

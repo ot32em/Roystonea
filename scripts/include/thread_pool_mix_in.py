@@ -2,26 +2,17 @@
 from SocketServer import ThreadingMixIn, TCPServer
 from Queue import Queue
 import threading, socket
+from thread_base_mix_in import ThreadBaseMixIn
 
-
-class ThreadPoolMixIn(ThreadingMixIn):
+class ThreadPoolMixIn(ThreadingMixIn, ThreadBaseMixIn):
     '''
     use a thread pool instead of a new thread on every request
     '''
     #can be override
-    threads = []
     numThreads = 4
     allow_reuse_address = True  # seems to fix socket.error on server restart
     shutdown_event = None
     # __shutdown_signal = False # Whats this ???
-
-    def start_thread(self, **kwargs):
-        if self.threads == None: self.threads = list()
-
-        t = threading.Thread(target = kwargs['target'])
-        t.setDaemon(True)
-        t.start()
-        self.threads.append(t)
 
     def serve_forever(self):
         '''

@@ -3,11 +3,12 @@ from Roystonea.scripts.include.base_server import BaseServer
 from Roystonea.scripts.include import client
 import pickle
 import threading
+from time import sleep
 
 HOST, PORT = "localhost", 5000
 
 # handle functions for test
-def hello(data):
+def hello(data, client_address):
     return "hello " + data.name
 
 def helloworld():
@@ -25,6 +26,8 @@ def test_unregister_handle_function():
 
     server.unregister_handle_function("helloworld")
     assert server.handle_functions.has_key("helloworld") == False
+
+    server.unregister_handle_function("helloworld") # this should not raise exception
 
 
 # setting for test unpack_and_execute
@@ -60,6 +63,8 @@ def test_base_server():
     try:
         ret = client.send_message((HOST, PORT), CmdHello("world"))
         assert ret == "hello world"
+
+        client.sendonly_message((HOST, PORT), CmdHello("world"))
 
     finally:
         server.shutdown()
