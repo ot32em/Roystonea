@@ -27,4 +27,4 @@ class Rack(BaseServer):
         self.send_message(node_addr, create_vm_msg, context=msg)
 
     def createVMResHandler(self, msg, client_address=None):
-        pass
+        self.pop_context(msg)

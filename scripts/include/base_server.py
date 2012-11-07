@@ -184,3 +184,7 @@ class BaseServer(ThreadBaseMixIn, object):
             client.sendonly_message(address, message)
         else:
             return client.send_message(address, message)
+
+    def pop_context(self, message):
+        return self.request_context.pop(message.request_id)
+        

@@ -26,9 +26,6 @@ def test_rack():
     # rack setting
     rack_server.algorithm_addr = algo_server.addr()
 
-    # node setting
-    rack_server.createVMResHandler = MagicMock(return_value="hello world")
-
     server_stack = [algo_server, node_server, rack_server]
 
     for server in server_stack:
@@ -47,4 +44,4 @@ def test_rack():
         for server in reversed(server_stack):
             server.shutdown()
 
-    rack_server.createVMResHandler.assert_called_with(ANY, (HOST, ANY))
+    assert len(rack_server.request_context) == 0
