@@ -31,7 +31,7 @@ spec = {
         # Algorithm
         "AlgorithmSelectRackReq": vm_attributes,
         "AlgorithmSelectNodeReq": vm_attributes,
-        "AlgorithmSelectRes": ["ip", "port"]
+        "AlgorithmSelectRes": ["address"]
         }
 
 def values_of_message(message):
