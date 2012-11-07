@@ -28,6 +28,11 @@ spec = {
         "RackCreateVMReq": vm_attributes,
         "RackCreateVMRes": ["vmid", "status"],
 
+        # Cluster
+        "ClusterCreateVMReq": vm_attributes,
+        "ClusterCreateVMRes": ["vmid", "status"],
+
+
         # Algorithm
         "AlgorithmSelectRackReq": vm_attributes,
         "AlgorithmSelectNodeReq": vm_attributes,
