@@ -28,7 +28,7 @@ def test_cluster():
 
     # cluster setting
     cluster_server.algorithm_addr = algo_server.addr()
-    rack_server.createVMResHandler = MagicMock(return_value="hello world")
+    cluster_server.createVMResHandler = MagicMock(return_value="hello world")
 
     # rack setting
     rack_server.algorithm_addr = algo_server.addr()
@@ -51,4 +51,4 @@ def test_cluster():
         for server in reversed(server_stack):
             server.shutdown()
 
-    rack_server.createVMResHandler.assert_called_with(ANY, (HOST, ANY))
+    cluster_server.createVMResHandler.assert_called_with(ANY, (HOST, ANY))

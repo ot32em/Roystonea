@@ -27,4 +27,11 @@ class Cluster(BaseServer):
         self.send_message(rack_addr, create_vm_msg, context=msg)
 
     def createVMResHandler(self, msg, client_address=None):
-        pass
+        context = self.pop_context(msg)
+
+        if context.request_id == False:
+            return
+
+        address = context.caller_address
+        res_msg = self.create_message(message.ClusterCreateVMRes, [msg.vmid, msg.status])
+        self.send_message(address, res_msg)
