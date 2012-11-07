@@ -2,6 +2,7 @@ import SocketServer
 import pickle
 import threading
 import message
+import client
 from time import sleep
 from thread_pool_mix_in import ThreadPoolTCPServer
 from thread_base_mix_in import ThreadBaseMixIn
@@ -31,6 +32,8 @@ class BaseServer(ThreadBaseMixIn, object):
         self.handle_functions = {}
         self.server = None
         self.living_threads = {}
+        self.request_count = 0
+        self.request_context = {}
 
     def addr(self):
         ''' Get address: (host, port) '''
@@ -163,3 +166,18 @@ class BaseServer(ThreadBaseMixIn, object):
 
     def number_of_living_threads(self):
         return len(self.living_threads)
+
+    def create_message(self, msg_class, values):
+        _values = values[:]
+        if "Req" in msg_class.__name__:
+            _values += [self.addr(), self.request_count]
+        self.request_count+=1
+
+        return msg_class(*_values)
+
+    def send_message(self, address, message, context=None):
+        if context:
+            self.request_context[message.request_id] = context
+            client.sendonly_message(address, message)
+        else:
+            return client.send_message(address, message)

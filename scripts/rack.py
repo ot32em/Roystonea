@@ -1,5 +1,4 @@
 from include.base_server import BaseServer
-from include import client
 from include import message
 
 class Rack(BaseServer):
@@ -16,14 +15,16 @@ class Rack(BaseServer):
         self.register_handle_function("NodeCreateVMRes", self.createVMResHandler)
 
     def createVMReqHandler(self, msg, client_address=None):
-        values = message.values_of_message(msg) + [self.addr()]
+        values = message.values_of_message(msg)
 
         # ask algorithm
         addr = self.algorithm_addr
-        node_addr = client.send_message(addr, message.AlgorithmSelectNodeReq(*values))
+        select_node_msg = self.create_message(message.AlgorithmSelectNodeReq, values)
+        node_addr = self.send_message(addr, select_node_msg)
 
         # tell node to create vm
-        client.sendonly_message(node_addr, message.NodeCreateVMReq(*values))
+        create_vm_msg = self.create_message(message.NodeCreateVMReq, values)
+        self.send_message(node_addr, create_vm_msg, context=msg)
 
     def createVMResHandler(self, msg, client_address=None):
         pass

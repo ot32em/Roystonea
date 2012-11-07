@@ -8,7 +8,7 @@ spec:
     value is a array of string, which is the property will be defined for the class
 '''
 
-callback_attrs = ["caller_address"]
+callback_attrs = ["caller_address", "request_id"]
 
 vm_attributes = ["vmid", "groupid", "vmsubid", "vmtype", 
                 "config_cpu", "config_memory", "config_disk", "config_lifetime", 
@@ -45,7 +45,8 @@ def values_of_message(message):
         attrs.append(getattr(message, field))
 
     if "Req" in message.__class__.__name__:
-        return attrs[:-1]
+        return attrs[:-len(callback_attrs)]
+
     return attrs
 
 def create_message_class(name, attributes):

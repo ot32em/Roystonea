@@ -1,5 +1,4 @@
 from include.base_server import BaseServer
-from include import client
 from include import message
 
 class Cluster(BaseServer):
@@ -16,14 +15,16 @@ class Cluster(BaseServer):
         self.register_handle_function("RackCreateVMRes", self.createVMResHandler)
 
     def createVMReqHandler(self, msg, client_address=None):
-        values = message.values_of_message(msg) + [self.addr()]
+        values = message.values_of_message(msg)
 
         # ask algorithm
         addr = self.algorithm_addr
-        rack_addr = client.send_message(addr, message.AlgorithmSelectRackReq(*values))
+        select_rack_msg = self.create_message(message.AlgorithmSelectRackReq, values)
+        rack_addr = self.send_message(addr, select_rack_msg)
 
         # tell rack to create vm
-        client.sendonly_message(rack_addr, message.RackCreateVMReq(*values))
+        create_vm_msg = self.create_message(message.RackCreateVMReq, values)
+        self.send_message(rack_addr, create_vm_msg, context=msg)
 
     def createVMResHandler(self, msg, client_address=None):
         pass
