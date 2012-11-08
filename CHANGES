@@ -55,3 +55,10 @@
         Read PMM.py since need more detail for refactoring
 	by Brian Hu:
 		study how to set up test environment with Ray
+
+2012-11-5 ~~ 2012-11-6
+    by 陳政瑋
+        fix roystonea_root problem
+        build a hierachy tool
+        complete monitor system
+
