@@ -17,5 +17,6 @@ class Node(BaseServer):
         res_msg = self.create_message(message.NodeCreateVMRes, [msg.vmid, status], context=msg)
         self.send_message(msg.caller_address, res_msg)
 
-
-
+def start(port):
+    server = Node("127.0.0.1", port)
+    server.run()
