@@ -1,16 +1,32 @@
 DEBUG = True
 
-""" db config """
+""" global config """
 if DEBUG:
-    db_host = "140.112.28.240"
+    host = "140.112.28.240"
 else:
-    db_host = 'localhost'
+    host = 'localhost'
+
+subsystem_port = 6969
+
+""" db config """
 db_account = 'root'
 db_password = '87888'
 db_name = 'roystonea_2012'
+
 """ other config  """
 level = "coordinator"
 num_rthreads = 4
 FILENAME_MY_CONFIG = 'Coordinator_cfg'
 
 cmd_iptables = 'sudo iptables -t nat'
+
+""" portmapping config """
+portmapping_interval = 10
+portmpping = "portmapping"
+portstatus = "portstatus"
+hostport = "hostport"
+
+portstatus_index = 4
+vmname_index = 9
+guestport_index = 6
+hostport_index = 5

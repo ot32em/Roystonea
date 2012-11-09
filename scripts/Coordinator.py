@@ -34,11 +34,17 @@ class Coordinator(CommonHandler):
         self.startup_functions.extend((
             #self.databaseSubsystem,      
             self.CreateVmByCheckingDatabase,
+            self.CheckPortmappingRequest,
             self.sayHello,          # hello function
-            self,CheckPortmappingRequest,
         ))
         # database imformation, use config to replace this part
-        self.db_host = self.config['db_host']
+        # TODO replace all db connection with self.db
+        try:
+            self.db = mdb.connect(self.config['host'], self.config['db_user'], self.config['db_password'], self.config['db_name'])
+        except:
+            logger.error('connect to db failed')
+            self.db = None
+        self.host = self.config['host']
         self.db_account = self.config['db_account']
         self.db_password = self.config['db_password']
         self.db_name = self.config['db_name']
@@ -46,7 +52,25 @@ class Coordinator(CommonHandler):
         self.cmd_iptables = self.config['cmd_iptables']
 
     def CheckPortmappingRequest(self):
-        pass
+        if self.db:
+            query = "SELECT * FROM %s WHERE %s='adding' OR %s='deleting 'ORDER BY %s" %(self.config['portmapping'], self.config['portstatus'], self.config['hostport'])
+            while True:
+                self.db.query(query)
+                result = self.db.store_result()
+                data = result.fetch_row()[0]
+                while data:
+                    addr = (self.host, self.config['subsystem_port'])
+                    Client.send_message(addr, data)
+                    portstatus = data[self.config['portstatus_index']]
+                    vmname = data[self.config['vmname_index']]
+                    guestport = data[self.config['guestport_index']]
+                    hostport = data[self.config['hostport_index']]
+
+                    data = result.fetch_row()[0]
+
+                sleep(self.config['portmapping_interval'])
+
+
     
     def CreateVmByCheckingDatabase(self):
         timeval = 5
