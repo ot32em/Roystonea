@@ -24,8 +24,18 @@ def send_message( address, message, timeout=10.0 ) : # it will send message, the
 
 def sendonly_message( address, message) : # it will only send message, then shutdown socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect( address )
 
-    message_serial = pickle.dumps( message )
-    sock.send(message_serial)
+    retry = True
+    counter = 0
+    while counter < 10 and retry:
+        sleep(1)
+        try:
+            retry = False
+            sock.connect( address )
+            message_serial = pickle.dumps( message )
+            sock.send(message_serial)
+        except:
+            counter += 1
+            retry = True
+
     sock.close()

@@ -28,7 +28,12 @@ def test_cluster():
 
     # cluster setting
     cluster_server.algorithm_addr = algo_server.addr()
-    cluster_server.createVMResHandler = MagicMock(return_value="hello world")
+    holder = {'createVMResHandler_get_called': False}
+
+    def f(self, message):
+        holder['createVMResHandler_get_called'] = True
+
+    cluster_server.createVMResHandler = f
 
     # rack setting
     rack_server.algorithm_addr = algo_server.addr()
@@ -47,8 +52,14 @@ def test_cluster():
         sleep(3)
         client.sendonly_message((HOST, PORT), message)
 
+        counter = 0
+        while counter < 10 and holder['createVMResHandler_get_called'] == False:
+            sleep(1)
+            counter += 1
+    except:
+        print 'something wrong'
     finally:
         for server in reversed(server_stack):
             server.shutdown()
 
-    cluster_server.createVMResHandler.assert_called_with(ANY, (HOST, ANY))
+    assert holder['createVMResHandler_get_called'] == True
