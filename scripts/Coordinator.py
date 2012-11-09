@@ -35,6 +35,7 @@ class Coordinator(CommonHandler):
             #self.databaseSubsystem,      
             self.CreateVmByCheckingDatabase,
             self.sayHello,          # hello function
+            self,CheckPortmappingRequest,
         ))
         # database imformation, use config to replace this part
         self.db_host = self.config['db_host']
@@ -44,6 +45,8 @@ class Coordinator(CommonHandler):
 
         self.cmd_iptables = self.config['cmd_iptables']
 
+    def CheckPortmappingRequest(self):
+        pass
     
     def CreateVmByCheckingDatabase(self):
         timeval = 5
