@@ -21,13 +21,13 @@ from rootpath import ROYSTONEA_ROOT
 class SubsystemManager(CommonHandler):
     ''' custom init variable '''
     num_rthreads = 4
-    FILENAME_MY_CONFIG = 'subsystem_manager_cfg'
     level = 'subsystem_manager'
     
     def __init__(self, host, port):
+        self.FILENAME_MY_CONFIG = 'subsystem_manager_cfg.py'
         CommonHandler.__init__(self, host, port)
         self.dispatch_handlers.update({
-            'NetworkingSubsystemPortMappingReq': self.NetworkingSubsystemPortMapping,
+            'SubsystemPortMappingReq': self.SubsystemPortMapping,
         })
         self.startup_functions.extend((
             self.MonitorResource,
@@ -38,8 +38,24 @@ class SubsystemManager(CommonHandler):
         hierachyPath = os.path.join( ROYSTONEA_ROOT, "etc/Hierachy.xml")
         self.hierachy = Hierachy(hierachyPath)
    
-    def NetworkingSubsystemPortMapping(self, req):
-        pass
+    def SubsystemPortMapping(self, req):
+        portstatus = req.data[self.config['portstatus_index']]
+        vmname = req.data[self.config['vmname_index']]
+        guestport = req.data[self.config['guestport_index']]
+        hostport = req.data[self.config['hostport_index']]
+
+        vmip = socket.gethostbyname(vmname)
+
+        if portstatus == 'adding':
+            iptables_cmd = '%s %s PREROUTING -p tcp --dport %s -j DNAT --to %s:%s' \
+                    %(self.config['cmd_iptables'], '-A', hostport, vmip, guestport)
+            logger.info('Add port mapping for %s, from %s to %s on hostmachine'%(vmname, guestport, hostport)) 
+        elif portstatus == 'deleting':
+            iptables_cmd = '%s %s PREROUTING -p tcp --dport %s -j DNAT --to %s:%s' \
+                    %(cmd_iptables, '-D', hostport, vmip, guestport)
+            logger.info('Delete port mapping for %s, from %s to %s on hostmachine'%(vmname, guestport, hostport)) 
+
+        (result, value) = pexpect.run(iptables_cmd, withexitstatus = 1)
     
     def MonitorResource(self):
         pollingTimeval = 10 # 10secs update
