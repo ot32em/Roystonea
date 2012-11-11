@@ -84,11 +84,11 @@ class Algorithm(BaseServer):
     def _filterAvailibleResources(self, vmInfo, resourceList, params ):
         resultList = list()
         for resourceInfo in resourceInfoList:
-            if resourceInfo.type = 'Node' :
+            if resourceInfo.type == 'Node' :
                 resourceInfo['minimalMemory'] = resourceInfo['memory']
                 resourceInfo['minimalDisk'] = resourceInfo['disk']
 
-            if resourceInfo['minimalMemory']  > vmInfo['config_memory'] and 
+            if resourceInfo['minimalMemory']  > vmInfo['config_memory'] and  \
                 resourceInfo['minimalDisk'] > vmInfo['config_disk']:
                 resultList.append( resourceInfo )
         return resultList
