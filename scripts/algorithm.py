@@ -9,10 +9,15 @@ class Algorithm(BaseServer):
 
         self.node_addr = None
         self.rack_addr = None
+        self.cluster_addr = None
 
     def register_handle_functions(self):
+        self.register_handle_function("AlgorithmSelectClusterReq", self.selectClusterHandler)
         self.register_handle_function("AlgorithmSelectRackReq", self.selectRackHandler)
         self.register_handle_function("AlgorithmSelectNodeReq", self.selectNodeHandler)
+
+    def selectClusterHandler(self, msg, client_address=None):
+        return self.cluster_addr
 
     def selectRackHandler(self, msg, client_address=None):
         return self.rack_addr

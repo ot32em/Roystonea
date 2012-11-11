@@ -33,5 +33,5 @@ class Cluster(BaseServer):
             return
 
         address = context.caller_address
-        res_msg = self.create_message(message.ClusterCreateVMRes, [msg.vmid, msg.status])
+        res_msg = self.create_message(message.ClusterCreateVMRes, [msg.vmid, msg.status], context)
         self.send_message(address, res_msg)

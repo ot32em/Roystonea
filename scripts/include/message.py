@@ -33,8 +33,8 @@ spec = {
         "ClusterCreateVMReq": vm_attributes,
         "ClusterCreateVMRes": ["vmid", "status"],
 
-
         # Algorithm
+        "AlgorithmSelectClusterReq": vm_attributes,
         "AlgorithmSelectRackReq": vm_attributes,
         "AlgorithmSelectNodeReq": vm_attributes,
         "AlgorithmSelectRes": ["address"]
