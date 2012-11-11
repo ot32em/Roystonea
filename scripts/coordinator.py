@@ -45,3 +45,6 @@ def start(port, algo_addr):
     t = threading.Thread(target = start_server)
     t.start()
 
+    sleep(5)
+    server.create_vm(None)
+
