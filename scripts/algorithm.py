@@ -20,12 +20,13 @@ class Algorithm(BaseServer):
         return self.cluster_addr
 
     def selectRackHandler(self, msg, client_address=None):
+        pass
 # ask coordinator for rack's resource
         racks = getRackResourcesFromCluster( client_address )
         vminfo = msg['vminfo']
         return self.rack_addr
 
-    def algorithmFirstFit(self, vmInfo, resourceDict, params=dict() ):
+    def algorithmFirstFit(self, vmInfo, resourceList, params=dict() ):
         priorityOrder = list()
         for i in self._getRange( len( resourceInfoList), params ):
             if self._enough( vmInfo, resourceInfoList[i] ) :
@@ -35,10 +36,12 @@ class Algorithm(BaseServer):
         factor = self._getFactor( params )
         maxValue = -1
         maxI = -1
+        pass
         
-        avaliableResourceInfoList
-        for i in resourceInfoList :
-            if 
+
+    def avalibleResources(self, vmInfo, resourceInfoList, params ):
+        pass
+
         
         
     def _getFactor(self, params):
