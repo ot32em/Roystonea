@@ -8,6 +8,13 @@ class Coordinator(BaseServer):
 
         self.algorithm_addr = None 
 
+    #     self.register_start_function(self.pooling_vm_request)
+
+    # def pooling_vm_request():
+    #     while ...
+    #         if ...
+    #             self.create_vm(params)
+
     def register_handle_functions(self):
         self.register_handle_function("ClusterCreateVMRes", self.createVMResHandler)
 
@@ -16,6 +23,8 @@ class Coordinator(BaseServer):
 
         Currently, just write to db that the vm is ready
         '''
+
+        # self.update_database
 
         print msg
 
