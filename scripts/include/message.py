@@ -24,6 +24,9 @@ spec = {
 
         "Error": ["msg"],
 
+        # Subsystem
+        "SubsystemPortMappingReq": ["data"],
+
         # Node 
         "NodeCreateVMReq": vm_attributes,
         "NodeCreateVMRes": ["vmid", "status"],
@@ -36,8 +39,8 @@ spec = {
         "ClusterCreateVMReq": vm_attributes,
         "ClusterCreateVMRes": ["vmid", "status"],
 
-
         # Algorithm
+        "AlgorithmSelectClusterReq": vm_attributes,
         "AlgorithmSelectRackReq": vm_attributes,
         "AlgorithmSelectNodeReq": vm_attributes,
         "AlgorithmSelectRes": ["addressList"]

@@ -59,12 +59,9 @@ class Coordinator(CommonHandler):
                 result = self.db.store_result()
                 data = result.fetch_row()[0]
                 while data:
+                    port_mapping_msg = self.create_message(message.SubsystemPortMappingReq, (data))
                     addr = (self.host, self.config['subsystem_port'])
-                    Client.send_message(addr, data)
-                    portstatus = data[self.config['portstatus_index']]
-                    vmname = data[self.config['vmname_index']]
-                    guestport = data[self.config['guestport_index']]
-                    hostport = data[self.config['hostport_index']]
+                    Client.send_message(addr, port_mapping_msg)
 
                     data = result.fetch_row()[0]
 

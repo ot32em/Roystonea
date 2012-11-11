@@ -9,11 +9,15 @@ class Algorithm(BaseServer):
 
         self.node_addr = None
         self.rack_addr = None
+        self.cluster_addr = None
 
     def register_handle_functions(self):
+        self.register_handle_function("AlgorithmSelectClusterReq", self.selectClusterHandler)
         self.register_handle_function("AlgorithmSelectRackReq", self.selectRackHandler)
         self.register_handle_function("AlgorithmSelectNodeReq", self.selectNodeHandler)
 
+    def selectClusterHandler(self, msg, client_address=None):
+        return self.cluster_addr
 
     def selectRackHandler(self, msg, client_address=None):
 # ask coordinator for rack's resource
@@ -27,7 +31,6 @@ class Algorithm(BaseServer):
             if self._enough( vmInfo, resourceInfoList[i] ) :
                 priorityOrder.append( i )
         return priorityOrder
-dfj
     def algorithmBestFit(self, vmInfo, resourceInfoList, params=dict()):
         factor = self._getFactor( params )
         maxValue = -1
@@ -56,3 +59,7 @@ dfj
 
     def selectNodeHandler(self, msg, client_address=None):
         return self.node_addr
+
+def start(port):
+    server = Algorithm("127.0.0.1", port)
+    server.run()
