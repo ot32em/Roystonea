@@ -39,7 +39,7 @@ def start(port, algo_addr):
     server = Coordinator("127.0.0.1", port)
     server.algorithm_addr = ("127.0.0.1", algo_addr)
 
-    def start_server:
+    def start_server():
         server.run()
 
     t = threading.Thread(target = start_server)
