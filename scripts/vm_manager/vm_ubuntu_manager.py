@@ -20,7 +20,8 @@ class VMUbuntuManager(VMManagerBase):
 
     def creatConfig(self):
         values = {
-                'memory'     : str(self.memory * 1024),
+                'memory'     : str(self.memory),
+                # 'memory'     : str(self.memory * 1024),
                 'num_cpu'    : str(self.num_cpu),
                 'name'       : self.vm_name,
                 'image_path' : self.vm_path + self.image_name
