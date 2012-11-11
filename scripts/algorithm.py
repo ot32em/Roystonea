@@ -24,3 +24,7 @@ class Algorithm(BaseServer):
 
     def selectNodeHandler(self, msg, client_address=None):
         return self.node_addr
+
+def start(port):
+    server = Algorithm("127.0.0.1", port)
+    server.run()
