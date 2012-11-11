@@ -25,6 +25,9 @@ class Algorithm(BaseServer):
     def selectNodeHandler(self, msg, client_address=None):
         return self.node_addr
 
-def start(port):
+def start(port, node_addr, rack_addr, cluster_addr):
     server = Algorithm("127.0.0.1", port)
+    server.node_addr = node_addr
+    server.rack_addr = rack_addr
+    server.cluster_addr = cluster_addr
     server.run()
