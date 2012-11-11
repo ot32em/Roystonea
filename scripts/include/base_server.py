@@ -30,6 +30,7 @@ class BaseServer(ThreadBaseMixIn, object):
         self.host = host
         self.port = int(port)
         self.handle_functions = {}
+        self.start_functions = []
         self.server = None
         self.living_threads = {}
         self.request_count = 1
@@ -40,15 +41,19 @@ class BaseServer(ThreadBaseMixIn, object):
         return (self.host, int(self.port))
 
     def register_handle_functions(self):
-        ''' This function should override by chile class '''
+        ''' This function should override by child class '''
         pass
 
-    def register_start_functions(self):
-        pass
+    def turn_on_start_functions(self):
+        if len(self.start_functions) == 0: return
+
+        sleep(3) # wait server start
+        for f in self.start_functions:
+            self.start_thread(target = f)
 
     def run(self):
         self.register_handle_functions()
-        self.register_start_functions()
+        self.start_thread(target = self.turn_on_start_functions)
         self.server = ThreadPoolTCPServer(self.addr(), self.createHandlerClass())
         self.server.serve_forever()
 
@@ -163,6 +168,9 @@ class BaseServer(ThreadBaseMixIn, object):
 
         if self.handle_functions.has_key(name):
             self.handle_functions.pop(name)
+
+    def register_start_function(self, function):
+        self.start_functions.append(function)
 
     def number_of_living_threads(self):
         return len(self.living_threads)

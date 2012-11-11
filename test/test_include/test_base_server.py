@@ -55,12 +55,19 @@ def test_base_server():
     # server
     server = BaseServer(HOST, PORT)
     server.register_handle_function("CmdHello", hello)
+
+    holder = {'hello': ""}
+    def sayHello():
+        holder['hello'] = "world"
+
+    server.register_start_function(sayHello)
     def server_thread():
         server.run()
 
     t = threading.Thread(target = server_thread)
     t.start()
 
+    sleep(4)
     # client
     try:
         ret = client.send_message((HOST, PORT), CmdHello("world"))
@@ -70,3 +77,5 @@ def test_base_server():
 
     finally:
         server.shutdown()
+
+    assert holder["hello"] == "world"
