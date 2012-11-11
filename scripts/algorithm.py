@@ -50,6 +50,7 @@ class Algorithm(BaseServer):
         # racks = getRackResourcesFromCluster( client_address )
         # vminfo = msg['vminfo']
         return self.rack_addr
+
     def _getRackResourcesFromCluster( client_address ):
         monitorAddress = self.monitor_addr
         return
