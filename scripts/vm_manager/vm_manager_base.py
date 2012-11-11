@@ -41,18 +41,20 @@ class VMManagerBase(object):
         print(pexpect.run(CMD_RESIZE_FILESYSTEM + self.vm_path + self.image_name))
 
     def creatVM(self):
-        try:
-            self.domain = self.conn.createXML(self.config_xml, 0)
-        except:
-            logger.error("VM creation fail!")
+        print pexpect.run(CMD_XEN_CREAT_VM + self.vm_path + self.vm_name+'.cfg')
+        # try:
+        #     self.domain = self.conn.createXML(self.config_xml, 0)
+        # except:
+        #     logger.error("VM creation fail!")
 
     def shutdownVM(self):
-        domain = self.getDomain()
-        if not domain: 
-            return
+        print pexpect.run(CMD_XEN_SHUTDOWN_VM + self.vm_name)
+        # domain = self.getDomain()
+        # if not domain: 
+        #     return
 
-        if domain.shutdown() < 0:
-            logger.error("VM %(name)s shutdown fail!" % ({'name': self.vm_name}))
+        # if domain.shutdown() < 0:
+        #     logger.error("VM %(name)s shutdown fail!" % ({'name': self.vm_name}))
 
     def destroyVM(self):
         # TODO

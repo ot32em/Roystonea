@@ -26,7 +26,9 @@ class VMUbuntuManager(VMManagerBase):
                 'image_path' : self.vm_path + self.image_name
                 }
 
-        self.config_xml = template('ubuntu.xml.mustache', values)
+        config_path = self.vm_path+self.vm_name+'.cfg'
+        template('ubuntu_xen.mustache', config_path, values)
+        # self.config_xml = template('ubuntu.xml.mustache', values)
 
     def start(self):
         self.creatDirectories()
