@@ -20,11 +20,14 @@ class Algorithm(BaseServer):
         return self.cluster_addr
 
     def selectRackHandler(self, msg, client_address=None):
-        pass
-# ask coordinator for rack's resource
-        racks = getRackResourcesFromCluster( client_address )
-        vminfo = msg['vminfo']
+        # pass
+        # # ask coordinator for rack's resource
+        # racks = getRackResourcesFromCluster( client_address )
+        # vminfo = msg['vminfo']
         return self.rack_addr
+
+    def selectNodeHandler(self, msg, client_address=None):
+        return self.node_addr
 
     def algorithmFirstFit(self, vmInfo, resourceList, params=dict() ):
         priorityOrder = list()
@@ -59,9 +62,6 @@ class Algorithm(BaseServer):
         if vmInfo['config_memory'] > resourceInfo['memory'] and vmInfo['config_disk'] > resourceInfo['disk'] :
             return True
         return False
-
-    def selectNodeHandler(self, msg, client_address=None):
-        return self.node_addr
 
 def start(port, node_addr, rack_addr, cluster_addr):
     server = Algorithm("127.0.0.1", port)
