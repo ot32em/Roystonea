@@ -37,6 +37,6 @@ class Rack(BaseServer):
         self.send_message(address, res_msg)
 
 def start(port, algo_addr):
-    server = Node("127.0.0.1", port)
+    server = Rack("127.0.0.1", port)
     server.algorithm_addr = ("127.0.0.1", algo_addr)
     server.run()
