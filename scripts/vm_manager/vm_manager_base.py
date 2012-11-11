@@ -1,6 +1,6 @@
 import pexpect
 import string
-import libvirt
+# import libvirt
 import sys
 import os
 from VM_default_cfg import *
@@ -27,7 +27,7 @@ class VMManagerBase(object):
         self.disk_size = disk_size
         self.num_cpu = num_cpu
         self.hostmachine = hostmachine
-        self.connectHypervisor()
+        # self.connectHypervisor()
     
     def connectHypervisor(self):
         self.conn = libvirt.open(None)
