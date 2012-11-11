@@ -32,3 +32,16 @@ class Coordinator(BaseServer):
 
         create_vm_msg = self.create_message(message.ClusterCreateVMReq, values)
         self.send_message(cluster_addr, create_vm_msg, context=None)
+
+def start(port, algo_addr):
+    import threading
+
+    server = Coordinator("127.0.0.1", port)
+    server.algorithm_addr = ("127.0.0.1", algo_addr)
+
+    def start_server:
+        server.run()
+
+    t = threading.Thread(target = start_server)
+    t.start()
+

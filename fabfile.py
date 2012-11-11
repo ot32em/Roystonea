@@ -57,7 +57,14 @@ def _test_vm(vm_type, command):
     with cd(APP_ROOT):
         run("sudo python royctl.py run vm_manager.vm_%(vm_type)s_manager 'test(\"%(command)s\")'" % ({'vm_type': vm_type, 'command': command}))
 
-def start_algorithm_server():
+def start_algo():
     with cd(APP_ROOT):
-        run("sudo python royctl.py run algorithm 'start(5000)'")
+        run("sudo python royctl.py run algorithm 'start(5000, (%(HOST)s, 6001), (%(HOST)s, 7001), (%(HOST)s, 8001))'" % ({'HOST': '"127.0.0.1"'}))
 
+def start_node():
+    with cd(APP_ROOT):
+        run("sudo python royctl.py run node 'start(8001)'")
+
+def start_server(name, port):
+    with cd(APP_ROOT):
+        run("sudo python royctl.py run %(NAME)s 'start(%(PORT)s, (%(HOST)s, 5000))'" % ({'HOST': '"127.0.0.1"', 'PORT': port, 'NAME': name}))

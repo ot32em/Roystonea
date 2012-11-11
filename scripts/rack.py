@@ -35,3 +35,8 @@ class Rack(BaseServer):
         address = context.caller_address
         res_msg = self.create_message(message.RackCreateVMRes, [msg.vmid, msg.status], context)
         self.send_message(address, res_msg)
+
+def start(port, algo_addr):
+    server = Rack("127.0.0.1", port)
+    server.algorithm_addr = ("127.0.0.1", algo_addr)
+    server.run()

@@ -45,15 +45,19 @@ class Algorithm(BaseServer):
         return self.cluster_addr
 
     def selectRackHandler(self, msg, client_address=None):
-# ask coordinator for rack's resource
-        racks = getRackResourcesFromCluster( client_address )
-        vminfo = msg['vminfo']
+        # pass
+        # # ask coordinator for rack's resource
+        # racks = getRackResourcesFromCluster( client_address )
+        # vminfo = msg['vminfo']
         return self.rack_addr
     def _getRackResourcesFromCluster( client_address ):
         monitorAddress = self.monitor_addr
         return
 
 
+
+    def selectNodeHandler(self, msg, client_address=None):
+        return self.node_addr
 
     def algorithmFirstFit(self, vmInfo, resourceList, params=dict() ):
         availiableList = self._filterAvalibaleResources( vmInfo, resourceList )
@@ -98,9 +102,9 @@ class Algorithm(BaseServer):
             return True
         return False
 
-    def selectNodeHandler(self, msg, client_address=None):
-        return self.node_addr
-
-def start(port):
+def start(port, node_addr, rack_addr, cluster_addr):
     server = Algorithm("127.0.0.1", port)
+    server.node_addr = node_addr
+    server.rack_addr = rack_addr
+    server.cluster_addr = cluster_addr
     server.run()
