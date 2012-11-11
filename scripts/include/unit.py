@@ -36,7 +36,7 @@ import xml.dom.minidom as xml
 xmlfile = os.path.join(ROYSTONEA_ROOT, 'etc/RelationHierachy.xml')
 print "Hierachy xml file: %s " % xmlfile 
 
-class DaemonUnit():
+class Unit():
     def __init__(self, type, name, host, port):
         self.type = type
         self.name = name
@@ -46,9 +46,9 @@ class DaemonUnit():
     def __str__(self):
         return "%s[%s] @%s:%s" % ( self.type, self.name, self.host, self.port)  
 
-class TreeDaemonUnit(DaemonUnit):
+class TreeUnit(DaemonUnit):
     def __init__(self, type, name, host, port ):
-        DaemonUnit.__init__(self, type, name, host, port)
+        super(TreeUnit, self).__init__(self, type, name, host, port)
         self.parent = None 
         self.children = dict()
         self.isRoot = False
@@ -69,28 +69,27 @@ class TreeDaemonUnit(DaemonUnit):
             print "  ",
         print( daemon )
         for childName in daemon.children.keys() :
-            TreeDaemonUnit._recurDump( daemon.children[childName], indent+1 )
+            super(TreeNode, self)._recurDump( daemon.children[childName], indent+1 )
 
     def recurDump( self ):
-        TreeDaemonUnit._recurDump( self )
+        super(TreeUnit, self)._recurDump( self )
 
     def __str__(self):
-        origin = DaemonUnit.__str__(self)
+        origin = super( TreeNode, self).__str__(self)
         if self.isRoot :
             return origin + " isRoot"
         return origin
 
 
-class NodeDaemonUnit(TreeDaemonUnit):
+class NodeUnit(TreeUnit):
     # hostmachine: host as string
     def __init__(self, name, host, port, hostmachine=""):
-        TreeDaemonUnit.__init__(self, 'Node', name, host, port )
+        super(NodeUnit, self).__init__(self, 'Node', name, host, port )
         self.hostmachine = hostmachine
 
 # Resource
-        
     def __str__(self):
-        return DaemonUnit.__str__(self ) + " hostmachine: %s" % ( self.hostmachine ) 
+        return super(NodeUnit, self).__str__(self ) + " hostmachine: %s" % ( self.hostmachine ) 
 
 
 class Hierachy():

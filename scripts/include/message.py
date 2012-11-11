@@ -15,11 +15,17 @@ vm_attributes = ["vmid", "groupid", "vmsubid", "vmtype",
                 "config_cpu", "config_memory", "config_disk", "config_lifetime", 
                 "ownerid"]
 
+pm_attributes = ["hostmachine", "remainingMemory", "totalMemory",
+                 "remainingDisk", "totalDisk", "usagePercentDisk"]
+
 spec = {
         "ToyReq": ["data"],
         "ToyRes": ["data"],
 
         "Error": ["msg"],
+
+        # Subsystem
+        "SubsystemPortMappingReq": ["data"],
 
         # Node 
         "NodeCreateVMReq": vm_attributes,
@@ -37,8 +43,8 @@ spec = {
         "AlgorithmSelectClusterReq": vm_attributes,
         "AlgorithmSelectRackReq": vm_attributes,
         "AlgorithmSelectNodeReq": vm_attributes,
-        "AlgorithmSelectRes": ["address"]
-        }
+        "AlgorithmSelectRes": ["addressList"]
+}
 
 def values_of_message(message):
     attrs = []
