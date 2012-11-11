@@ -35,6 +35,7 @@ class Coordinator(BaseServer):
 
 def start(port, algo_addr):
     import threading
+    from time import sleep
 
     server = Coordinator("127.0.0.1", port)
     server.algorithm_addr = ("127.0.0.1", algo_addr)
