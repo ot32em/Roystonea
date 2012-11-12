@@ -47,6 +47,7 @@ class SubsystemManager(CommonHandler):
         vmport = 22
         vmname = 'ot32em-8-8'
         portstatus = 'adding'
+        hostport = None
 
 
         vmip = socket.gethostbyname(vmname)
