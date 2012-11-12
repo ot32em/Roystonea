@@ -44,7 +44,7 @@ class SubsystemManager(CommonHandler):
     def SubsystemPortmappingTest(self):
         print 'hi this is portmapping'
         vmid = 472
-        vmport = 22
+        guestport = 22
         vmname = 'ot32em-8-8'
         portstatus = 'adding'
         hostport = None
