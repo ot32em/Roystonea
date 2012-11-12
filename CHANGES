@@ -56,7 +56,18 @@
 	by Brian Hu:
 		study how to set up test environment with Ray
 
-2012-11-5 ~~ 2012-11-6
+2012-11-5 ~~ 2012-11-11
+    by Ray Shih:
+        Refactor BaseServer (from CommonHandler and CommonServer)
+        Finish implement the async callback event in base server
+        Refactor Message module
+        Refactor node, rack, cluster, coordinator, algorithm prototype
+            including auto system test from coordinator to node 
+            (see file test/test_coordinator)
+        Successfully test message chain on staging machine
+        Construct setting loader from pure python to yaml (see file scripts/include/config.py)
+        Start implement ORM on database table vm
+        
     by 陳政瑋
         fix roystonea_root problem
         build a hierachy tool
