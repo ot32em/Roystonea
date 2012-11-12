@@ -13,9 +13,11 @@ by Teddy, 2012/02/17
 import os
 import re
 import time
+import socket
 import pexpect
 from include.CommonHandler import  passArguments, CommonHandler
-from include.hierachy import Hierachy
+from include.logger import logger
+from Roystonea.hierachy import Hierachy
 from rootpath import ROYSTONEA_ROOT
 
 class SubsystemManager(CommonHandler):
@@ -40,13 +42,13 @@ class SubsystemManager(CommonHandler):
         self.hierachy = Hierachy(hierachyPath)
 
     def SubsystemPortmappingTest(self):
-        port['vmid'] = 722
-        port['vmport'] = 22
+        print 'hi this is portmapping'
+        vmid = 472
+        guestport = 22
+        vmname = 'ot32em-8-8'
+        portstatus = 'adding'
+        hostport = 4000
 
-        portstatus = req.data[self.config['portstatus_index']]
-        vmname = req.data[self.config['vmname_index']]
-        guestport = req.data[self.config['guestport_index']]
-        hostport = req.data[self.config['hostport_index']]
 
         vmip = socket.gethostbyname(vmname)
 
