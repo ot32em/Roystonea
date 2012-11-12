@@ -77,7 +77,7 @@ class BaseServer(ThreadBaseMixIn, object):
                 isTimeout = True
                 break
             print("There still are %d threads not completed. Seconds remaining/timeout: (%d/%d) secs " %
-                    ( self.number_of_living_threads(), self.shutdown_timeout, self.shutdown_timeout-timer))
+                    ( self.number_of_living_threads(), self.shutdown_timeout-timer, self.shutdown_timeout))
             for t in self.living_threads.values() :
                 print("    Thread: %s" % t.name )
         print("Shutting Down! is Timeout: %s" % isTimeout)
@@ -200,4 +200,43 @@ class BaseServer(ThreadBaseMixIn, object):
 
     def pop_context(self, message):
         return self.request_context.pop(message.request_id)
+
+    @classmethod
+    def cmd_start(cls):
+        try:
+            import sys
+            import threading
+            host = sys.argv[1]
+            port = int( sys.argv[2] )
+            server = cls(host, port )
+            def server_start():
+                server.run()
+            t = threading.Thread( target = server_start )
+            t.start()
+            while 1:
+                input = raw_input(": ")
+                if input == "":
+                    print("commands: ")
+                    print("  exit")
+                    print("  status")
+                if input == "exit" :
+                    break;
+                if input == "status" :
+                    print("level: %s" % server.level)
+                    print("shutdown_timeout: %s" % server.shutdown_timeout)
+                    print("host: %s" % server.host )
+                    print("port: %s" % server.port )
+
+                    print("handle_funtions:")
+                    print(server.handle_functions)
+                    print("start_functions")
+                    print(server.start_functions)
+                    print("server")
+                    print(server.server)
+                    print("living_threads")
+                    print(server.living_threads)
+            server.shutdown()
+
+        except IndexError as e:
+            print("usage: python daemon.py hostname port(int)")
         

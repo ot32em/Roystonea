@@ -43,7 +43,13 @@ spec = {
         "AlgorithmSelectClusterReq": vm_attributes,
         "AlgorithmSelectRackReq": vm_attributes,
         "AlgorithmSelectNodeReq": vm_attributes,
-        "AlgorithmSelectRes": ["addressList"]
+        "AlgorithmSelectRes": ["addressList"],
+
+        # Monitor
+        "MonitorAskClusterListReq": ["cloud_unit"],
+        "MonitorAskRackListReq": ["cluster_unit"],
+        "MonitorAskNodeListReq": ["rack_unit"],
+        "MonitorUnitListRes": ["unit_list"],
 }
 
 def values_of_message(message):
