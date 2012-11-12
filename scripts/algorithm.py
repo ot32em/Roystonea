@@ -55,8 +55,6 @@ class Algorithm(BaseServer):
         monitorAddress = self.monitor_addr
         return
 
-
-
     def selectNodeHandler(self, msg, client_address=None):
         return self.node_addr
 

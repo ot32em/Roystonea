@@ -43,6 +43,10 @@ class BaseServer(ThreadBaseMixIn, object):
     def register_handle_functions(self):
         ''' This function should override by child class '''
         pass
+    
+    def register_start_functions(self):
+        ''' This function should override by child class '''
+        pass
 
     def turn_on_start_functions(self):
         if len(self.start_functions) == 0: return
@@ -53,6 +57,7 @@ class BaseServer(ThreadBaseMixIn, object):
 
     def run(self):
         self.register_handle_functions()
+        self.register_start_functions()
         self.start_thread(target = self.turn_on_start_functions)
         self.server = ThreadPoolTCPServer(self.addr(), self.createHandlerClass())
         self.server.serve_forever()
