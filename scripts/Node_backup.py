@@ -11,7 +11,7 @@ by Elalic, Ot Chen, llegalkao, Teddy, 2012/03/07
 from include.CommonHandler import passArguments
 from include.CommonHandler import CommonHandler
 from include import Client
-from include import Message
+from include import message
 
 # from vm_manager.vm_ubuntu_manager import VMUbuntuManager
 
@@ -48,7 +48,7 @@ class Node(CommonHandler):
 
             pass
         elif req.type == 'apache':
-            msg = Message.NodeDatabaseSubsystemAddPortReq(
+            msg = message.NodeDatabaseSubsystemAddPortReq(
                     vm_id = req.vm_id,
                     vm_name = req.vm_name,
                     owner = req.owner,
@@ -76,7 +76,7 @@ class Node(CommonHandler):
             pass
        
         # need to check VM start or not!!!
-        msg = Message.NodeVirtualMachineManagerCreateVMres(
+        msg = message.NodeVirtualMachineManagerCreateVMres(
                vm_id = req.vm_id,
                status = 'success'
                 )

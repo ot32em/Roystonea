@@ -3,8 +3,8 @@ import sys
 import socket
 import copy
 from CommonServer import CommonServer
-import Client
-import Message
+import client
+import message
 from rootpath import ROYSTONEA_ROOT
 import os
 

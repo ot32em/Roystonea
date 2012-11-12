@@ -5,7 +5,7 @@ from Queue import Queue
 import threading, socket
 from threading import Event
 from time import sleep
-from include import Message
+from include import message
 from include.PM import *
 
 class CommonServer(TCPServer):
@@ -217,7 +217,7 @@ class CommonServer(TCPServer):
                 print( "%s" % e ) 
 
     def cmdShowRelation(self, style = 4):
-        req = Message.CmdGetPMRelationReq( )
+        req = message.CmdGetPMRelationReq( )
         res = self.dispatch_handlers['CmdGetPMRelationReq']( req )
         style = int (style)
         if style == 1 :
@@ -230,7 +230,7 @@ class CommonServer(TCPServer):
             print( res.dump_pretty )
 
     def cmdShowTheRelation(self, addr, style = 4):
-        req = Message.CmdGetThePMRelationReq(dest_addr = addr )
+        req = message.CmdGetThePMRelationReq(dest_addr = addr )
         res = self.dispatch_handlers['CmdGetThePMRelationReq']( req )
         style = int (style)
         if style == 1 :
@@ -244,35 +244,35 @@ class CommonServer(TCPServer):
 
 
     def cmdSetParent(self, parent_addr):
-        req = Message.CmdSetParentReq(parent_addr = parent_addr)
+        req = message.CmdSetParentReq(parent_addr = parent_addr)
         res = self.dispatch_handlers['CmdSetParentReq'](req)
         self.cmdShowRelation()
 
     def cmdAddChild(self, child_addr):
-        req = Message.CmdAddChildReq( child_addr = child_addr )
+        req = message.CmdAddChildReq( child_addr = child_addr )
         res = self.dispatch_handlers['CmdAddChildReq'](req)
         self.cmdShowRelation()
 
     def cmdShutdown(self, chain_shutdown = False ):
-        req = Message.CmdShutdownReq( chain_shutdown = chain_shutdown)
+        req = message.CmdShutdownReq( chain_shutdown = chain_shutdown)
         res = self.dispatch_handlers['CmdShutdownReq']( req )
 
 
     def cmdShutdownThe(self, addr, chain_shutdown = False):
-        req = Message.CmdShutdownTheReq( dest_addr = addr, chain_shutdown = chain_shutdown )
+        req = message.CmdShutdownTheReq( dest_addr = addr, chain_shutdown = chain_shutdown )
         res = self.dispatch_handlers['CmdShutdownTheReq']( req )
 
     def cmdShutdownTheChildren(self, addr, chain_shutdown = False) :
-        req = Message.CmdShutdownTheChildrenReq(dest_addr = addr, chain_shutdown = chain_shutdown)
+        req = message.CmdShutdownTheChildrenReq(dest_addr = addr, chain_shutdown = chain_shutdown)
         res = self.dispatch_handlers['CmdShutdownTheChildrenReq']( req )
          
 
     def cmdShutdownChildren(self, chain_shutdown = False):
-        req = Message.CmdShutdownChildrenReq(chain_shutdown = chain_shutdown)
+        req = message.CmdShutdownChildrenReq(chain_shutdown = chain_shutdown)
         res = self.dispatch_handlers['CmdShutdownChildrenReq']( req )
         
     def cmdPing(self, addr, times=4):
-        req = Message.CmdGetPingReq( dest_addr = addr, times = 4)
+        req = message.CmdGetPingReq( dest_addr = addr, times = 4)
         cmdres = self.dispatch_handlers['CmdGetPingReq']( req) 
         print(cmdres.msg)
 
@@ -346,10 +346,10 @@ class RequestDispatchHandler(BaseRequestHandler):
             self.request.send(pickle.dumps(ret))
         
         except pickle.UnpicklingError:
-            error_req = Message.Error(msg='Unregonized Serial Data. Can not unpick it. Data Length: %d' % len(data) )
+            error_req = nessage.Error(msg='Unregonized Serial Data. Can not unpick it. Data Length: %d' % len(data) )
             self.request.send(pickle.dumps( error_req ) )
 
         except KeyError:
-            error_req = Message.Error(msg='Unacceptable Request Name(Not in DispatchDict). Request Name %s' % recvobj.__class__.__name__ )
+            error_req = message.Error(msg='Unacceptable Request Name(Not in DispatchDict). Request Name %s' % recvobj.__class__.__name__ )
             self.request.send(pickle.dumps( error_req ) )
 

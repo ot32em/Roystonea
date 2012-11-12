@@ -33,11 +33,34 @@ class SubsystemManager(CommonHandler):
             self.MonitorResource,
             self.StorageSubsystem, # reclaiming space from files that are no longer used
             self.sayHello, # hello function              
+            self.SubsystemPortmappingTest,
         ))
 
         hierachyPath = os.path.join( ROYSTONEA_ROOT, "etc/Hierachy.xml")
         self.hierachy = Hierachy(hierachyPath)
-   
+
+    def SubsystemPortmappingTest(self):
+        port['vmid'] = 722
+        port['vmport'] = 22
+
+        portstatus = req.data[self.config['portstatus_index']]
+        vmname = req.data[self.config['vmname_index']]
+        guestport = req.data[self.config['guestport_index']]
+        hostport = req.data[self.config['hostport_index']]
+
+        vmip = socket.gethostbyname(vmname)
+
+        if portstatus == 'adding':
+            iptables_cmd = '%s %s PREROUTING -p tcp --dport %s -j DNAT --to %s:%s' \
+                    %(self.config['cmd_iptables'], '-A', hostport, vmip, guestport)
+            logger.info('Add port mapping for %s, from %s to %s on hostmachine'%(vmname, guestport, hostport)) 
+        elif portstatus == 'deleting':
+            iptables_cmd = '%s %s PREROUTING -p tcp --dport %s -j DNAT --to %s:%s' \
+                    %(cmd_iptables, '-D', hostport, vmip, guestport)
+            logger.info('Delete port mapping for %s, from %s to %s on hostmachine'%(vmname, guestport, hostport)) 
+
+        (result, value) = pexpect.run(iptables_cmd, withexitstatus = 1)
+    
     def SubsystemPortMapping(self, req):
         portstatus = req.data[self.config['portstatus_index']]
         vmname = req.data[self.config['vmname_index']]
