@@ -67,6 +67,10 @@
         Successfully test message chain on staging machine
         Construct setting loader from pure python to yaml (see file scripts/include/config.py)
         Start implement ORM on database table vm
+
+	by Brian Hu:
+		write polling task in coordinator && port mapping task in subsystem
+		test portmapping on roystonea successfully
         
     by 陳政瑋
         fix roystonea_root problem

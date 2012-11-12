@@ -17,7 +17,7 @@ import socket
 import pexpect
 from include.CommonHandler import  passArguments, CommonHandler
 from include.logger import logger
-# from Roystonea.hierachy import Hierachy
+from Roystonea.hierachy import Hierachy
 from rootpath import ROYSTONEA_ROOT
 
 class SubsystemManager(CommonHandler):
@@ -32,14 +32,14 @@ class SubsystemManager(CommonHandler):
             'SubsystemPortMappingReq': self.SubsystemPortMapping,
         })
         self.startup_functions.extend((
-            # self.MonitorResource,
-            # self.StorageSubsystem, # reclaiming space from files that are no longer used
+            self.MonitorResource,
+            self.StorageSubsystem, # reclaiming space from files that are no longer used
             self.sayHello, # hello function              
             self.SubsystemPortmappingTest,
         ))
 
-        # hierachyPath = os.path.join( ROYSTONEA_ROOT, "etc/Hierachy.xml")
-        # self.hierachy = Hierachy(hierachyPath)
+        hierachyPath = os.path.join( ROYSTONEA_ROOT, "etc/Hierachy.xml")
+        self.hierachy = Hierachy(hierachyPath)
 
     def SubsystemPortmappingTest(self):
         print 'hi this is portmapping'
@@ -47,7 +47,7 @@ class SubsystemManager(CommonHandler):
         guestport = 22
         vmname = 'ot32em-8-8'
         portstatus = 'adding'
-        hostport = None
+        hostport = 4000
 
 
         vmip = socket.gethostbyname(vmname)
