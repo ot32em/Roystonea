@@ -69,3 +69,14 @@ def start_node():
 def start_server(name, port):
     with cd(APP_ROOT):
         run("sudo python royctl.py run %(NAME)s 'start(%(PORT)s, (%(HOST)s, 5000))'" % ({'HOST': '"127.0.0.1"', 'PORT': port, 'NAME': name}))
+
+'''
+For testing message chain by hand
+
+fab start_algo
+fab start_node
+fab start_server:rack,7001
+fab start_server:cluster,6001
+fab start_server:coordinator,5001
+
+'''

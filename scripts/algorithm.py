@@ -101,7 +101,7 @@ class Algorithm(BaseServer):
             return True
         return False
 
-def start(port, node_addr, rack_addr, cluster_addr):
+def start(port, cluster_addr, rack_addr, node_addr):
     server = Algorithm("127.0.0.1", port)
     server.node_addr = node_addr
     server.rack_addr = rack_addr

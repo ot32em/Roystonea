@@ -38,5 +38,5 @@ class Rack(BaseServer):
 
 def start(port, algo_addr):
     server = Rack("127.0.0.1", port)
-    server.algorithm_addr = ("127.0.0.1", algo_addr)
+    server.algorithm_addr = algo_addr
     server.run()
