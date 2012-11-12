@@ -16,6 +16,7 @@ import time
 import socket
 import pexpect
 from include.CommonHandler import  passArguments, CommonHandler
+from include.logger import logger
 # from Roystonea.hierachy import Hierachy
 from rootpath import ROYSTONEA_ROOT
 
@@ -45,6 +46,7 @@ class SubsystemManager(CommonHandler):
         vmid = 472
         vmport = 22
         vmname = 'ot32em-8-8'
+        portstatus = 'adding'
 
 
         vmip = socket.gethostbyname(vmname)
