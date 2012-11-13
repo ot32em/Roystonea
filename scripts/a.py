@@ -1,15 +1,9 @@
+import include.message as msg 
+import include.client as client
+myaddr = ("localhost", 4001 )
+dest_addr = ("localhost", 7001 )
+rack_unit = {"host": "localhost", "port":1003 }
 
-class myclass():
-    @classmethod
-    def hello(cls):
-        print( cls)
-        print("class helloworld")
-
-    @staticmethod
-    def hellostatic():
-        print("static hellowrld")
-
-class my2class(myclass):
-    pass
-
-my2class.hello()
+req = msg.MonitorAskNodeListReq( [rack_unit], myaddr, 1 )
+res = client.send_message( dest_addr, req )
+print( res )

@@ -18,6 +18,17 @@ vm_attributes = ["vmid", "groupid", "vmsubid", "vmtype",
 pm_attributes = ["hostmachine", "remainingMemory", "totalMemory",
                  "remainingDisk", "totalDisk", "usagePercentDisk"]
 
+
+'''
+              AlgorithmSelectNodeListReq                         MonitorAskNodeResourceListReq
+              (rack_addr, vm_attr)                               (rack_addr)
+          -------------------------------->                   ----------------------------------> 
+  Rack    <--------------------------------        Algorithm  <----------------------------------  Monitor
+              AlgorithmSelectNodeListRes                         MonitorAskNodeResourceListRes
+              (node_addr_list@with priority order)               (node_resource_list)
+
+
+'''
 spec = {
         "ToyReq": ["data"],
         "ToyRes": ["data"],
@@ -42,14 +53,16 @@ spec = {
         # Algorithm
         "AlgorithmSelectClusterReq": vm_attributes,
         "AlgorithmSelectRackReq": vm_attributes,
-        "AlgorithmSelectNodeReq": vm_attributes,
-        "AlgorithmSelectRes": ["addressList"],
+        "AlgorithmSelectNodeListReq": vm_attributes,
+        "AlgorithmSelectNodeListRes": ["node_addr_list"],
 
         # Monitor
-        "MonitorAskClusterListReq": ["cloud_unit"],
-        "MonitorAskRackListReq": ["cluster_unit"],
-        "MonitorAskNodeListReq": ["rack_unit"],
-        "MonitorUnitListRes": ["unit_list"],
+        "MonitorAskClusterListReq": ["cloud_addr"],
+        "MonitorAskRackListReq": ["cluster_addr"],
+        "MonitorAskNodeListReq": ["rack_addr"],
+        "MonitorAskNodeListRes": ["cluster_resource_list"],
+        "MonitorAskNodeListRes": ["rack_resource_list"],
+        "MonitorAskNodeListRes": ["node_resource_list"],
 }
 
 def values_of_message(message):

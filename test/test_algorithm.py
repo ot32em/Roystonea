@@ -1,5 +1,7 @@
 import sys
 from rootpath import ROYSTONEA_ROOT
+import support.server_manager as server_manager
+
 sys.path.append( ROYSTONEA_ROOT )
 from scripts.algorithm import Algorithm
 from scripts.monitor import Monitor
@@ -24,6 +26,8 @@ vm03 = { "config_memory": 0.5*GB, "config_disk": 20*GB } # fit 1, 2, and 4
 HOST = "127.0.0.1"
 PORT = 7500
 
+
+
 def test_success():
     assert a[0] == 1
     assert a[1] == 2
@@ -32,21 +36,32 @@ def test_success():
 
 def test_connected():
 
-    
-    monitor_server = Monitor( HOST, PORT+1)
-    monitor_server.run()
-    monitor_server.shutdown()
-    return
 # server stack
-    algo_server = Algorithm( HOST, PORT)
-    sub_server = SubsystemManager( HOST, PORT+1)
+    rack = Rack( HOST, PORT)
+    algo = Algorithm( HOST, PORT+1)
+    monitor = Monitor( HOST, PORT+2)
+    server_stack = [algo, monitor, rack]
 
 # algo setting
-    algo_server.subsystem_addr = sub_server.addr()
+    algo.monitor_addr = monitor.addr()
 
-# algo will info subsystem for data, now give subsystem some test data
-    sub_server.addTestData( pmlist = pmInfoList )
+# rack setting
+    rack.algorithm_addr = algo.addr()
 
+    server_manager.start_server_stack( server_stack )
+
+    import time
+    t = 0 
+    tmax=10
+    while 1 :
+        time.sleep(3)
+        t = t+3
+        assert t < tmax
+        if rack.hasTestData("testdone"):
+            break
+
+    resultNodesList = rack.testData("node_list")
+    print( resultNodeList)
 
 
 
