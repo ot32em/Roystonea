@@ -3,8 +3,6 @@ import pickle
 from time import sleep
 
 def send_message( address, message, timeout=10.0 ) : # it will send message, then recv the response message
-    print("address: "),
-    print( address )
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout( timeout )
     sock.connect(address)
@@ -15,19 +13,14 @@ def send_message( address, message, timeout=10.0 ) : # it will send message, the
     sock.shutdown(socket.SHUT_WR)
 
     # Receive data from the server and shut down
-    print("send req, and ready to enter recv mode")
     received = ''
     input = True
     while input:
         input = sock.recv(4096)
-        print("recv input with 4096 bytes")
         received += input
-    print(received )
     recv_message = pickle.loads(received)
     sock.close()
 
-    print( "recv_message: "), 
-    print( recv_message )
     return recv_message
 
 def sendonly_message( address, message) : # it will only send message, then shutdown socket
