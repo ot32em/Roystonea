@@ -53,6 +53,7 @@ spec = {
         # Algorithm
         "AlgorithmSelectClusterReq": vm_attributes,
         "AlgorithmSelectRackReq": vm_attributes,
+        "AlgorithmSelectNodeReq": vm_attributes,
         "AlgorithmSelectNodeListReq": vm_attributes,
         "AlgorithmSelectNodeListRes": ["node_addr_list"],
 

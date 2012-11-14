@@ -30,7 +30,7 @@ class Rack(BaseServer):
 
     def testAlgorithm(self):
         print( "testAlgorithm called!" )
-        self.algorithm_addr = ("localhost", 8002)
+        # self.algorithm_addr = ("localhost", 8002)
         # ask node list from algorithm
         vm_attr= [100, 1, 1, "ubuntu", 1, 1 * 1024 * 1024, 40 * 1024 * 1024, 300, 1]
         req = self.create_message( message.AlgorithmSelectNodeListReq, vm_attr)
@@ -38,6 +38,7 @@ class Rack(BaseServer):
         print( self.algorithm_addr )
         aNodeListRes = self.send_message( self.algorithm_addr, req )
 
+        print "=" * 100
         print( aNodeListRes )
         
         
