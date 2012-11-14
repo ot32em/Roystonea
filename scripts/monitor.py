@@ -15,7 +15,6 @@ import re
 import time
 import pexpect
 from include.base_server import BaseServer
-from include import message
 from rootpath import ROYSTONEA_ROOT
 
 class Monitor(BaseServer):
@@ -29,32 +28,31 @@ class Monitor(BaseServer):
         self.daemonInfos = dict() # name as key, info as value
         self.pmInfos = dict() # hostname as key, info as value
 
+        self.testData = dict()
+
+    def addTestData( **kargs):
+        self.testData.update( kargs )
 
     def register_handle_functions(self):
-        self.register_handle_function("MonitorAskNodeResourceListReq", self.nodeResourceListHandler)
+        self.register_handle_function("MonitorAskClusterResourceListReq", self.askClusterResourceList)
+        self.register_handle_function("MonitorAskRackResourceListReq", self.askRackResourceList)
+        self.register_handle_function("MonitorAskNodeResourceListReq", self.askNodeResourceList)
 
-    def nodeResourceListHandler(self, msg, client_addr=None ):
-        print("nodeResourceListHandler called!")
-        host = "localhost"
-        port = 8000
-        values = message.values_of_message( msg )
-        rack_addr = values.rack_addr
+    def register_start_functions(self):
+        pass
 
-#       node_resource_list = self.getNodeResourceListByParentRack(rack_addr)
-        node_resource_list = [
-          {"name": "roy01", "host": host, "port": port,
-           "memory": 5*1024*1024, "disk": 100*1024*1024
-          },
-          {"name": "roy02", "host": host, "port": port+2,
-           "memory": 10*1024*1024, "disk": 1000*1024*1024
-          },
-          {"name": "roy03", "host": host, "port": port+1,
-           "memory": 12*1024*1024, "disk": 200*1024*1024
-           }
-        ]
+    def askClusterResourceList(self, msg):
+        pass
 
-        aMonitorAskNodeListRes = self.create_message( [node_resource_list] )
-        return aMonitorAskNodeListRes
+
+    def askRackResourceList(self, msg ):
+        pass
+
+    def askNodeResourceList(self, msg ):
+        pmList = self.testData['pmlist']
+        respondMsg = message.MonitorAskNodeResourceListRes( pmResourceList = pmList )
+        return respondMsg
+
 
     def MonitorResource(self):
         pollingTimeval = 10 # 10secs update
@@ -202,12 +200,12 @@ class Monitor(BaseServer):
         coordinator = self.hierachy.getCoordinatorDaemon()
         Client.sendonly_message( (coordinator.host, coordinator.port ), req )
 
+if __name__ == '__main__':
+     Monitor.cmd_start()
+
 
 def start(port):
     server = Monitor("127.0.0.1", port)
     server.run()
 
-
-if __name__ == '__main__':
-     Monitor.cmd_start()
 

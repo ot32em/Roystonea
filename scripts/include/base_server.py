@@ -24,7 +24,7 @@ class BaseServer(ThreadBaseMixIn, object):
     '''
 
     level = 'prototype'
-    shutdown_timeout = 2
+    shutdown_timeout = 5
 
     def __init__(self, host, port):
         self.host = host
@@ -35,19 +35,6 @@ class BaseServer(ThreadBaseMixIn, object):
         self.living_threads = {}
         self.request_count = 1
         self.request_context = {}
-
-        self.testData = dict() # can be assign testData from outside
-
-    def testData(name):
-        try:
-            return self.testData[name]
-        except NameError:
-            return None
-    def setTestData(name, value):
-        self.testData[name] = value
-
-    def hasTestData(name):
-        return self.testData.has_key(name)
 
     def addr(self):
         ''' Get address: (host, port) '''
@@ -202,8 +189,6 @@ class BaseServer(ThreadBaseMixIn, object):
 
         self.request_count+=1
 
-        print(_values )
-        print(msg_class)
         return msg_class(*_values)
 
     def send_message(self, address, message, context=None):
@@ -238,7 +223,18 @@ class BaseServer(ThreadBaseMixIn, object):
                     break;
                 if input == "status" :
                     print("level: %s" % server.level)
-                    print("address: %s:%s" % (server.host, server.port ) )
+                    print("shutdown_timeout: %s" % server.shutdown_timeout)
+                    print("host: %s" % server.host )
+                    print("port: %s" % server.port )
+
+                    print("handle_funtions:")
+                    print(server.handle_functions)
+                    print("start_functions")
+                    print(server.start_functions)
+                    print("server")
+                    print(server.server)
+                    print("living_threads")
+                    print(server.living_threads)
             server.shutdown()
 
         except IndexError as e:

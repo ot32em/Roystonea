@@ -35,38 +35,11 @@ class Algorithm(BaseServer):
         self.node_addr = None
         self.rack_addr = None
         self.cluster_addr = None
-        self.monitor_addr = ("localhost", 7004 )
 
     def register_handle_functions(self):
         self.register_handle_function("AlgorithmSelectClusterReq", self.selectClusterHandler)
         self.register_handle_function("AlgorithmSelectRackReq", self.selectRackHandler)
         self.register_handle_function("AlgorithmSelectNodeReq", self.selectNodeHandler)
-        self.register_handle_function("AlgorithmSelectNodeListReq", self.selectNodeHandler)
-
-    def selectNodeListHandler(self, msg, client_address=None):
-        print("selectNodeLIstHandler called!")
-        vm_attr = values_of_message( msg )
-        rack_addr = msg.client_address
-
-        values = [ rack_addr ]
-        req = self.create_message( message.MonitorAskNodeResourceListReq, values )
-        aNodeResourceListRes = self.send_message( self.monitor_addr, req )
-
-        node_resource_list = aNodeResourceListRes.node_resource_list
-
-        # node_list_with_priority = decision_maker( node_resource_list )
-
-        # for test
-        host = "localhost"
-        port = 8000
-        node_list= [ {"name": "roy01", "host": host, "port": port},
-                     {"name": "roy02", "host": host, "port": port+2},
-                     {"name": "roy03", "host": host, "port": port+1},]
-
-        aAlgorithmSelectNodeListRes =  \
-          self.create_message( message.AlgorithmSelectNodeListRes, [pm_list] )
-        return aAlgorithmSelectNodeListRes
-
 
     def selectClusterHandler(self, msg, client_address=None):
         return self.cluster_addr
@@ -135,6 +108,4 @@ def start(port, cluster_addr, rack_addr, node_addr):
     server.cluster_addr = cluster_addr
     server.run()
 
-if __name__ == '__main__':
-    Algorithm.cmd_start()
 
