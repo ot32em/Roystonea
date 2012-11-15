@@ -19,29 +19,19 @@ class Rack(BaseServer):
         self.register_handle_function("RackCreateVMReq", self.createVMReqHandler)
         self.register_handle_function("NodeCreateVMRes", self.createVMResHandler)
 
-    def register_start_functions(self):
-        self.register_start_function( self.testAlgorithm )
+    def selectNodeList(self, vm_attr):
+        print("rack@selectNodeList called!")
+        addr = self.algorithm_addr
+        nodeListReq = self.create_message(message.AlgorithmSelectNodeListReq, vm_attr )
+        return self.send_message( addr, nodeListReq )
 
-    def unit():
-        return {"host": self.host, "port": self.port,
-                "memory": self.memory, "disk": self.disk,
-                "minimal_meory": self.minimal_memory, "minimal_disk": minimal_disk }
+    def askAlgorithmName(self):
+        req = self.create_message( message.AlgorithmAskNameReq , [] )
+        res = self.send_message( self.algorithm_addr, req )
+        print("in rack askAlgorithmName method, dump res")
+        print( res )
+        return res
 
-
-    def testAlgorithm(self):
-        print( "testAlgorithm called!" )
-        # self.algorithm_addr = ("localhost", 8002)
-        # ask node list from algorithm
-        vm_attr= [100, 1, 1, "ubuntu", 1, 1 * 1024 * 1024, 40 * 1024 * 1024, 300, 1]
-        req = self.create_message( message.AlgorithmSelectNodeListReq, vm_attr)
-        print("algorithm_addr"),
-        print( self.algorithm_addr )
-        aNodeListRes = self.send_message( self.algorithm_addr, req )
-
-        print "=" * 100
-        print( aNodeListRes )
-        
-        
 
     def createVMReqHandler(self, msg, client_address=None):
         values = message.values_of_message(msg)

@@ -19,16 +19,6 @@ pm_attributes = ["hostmachine", "remainingMemory", "totalMemory",
                  "remainingDisk", "totalDisk", "usagePercentDisk"]
 
 
-'''
-              AlgorithmSelectNodeListReq                         MonitorAskNodeResourceListReq
-              (rack_addr, vm_attr)                               (rack_addr)
-          -------------------------------->                   ----------------------------------> 
-  Rack    <--------------------------------        Algorithm  <----------------------------------  Monitor
-              AlgorithmSelectNodeListRes                         MonitorAskNodeResourceListRes
-              (node_addr_list@with priority order)               (node_resource_list)
-
-
-'''
 spec = {
         "ToyReq": ["data"],
         "ToyRes": ["data"],
@@ -57,10 +47,12 @@ spec = {
         "AlgorithmSelectNodeListReq": vm_attributes,
         "AlgorithmSelectNodeListRes": ["node_addr_list"],
 
+        "AlgorithmAskNameReq": [],
+
         # Monitor
         "MonitorAskClusterListReq": ["cloud_addr"],
         "MonitorAskRackListReq": ["cluster_addr"],
-        "MonitorAskNodeListReq": ["rack_addr"],
+        "MonitorAskNodeResourceListReq": ["rack_addr"],
         "MonitorAskNodeListRes": ["cluster_resource_list"],
         "MonitorAskNodeListRes": ["rack_resource_list"],
         "MonitorAskNodeListRes": ["node_resource_list"],

@@ -29,32 +29,16 @@ class Monitor(BaseServer):
         self.daemonInfos = dict() # name as key, info as value
         self.pmInfos = dict() # hostname as key, info as value
 
+        self.hierachy = None
 
     def register_handle_functions(self):
-        self.register_handle_function("MonitorAskNodeResourceListReq", self.nodeResourceListHandler)
+        self.register_handle_function("MonitorAskNodeResourceListReq", self.askNodeResourceListHandler)
 
-    def nodeResourceListHandler(self, msg, client_addr=None ):
-        print("nodeResourceListHandler called!")
-        host = "localhost"
-        port = 8000
-        values = message.values_of_message( msg )
-        rack_addr = values.rack_addr
+    def askNodeResourceListHandler(self, msg, client_addr=None ):
+        return self.getNodeResourceList( msg.rack_addr )
 
-#       node_resource_list = self.getNodeResourceListByParentRack(rack_addr)
-        node_resource_list = [
-          {"name": "roy01", "host": host, "port": port,
-           "memory": 5*1024*1024, "disk": 100*1024*1024
-          },
-          {"name": "roy02", "host": host, "port": port+2,
-           "memory": 10*1024*1024, "disk": 1000*1024*1024
-          },
-          {"name": "roy03", "host": host, "port": port+1,
-           "memory": 12*1024*1024, "disk": 200*1024*1024
-           }
-        ]
-
-        aMonitorAskNodeListRes = self.create_message( [node_resource_list] )
-        return aMonitorAskNodeListRes
+    def getNodeResourceList( self, rack_addr ):
+        return "unimplemented"
 
     def MonitorResource(self):
         pollingTimeval = 10 # 10secs update
