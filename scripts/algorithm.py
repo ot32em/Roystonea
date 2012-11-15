@@ -1,4 +1,5 @@
 from include.base_server import BaseServer
+from include import message
 # //
 # resourceList spec
 #    a list of resourceUnit
@@ -36,10 +37,47 @@ class Algorithm(BaseServer):
         self.rack_addr = None
         self.cluster_addr = None
 
+
     def register_handle_functions(self):
         self.register_handle_function("AlgorithmSelectClusterReq", self.selectClusterHandler)
         self.register_handle_function("AlgorithmSelectRackReq", self.selectRackHandler)
         self.register_handle_function("AlgorithmSelectNodeReq", self.selectNodeHandler)
+        self.register_handle_function("AlgorithmSelectNodeListReq", self.selectNodeListHandler)
+
+        self.register_handle_function("AlgorithmAskNameReq", self.askNameHandler )
+
+
+    def askNameHandler(self, msg, client_address=None):
+        print(msg)
+        print(client_address)
+        return self.name
+
+    def selectNodeListHandler(self, msg, client_address=None):
+        print("alg@selectNodeListHandler called")
+        node_resource_list = self.askNodeResourceList( list(client_address) )
+        process_algorithm_nodelist = self.best_fit_memory( msg, node_resource_list )
+        return process_algorithm_nodelist
+
+    def askNodeResourceList(self, rack_addr):
+        print("alg@askNodeResourceList method called!")
+        req = self.create_message( message.MonitorAskNodeResourceListReq, [rack_addr] )
+        res = self.send_message( self.monitor_addr, req )
+        return res
+
+    def best_fit_memory( self, vm_attr, resource_list):
+        print("alg@best_fit_memory called")
+        available_list = self.getAvailableResourceList( vm_attr, resource_list)
+
+        result_list  = sorted( available_list, key=lambda x: x["memory"], reverse=True )
+        return result_list
+        
+        
+    def getAvailableResourceList(self, vm_attr, resource_list):
+        result = list()
+        for unit in resource_list:
+            if unit['memory'] > vm_attr.config_memory and unit['disk'] > vm_attr.config_disk :
+                result.append( unit )
+        return result
 
     def selectClusterHandler(self, msg, client_address=None):
         return self.cluster_addr

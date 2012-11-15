@@ -27,8 +27,7 @@ class Monitor(BaseServer):
         self.vmInfos = dict() # vmid as key, info as value
         self.daemonInfos = dict() # name as key, info as value
         self.pmInfos = dict() # hostname as key, info as value
-
-        self.testData = dict()
+        self.hierachy = None
 
     def addTestData( **kargs):
         self.testData.update( kargs )
@@ -53,6 +52,11 @@ class Monitor(BaseServer):
         respondMsg = message.MonitorAskNodeResourceListRes( pmResourceList = pmList )
         return respondMsg
 
+    def askNodeResourceListHandler(self, msg, client_addr=None ):
+        return self.getNodeResourceList( msg.rack_addr )
+
+    def getNodeResourceList( self, rack_addr ):
+        return "unimplemented"
 
     def MonitorResource(self):
         pollingTimeval = 10 # 10secs update

@@ -36,6 +36,26 @@ class BaseServer(ThreadBaseMixIn, object):
         self.request_count = 1
         self.request_context = {}
 
+        self.name = "unnamed %s" % self.__class__.__name__
+
+        self.testData = dict() # can be assign testData from outside
+
+    def setHintLaunched(self):
+        self.register_start_function( self.print_info )
+
+    def testData(self,name):
+        try:
+            return self.testData[name]
+        except NameError:
+            return None
+    def setTestData(self, name, value):
+        self.testData[name] = value
+    def hasTestData(self, name):
+        return self.testData.has_key(name)
+    def print_info(self):
+        print("%s @%s:%i launched!" % (self.name, self.host, self.port ) )
+        
+
     def addr(self):
         ''' Get address: (host, port) '''
         return (self.host, int(self.port))
@@ -184,14 +204,16 @@ class BaseServer(ThreadBaseMixIn, object):
         return len(self.living_threads)
 
     def create_message(self, msg_class, values, context=None):
-        _values = values[:]
+        if isinstance( msg_class, str ) :
+            msg_class = globals()[msg_class] # for passing a class's name as arguments
+        
+        _values = values[:] # pass a copy
         if "Req" in msg_class.__name__:
             _values += [self.addr(), self.request_count]
         elif "Res" in msg_class.__name__ and context:
             _values += [context.request_id]
 
         self.request_count+=1
-
         return msg_class(*_values)
 
     def send_message(self, address, message, context=None):

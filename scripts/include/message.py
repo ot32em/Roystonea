@@ -47,11 +47,18 @@ spec = {
         "AlgorithmSelectNodeListRes": ["node_addr_list"],
         "AlgorithmSelectRes": ["addressList"],
 
+        "AlgorithmAskNameReq": [],
+
         # Monitor
+        "MonitorUnitListRes": ["unit_list"],
         "MonitorAskClusterListReq": ["cloud_unit"],
         "MonitorAskRackListReq": ["cluster_unit"],
         "MonitorAskNodeListReq": ["rack_unit"],
-        "MonitorUnitListRes": ["unit_list"],
+        "MonitorAskNodeResourceListReq": ["rack_addr"],
+        "MonitorAskNodeListRes": ["cluster_resource_list"],
+        "MonitorAskNodeListRes": ["rack_resource_list"],
+        "MonitorAskNodeListRes": ["node_resource_list"],
+>>>>>>> add two test, test_simple.py and test_simple2, for communicating in rack, algorithm, and monitor
 }
 
 def values_of_message(message):
