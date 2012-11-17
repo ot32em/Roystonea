@@ -29,10 +29,9 @@ class Monitor(BaseServer):
         self.vmInfos = dict() # vmid as key, info as value
         self.daemonInfos = dict() # name as key, info as value
         self.pmInfos = dict() # hostname as key, info as value
+        self.monitor_timeval = 10
         self.hierachy = Hierachy()
-
-    def addTestData( **kargs):
-        self.testData.update( kargs )
+        self.register_start_function( self.PollingMonitorResource )
 
     def register_handle_functions(self):
         self.register_handle_function("MonitorAskNodeResourceListReq", self.askNodeResourceListHandler)
@@ -75,60 +74,59 @@ class Monitor(BaseServer):
         
         return rack_resource_list
 
-    def MonitorResource(self):
-        pollingTimeval = 10 # 10secs update
+    def PollingMonitorResource(self):
         nodes = self.hierachy.getDaemonsByType("Node")
-        machineList = list()
+        machine_list= list()
         for name in nodes:
-            machineList.append( nodes[ name ].hostmachine )
+            machine_list.append( nodes[ name ].hostmachine )
         while 1:
-            self.monitor( machineList )
-            time.sleep( pollingTimeval )
+            self.monitor( machine_list )
+            time.sleep( self.monitor_timeval)
 
     
-    def monitor( self, machineList ):
+    def monitor( self, machine_list):
         # init memory info slot for each machine
-        memoriesRemainingKB = [ None for i in xrange( len(machineList) ) ]
-        disksRemainingKB = [ None for i in xrange( len(machineList) ) ]
-        disksUsedPercent = [ None for i in xrange( len(machineList) ) ]
+        remaining_memory_KB_list = [ 0 for i in xrange( len(machine_list) ) ]
+        remaining_disk_KB_list = [ 0 for i in xrange( len(machine_list) ) ]
+        used_disk_percent_list = [ 0 for i in xrange( len(machine_list) ) ]
 
-        for i in xrange( len(machineList) ):
-            machineAddress = machineList[i] 
+        for i in xrange( len(machine_list) ):
+            machine_addr = machine_list[i] 
 
             # memory remaining info
-            memoryInfo = self.getHostMachineMemoryInfoAndVmResourceInfo( machineAddress )
-            vmResourceInfo = memoryInfo['VmResourceInfo']
-            preserve1G = 1 * 1024 * 1024
-            memoriesRemainingKB[i] = memoryInfo['Total'] - memoryInfo['Used'] - preserve1G
+            mixed_info = self.get_machine_memory_info_and_vm_status_list( machine_addr )
+            vm_status_list = mixed_info['vm_status_list']
+            preserve_1G = 1 * 1024 * 1024
+            remaining_memory_KB_list[i] = mixed_info['total_memory'] - mixed_info['used_memory'] - preserve_1G
 
             # disk remaining info
-            diskStatus = self.getHostMachineDiskInfo( machineAddress )
-            disksRemainingKB[i] = diskStatus['Remaining'] 
-            disksUsedPercent[i] = diskStatus['Used'] 
+            disk_info = self.get_machine_disk_info( machine_addr )
+            remaining_disk_KB_list[i] = disk_info['remaining_disk'] 
+            used_disk_percent_list[i] = disk_info['used_disk'] 
 
-            self.updateHostMachineResource( hostmachine  = machineAddress,
-                                       remainingMemory = memoriesRemainingKB[i],
-                                       remainingDisk = disksRemainingKB[i],
-                                       usedDiskPercent = disksUsedPercent[i] )
-            self.updateManyVmResource( vmResourceInfo )
+            self.update_machine_resource( hostmachine  = machine_addr,
+                                       remaining_memory_KB = remaining_memory_KB_list[i],
+                                       remaining_disk_KB = remaining_disk_KB_list[i],
+                                       used_disk_percent = used_disk_percent_list[i] )
+            self.update_vm_status_list( vm_status_list )
 
-    def getHostMachineMemoryInfoAndVmResourceInfo( self,machineAddress ):
+    def get_machine_memory_info_and_vm_status_list( self, machine_addr):
         result = dict()
-        result['Total'] = self.getHostMachineTotalMemory( machineAddress )
-        tmp = self.getHostMachineUsedMemoryAndManyVmResourceInfo( machineAddress )
-        result['Used'] = tmp['Used']
-        result['VmResourceInfo'] = tmp['VmResourceInfo']
+        result['total_memory'] = self.get_machine_total_memory( machine_addr )
+        tmp = self.get_machine_used_memory_and_vm_status_list( machine_addr )
+        result['used_memory'] = tmp['used_memory']
+        result['vm_status_list'] = tmp['vm_status_list']
         return result
 
-    def getHostMachineTotalMemory( self,machineAddress ):
+    def get_machine_total_memory( self, machine_addr ):
 
         return 24*1024*1024 # 24 GB
         # following code detect dom0's max memory, so it's a wrong code 
         # not the whole memory xen can use
-        whitespacePattern = re.compile("\s+")
+        space_pattern = re.compile("\s+")
         # see capacity memory 
-        lessMeminfoCommand = "ssh {_machineAddress} less {meminfoFile}".format(
-                _machineAddress = machineAddress, meminfoFile = "/proc/meminfo")
+        lessMeminfoCommand = "ssh {_machine_addr} less {meminfoFile}".format(
+                _machine_addr = machine_addr, meminfoFile = "/proc/meminfo")
         print( lessMeminfoCommand )
         resultLines = pexpect.run( lessMeminfoCommand ).strip().split("\n")
         targetLinePattern = re.compile("^MemTotal:")
@@ -136,18 +134,18 @@ class Monitor(BaseServer):
         memoryTotal = 0
         for line in resultLines :
             if targetLinePattern.match( line ):
-                columns = whitespacePattern.split( line ) # line will like "MemTotal:     452454543 kB"
+                columns = space_pattern.split( line ) # line will like "MemTotal:     452454543 kB"
                 memoryTotal = int( columns[1] )
                 break
         return memoryTotal
 
-    def getHostMachineUsedMemoryAndManyVmResourceInfo( self, machineAddress ):
-        xenVmNamePrefix = "vm"
-        xenVmNamePattern = re.compile( xenVmNamePrefix + "\d+" ) # ex: vm123445
-        whitespacePattern = re.compile( "\s+" )
+    def get_machine_used_memory_and_vm_status_list( self, machine_addr ):
+        xen_vm_name_prefix = "vm"
+        xen_vm_name_pattern = re.compile( xen_vm_name_prefix + "\d+" ) # ex: vm123445
+        space_pattern = re.compile( "\s+" )
 
-        usedMemory = 0
-        vms = list()
+        used_memory = 0
+        vm_status_list = list()
         # command "xentop -i 2 -d 0.1 -b " output:
         #   NAME     STATE     CPU(sec) CPU(%)     MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%)
         #   Domain-0 -----r     232891    0.0    2091520    8.3   no limit       n/a
@@ -161,65 +159,70 @@ class Monitor(BaseServer):
         #   vm2132   --b---         56    0.2     262144    1.0     262144       1.0    
 
         # counting avaliable memory 
-        xentopCommand = "ssh {_machineAddress} sudo xentop -i 2 -d 0.1 -b".format( _machineAddress = machineAddress )
+        xentopCommand = "ssh {_machine_addr} sudo xentop -i 2 -d 0.1 -b".format( _machine_addr = machine_addr )
         resultLines = pexpect.run( xentopCommand).strip().split("\n")
         resultLines = resultLines[ (len( resultLines ) / 2) : ] # need strings[middleline~end]
 
         for line in resultLines :
-            columns = whitespacePattern.split( line.strip() )
+            columns = space_pattern.split( line.strip() )
             if not columns :
                 continue
             if columns[0] == "Domain-0":
                 # hyperviser resource consume
-                usedMemory =  usedMemory + int(columns[4])
-            elif xenVmNamePattern.match( columns[0] ) :
-                usedMemory =  usedMemory + int(columns[4])
-                vm = { "vmid" : columns[0][len(xenVmNamePrefix):], # vm1234 -> 1234
-                       "hostmachine" : machineAddress,
+                used_memory =  used_memory + int(columns[4])
+            elif xen_vm_name_pattern.match( columns[0] ) :
+                used_memory =  used_memory + int(columns[4])
+                vm = { "vmid" : columns[0][len(xen_vm_name_prefix):], # vm1234 -> 1234
+                       "hostmachine" : machine_addr,
                        "cpuUsage" : float( columns[3] ),
                        "memoryUsage" : float( columns[4]) }
-                vms.append(vm)
+                vm_status_list.append(vm)
         result = dict()
-        result['Used'] = usedMemory
-        result['VmResourceInfo'] = vms
+        result['used_memory'] = used_memory
+        result['vm_status_list'] = vm_status_list
         return result
 
-    def getHostMachineDiskInfo( self, machineAddress):
-        whitespacePattern = re.compile( "\s+" )
+    def get_machine_disk_info( self, machine_addr):
+        space_pattern = re.compile( "\s+" )
         # command "df /mnt/images/sfs" output:
         # Filesystem           1K-blocks      Used Available Use% Mounted on
         # /dev/mapper/vg-sfs   825698728 101306472 682449216  13% /mnt/images/sfs
-        dfCommand = "ssh {_machineAddress} df {shareFileSystemPath}".format(
-            _machineAddress = machineAddress, shareFileSystemPath = "/mnt/images/sfs" )
+        dfCommand = "ssh {_machine_addr} df {shareFileSystemPath}".format(
+            _machine_addr = machine_addr, shareFileSystemPath = "/mnt/images/sfs" )
+
+        print("dfCommand: "),
+        print(dfCommand)
 
         resultLines = pexpect.run(dfCommand).strip().split("\n")
-        columns = whitespacePattern.split( resultLines[1]) # discard first title line
+        print("resultLines: "),
+        print( resultLines )
+        columns = space_pattern.split( resultLines[1]) # discard first title line
 
         result = dict()
-        result['Remaining'] = int( columns[3] )
-        result['Used'] = float( columns[4][:-1] )
+        result['remaining_disk'] = int( columns[3] )
+        result['used_disk'] = float( columns[4][:-1] )
         return result
 
-    def updateHostMachineResource( self, hostmachine, remainingMemory, remainingDisk, usedDiskPercent ) :
+    def update_machine_resource( self, hostmachine, remaining_memory_KB, remaining_disk_KB, used_disk_percent) :
         print(" hostmachine: %s, remain-mem: %s, remain-disk: %s, usedDisk%%: %s " 
-            % (hostmachine, remainingMemory, remainingDisk, usedDiskPercent ) )
+            % (hostmachine, remaining_memory_KB, remaining_disk_KB, used_disk_percent ) )
         return
         req = Message.UpdateHostMachineResourceReq( hostmachine = hostmachine,
-                                                    remainingMemory =remainingMemory,
-                                                    remainingDisk = remainingDisk,
-                                                    usedDiskPercent = usedDiskPercent )
+                                                    remaining_memory_KB =remaining_memory_KB,
+                                                    remaining_disk_KB = remaining_disk_KB,
+                                                    used_disk_percent = used_disk_percent )
         coordinator = self.hierachy.getCoordinatorDaemon()
         Client.sendonly_message( (coordinator.host, coordinator.post), req )
 
-    def updateManyVmResource( self, vms ):
-        for vm in vms :
+    def update_vm_status_list( self, vm_list ):
+        for vm in vm_list :
             print(" vm(%s), at %s, current cpu usage: %s, memory usage: %s " 
                 % (vm['vmid'], vm['hostmachine'], vm['cpuUsage'], vm['memoryUsage'] ) )
         return
         
-        req = Message.UpdateManyVmsResourceReq( vmsResourceInfo = vms )
+        req = Message.CoordinatorUpdateVmStatusListReq( vm_status_list = vm_list)
         coordinator = self.hierachy.getCoordinatorDaemon()
-        Client.sendonly_message( (coordinator.host, coordinator.port ), req )
+        Client.sendonly_message( coordinator.addr() , req )
 
 if __name__ == '__main__':
      Monitor.cmd_start()
