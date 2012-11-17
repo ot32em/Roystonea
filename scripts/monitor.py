@@ -15,6 +15,7 @@ import re
 import time
 import pexpect
 from include.base_server import BaseServer
+from include.hierachy import Hierachy
 from include import message
 from rootpath import ROYSTONEA_ROOT
 
@@ -29,16 +30,33 @@ class Monitor(BaseServer):
         self.daemonInfos = dict() # name as key, info as value
         self.pmInfos = dict() # hostname as key, info as value
 
-        self.hierachy = None
+        self.hierachy = Hierachy()
 
     def register_handle_functions(self):
         self.register_handle_function("MonitorAskNodeResourceListReq", self.askNodeResourceListHandler)
+        self.register_handle_function("MonitorAskRackResourceListReq", self.askRackResourceListHandler)
+        self.register_handle_function("MonitorAskClusterResourceListReq", self.askClusterResourceListHandler)
 
     def askNodeResourceListHandler(self, msg, client_addr=None ):
-        return self.getNodeResourceList( msg.rack_addr )
+        rack_addr = msg.rack_addr
+        
+        rack_unit = self.hierachy.getDaemonByAddress( rack_addr )
+        node_resource_list = rack_unit.children
+        return node_resource_list
+        
+    def askRackResourceListHandler(self, msg, client_addr=None ):
+        cluster_addr = msg.cluster_addr
+        cluster_unit = self.hierachy.getDaemonByAddress( cluster_addr )
 
-    def getNodeResourceList( self, rack_addr ):
-        return "unimplemented"
+        rack_resource_list  = cluster_unit.children
+        return rack_resource_list
+
+    def askClusterResourceListHandler(self, msg, client_addr=None ):
+        cloud_addr = msg.cloud_addr
+        cloud_unit = self.hierachy.getDaemonByAddress( cloud_addr )
+        rack_resource_list = cloud_unit.children
+        
+        return rack_resource_list
 
     def MonitorResource(self):
         pollingTimeval = 10 # 10secs update

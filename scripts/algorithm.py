@@ -32,113 +32,131 @@ class Algorithm(BaseServer):
 
     def __init__(self, host, port):
         super(Algorithm, self).__init__(host, port)
-
         self.node_addr = None
         self.rack_addr = None
         self.cluster_addr = None
-        self.monitor_addr = ("localhost", 7004 )
-
+        
+        self.monitor_addr = None
 
     def register_handle_functions(self):
-        self.register_handle_function("AlgorithmSelectClusterReq", self.selectClusterHandler)
-        self.register_handle_function("AlgorithmSelectRackReq", self.selectRackHandler)
-        self.register_handle_function("AlgorithmSelectNodeReq", self.selectNodeHandler)
+        self.register_handle_function("AlgorithmSelectClusterListReq", self.selectClusterListHandler)
+        self.register_handle_function("AlgorithmSelectRackListReq", self.selectRackListHandler)
         self.register_handle_function("AlgorithmSelectNodeListReq", self.selectNodeListHandler)
 
-        self.register_handle_function("AlgorithmAskNameReq", self.askNameHandler )
-
-
-    def askNameHandler(self, msg, client_address=None):
-        print(msg)
-        print(client_address)
-        return self.name
-
     def selectNodeListHandler(self, msg, client_address=None):
-        print("alg@selectNodeListHandler called")
-        node_resource_list = self.askNodeResourceList( list(client_address) )
-        process_algorithm_nodelist = self.best_fit_memory( msg, node_resource_list )
-        return process_algorithm_nodelist
-
-    def askNodeResourceList(self, rack_addr):
-        print("alg@askNodeResourceList method called!")
-        req = self.create_message( message.MonitorAskNodeResourceListReq, [rack_addr] )
-        res = self.send_message( self.monitor_addr, req )
-        return res
-
-    def best_fit_memory( self, vm_attr, resource_list):
-        print("alg@best_fit_memory called")
-        available_list = self.getAvailableResourceList( vm_attr, resource_list)
-
-        result_list  = sorted( available_list, key=lambda x: x["memory"], reverse=True )
-        return result_list
+        # get resource list
+        node_resource_list = self.ask_children_resource_list( msg.rack_addr, parent_type="rack" )
         
+        # get vm_attr
+        vm_attr = msg
+
+        # process
+        result_ordered_unit_list = self.alg_best_fit( vm_attr, node_resource_list )
+        result_ordered_addr_list = self.unit_list_to_addr_list ( result_ordered_unit_list )
+        return result_ordered_addr_list 
+
+
+    def selectClusterListHandler(self, msg, client_address=None):
+        node_resource_list = self.ask_children_resource_list( msg.cloud_addr, parent_type="cloud" )
         
-    def getAvailableResourceList(self, vm_attr, resource_list):
-        result = list()
-        for unit in resource_list:
-            if unit['memory'] > vm_attr.config_memory and unit['disk'] > vm_attr.config_disk :
-                result.append( unit )
-        return result
+        # get vm_attr
+        vm_attr = msg
 
-    def selectClusterHandler(self, msg, client_address=None):
-        return self.cluster_addr
+        # process
+        result_ordered_unit_list = self.alg_best_fit( vm_attr, node_resource_list, params={"reverse":True} )
+        result_ordered_addr_list = self.unit_list_to_addr_list ( result_ordered_unit_list )
+        return result_ordered_addr_list 
 
-    def selectRackHandler(self, msg, client_address=None):
-        # pass
-        # # ask coordinator for rack's resource
-        # racks = getRackResourcesFromCluster( client_address )
-        # vminfo = msg['vminfo']
-        return self.rack_addr
-
-    def _getRackResourcesFromCluster( client_address ):
-        monitorAddress = self.monitor_addr
-        return
-
-    def selectNodeHandler(self, msg, client_address=None):
-        return self.node_addr
-
-    def algorithmFirstFit(self, vmInfo, resourceList, params=dict() ):
-        availiableList = self._filterAvalibaleResources( vmInfo, resourceList )
-        if self.isParamTrue( params, 'reverse' ) :
-            priorityOrder = sorted( availiableList, reverse=True )
-        return priorityOrder
-
-    def algorithmBestFit(self, vmInfo, resourceInfoList, params=dict()):
-        availiableList = self._filterAvalibaleResources( vmInfo, resourceList )
-        factor = self._getFactor( params )
-        priorityOrder = sorted( availiableList, key=lambda resource: resource[factor], reverse=True ) # max put front
+    def selectRackListHandler(self, msg, client_address=None):
+        node_resource_list = self.ask_children_resource_list( msg.cluster_addr, parent_type="cluster" )
         
-    def algorithmWorstFit(self, vmInfo, resourceInfoList, params=dict()):
-        availiableList = self._filterAvalibaleResources( vmInfo, resourceList )
-        factor = self._getFactor( params )
-        priorityOrder = sorted( availiableList, key=lambda resource: resource[factor] ) # max put back
+        # get vm_attr
+        vm_attr = msg
+
+        # process
+        result_ordered_unit_list = self.alg_best_fit( vm_attr, node_resource_list, params={"reverse":True} )
+        result_ordered_addr_list = self.unit_list_to_addr_list ( result_ordered_unit_list )
+        return result_ordered_addr_list 
+
+    ''' ask children_resource_list of parent_addr from monitor daemon '''
+    def ask_children_resource_list(self, parent_addr, parent_type="rack"):
+        msg = self.message_class( parent_type )
+        req = self.create_message( msg, [parent_addr] )
+        children_resource_list = self.send_message( self.monitor_addr, req )
+        return children_resource_list.values()
+
+    def message_class( self, parent_type ):
+        if parent_type == "cloud":
+            return message.MonitorAskClusterResourceListReq
+        elif parent_type == "cluster":
+            return message.MonitorAskRackResourceListReq
+        elif parent_type == "rack":
+            return message.MonitorAskNodeResourceListReq
+        return None
+
+    ''' 
+        Algorithm Implementation
+        standard input:
+            vm_attr: a dictionary with vm creation set.
+            resource_list: a list with resource_list
+
+        standar output:
+            a ordered list with address of correct location
         
-    def _isParamTrue( self, params, keyname ):
+    '''
+
+    def alg_first_fit(self, vm_attr, resource_list, params=dict() ):
+        resource_list = self.enough_fit_vm( vm_attr, resource_list)
+        if self.is_param_true( params, 'reverse' ) :
+            ordered_list = sorted( resource_list, key = lambda x: x["name"], reverse=True )
+        return ordered_list
+
+    def alg_best_fit(self, vm_attr, resource_list, params=dict()):
+        resource_list = self.enough_fit_vm( vm_attr, resource_list)
+        key_method = self.sorting_factor( params )
+        ordered_list = sorted( resource_list, key=key_method, reverse=True ) # max put front
+        return ordered_list
+        
+    def alg_worst_fit(self, vm_attr, resource_list, params=dict()):
+        resource_list = self.enough_fit_vm( vm_attr, resource_list)
+        facotr = self.sorting_factor( params )
+        ordered_list = sorted( resource_list, key=key_method, reverse=False) # max put front
+        return ordered_list
+
+        
+    ''' tool methods '''
+    @staticmethod
+    def key_method_memory(r):
+        return r.memory
+    @staticmethod
+    def key_method_disk(r):
+        return r.disk
+
+    def is_param_true( self, params, keyname ):
         if params.has_key( keyname )  and params[ keyname ] == True :
             return True
         return False
 
-    def _filterAvailibleResources(self, vmInfo, resourceList, params ):
-        resultList = list()
-        for resourceInfo in resourceInfoList:
-            if resourceInfo.type == 'Node' :
-                resourceInfo['minimalMemory'] = resourceInfo['memory']
-                resourceInfo['minimalDisk'] = resourceInfo['disk']
+    def enough_fit_vm(self, vm_attr, resource_list ):
+        result_list = list()
+        for unit in resource_list:
 
-            if resourceInfo['minimalMemory']  > vmInfo['config_memory'] and  \
-                resourceInfo['minimalDisk'] > vmInfo['config_disk']:
-                resultList.append( resourceInfo )
-        return resultList
-        
-    def _getFactor(self, params):
+            if unit.minimal_memory() > vm_attr.config_memory and \
+               unit.minimal_disk() > vm_attr.config_disk :
+                result_list.append( unit )
+        return result_list 
+         
+    def sorting_factor(self, params): # default factor memory
         if params.has_key('factor') and params['factor'] == 'disk' :
-            return 'disk'
-        return 'memory'
+            return Algorithm.key_method_disk
+        return Algorithm.key_method_memory
 
-    def _enough(self, vmInfo, resourceInfo ):
-        if vmInfo['config_memory'] > resourceInfo['memory'] and vmInfo['config_disk'] > resourceInfo['disk'] :
-            return True
-        return False
+    def unit_list_to_addr_list(self, unit_list):
+        addr_list = list()
+        for unit in unit_list:
+            addr_list.append( unit.addr() )
+        return addr_list
+
 
 def start(port, cluster_addr, rack_addr, node_addr):
     server = Algorithm("127.0.0.1", port)

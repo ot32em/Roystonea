@@ -20,18 +20,10 @@ class Rack(BaseServer):
         self.register_handle_function("NodeCreateVMRes", self.createVMResHandler)
 
     def selectNodeList(self, vm_attr):
-        print("rack@selectNodeList called!")
         addr = self.algorithm_addr
-        nodeListReq = self.create_message(message.AlgorithmSelectNodeListReq, vm_attr )
+        msg_values = vm_attr + [ self.addr() ]
+        nodeListReq = self.create_message(message.AlgorithmSelectNodeListReq, msg_values )
         return self.send_message( addr, nodeListReq )
-
-    def askAlgorithmName(self):
-        req = self.create_message( message.AlgorithmAskNameReq , [] )
-        res = self.send_message( self.algorithm_addr, req )
-        print("in rack askAlgorithmName method, dump res")
-        print( res )
-        return res
-
 
     def createVMReqHandler(self, msg, client_address=None):
         values = message.values_of_message(msg)
