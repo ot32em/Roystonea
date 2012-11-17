@@ -10,12 +10,12 @@ def test_monitor():
 
     test_hierachy = Hierachy()
 
-    node1 = NodeDaemonUnit( "node1", host, port+1, "140.112.28.240" )
+    node1 = NodeDaemonUnit( "node1", host, port+1, "roystonea01" )
     test_hierachy.add_daemon( node1 )
     m.hiearchy = test_hierachy
 
     ss = [m]
-    m.monitor( ["140.112.28.240"])
+    m.monitor( ["roystonea01","roystonea02", "roystonea03"])
 #    st.start_server_stack( ss, True, 4 )
 #    st.shutdown_server_stack( ss )
 
