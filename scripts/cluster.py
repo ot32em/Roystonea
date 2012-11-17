@@ -14,6 +14,7 @@ class Cluster(BaseServer):
         self.register_handle_function("ClusterCreateVMReq", self.createVMReqHandler)
         self.register_handle_function("RackCreateVMRes", self.createVMResHandler)
 
+
     def createVMReqHandler(self, msg, client_address=None):
         values = message.values_of_message(msg)
 
@@ -25,6 +26,12 @@ class Cluster(BaseServer):
         # tell rack to create vm
         create_vm_msg = self.create_message(message.RackCreateVMReq, values)
         self.send_message(rack_addr, create_vm_msg, context=msg)
+
+    def selectRackList(self, vm_attr):
+        addr = self.algorithm_addr
+        msg_values = vm_attr + [ self.addr() ]
+        selectRackListReq = self.create_message( message.AlgorithmSelectRackListReq, msg_values )
+        return self.send_message( addr, selectRackListReq )
 
     def createVMResHandler(self, msg, client_address=None):
         context = self.pop_context(msg)

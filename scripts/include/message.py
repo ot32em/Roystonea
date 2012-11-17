@@ -11,8 +11,8 @@ spec:
 request_attrs = ["caller_address", "request_id"]
 response_attrs = ["request_id"]
 
-vm_attributes = ["vmid", "groupid", "vmsubid", "vmtype", 
-                "config_cpu", "config_memory", "config_disk", "config_lifetime", 
+vm_attributes = ["vmid", "groupid", "vmsubid", 
+                "vmtype", "config_cpu", "config_memory", "config_disk", "config_lifetime", 
                 "ownerid"]
 
 pm_attributes = ["hostmachine", "remainingMemory", "totalMemory",
@@ -40,10 +40,9 @@ spec = {
         "ClusterCreateVMRes": ["vmid", "status"],
 
         # Algorithm
-        "AlgorithmSelectClusterReq": vm_attributes,
-        "AlgorithmSelectRackReq": vm_attributes,
-        "AlgorithmSelectNodeReq": vm_attributes,
-        "AlgorithmSelectNodeListReq": vm_attributes,
+        "AlgorithmSelectClusterListReq": vm_attributes + ["cloud_addr"],
+        "AlgorithmSelectRackListReq": vm_attributes + ["cluster_addr"],
+        "AlgorithmSelectNodeListReq": vm_attributes + ["rack_addr"],
         "AlgorithmSelectNodeListRes": ["node_addr_list"],
         "AlgorithmSelectRes": ["addressList"],
 
@@ -54,11 +53,12 @@ spec = {
         "MonitorAskClusterListReq": ["cloud_unit"],
         "MonitorAskRackListReq": ["cluster_unit"],
         "MonitorAskNodeListReq": ["rack_unit"],
-        "MonitorAskNodeResourceListReq": ["rack_addr"],
         "MonitorAskNodeListRes": ["cluster_resource_list"],
         "MonitorAskNodeListRes": ["rack_resource_list"],
         "MonitorAskNodeListRes": ["node_resource_list"],
->>>>>>> add two test, test_simple.py and test_simple2, for communicating in rack, algorithm, and monitor
+        "MonitorAskClusterResourceListReq": ["cloud_addr"],
+        "MonitorAskRackResourceListReq": ["cluster_addr"],
+        "MonitorAskNodeResourceListReq": ["rack_addr"],
 }
 
 def values_of_message(message):
