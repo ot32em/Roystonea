@@ -123,7 +123,7 @@ class NodeDaemonUnit(TreeDaemonUnit):
         self._memory = 0
         self._disk = 0
 
-        self._disk_used_percent = 0.0
+        self._used_disk = 0.0
         
     def __str__(self):
         return DaemonUnit.__str__(self ) + " hostmachine: %s" % ( self.hostmachine ) 
@@ -138,10 +138,15 @@ class NodeDaemonUnit(TreeDaemonUnit):
         self._memory = val
     def set_disk(self, val):
         self._disk = val
+    def set_used_disk(self, val):
+        self._used_disk = val
+
     def memory(self):
         return self._memory
     def disk(self):
         return self._disk
+    def used_disk(self):
+        return self._used_disk
 
 
 class Hierachy():
@@ -251,7 +256,7 @@ class Hierachy():
     def getRootDaemon(self):
         return self.rootDaemon
 
-    def getDaemonsByTypes(self, typename ):
+    def getDaemonsByTypename(self, typename ):
         if typename not in self.treeDaemonNames :
             return dict()
         daemons = dict()

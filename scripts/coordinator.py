@@ -18,6 +18,18 @@ class Coordinator(BaseServer):
 
     def register_handle_functions(self):
         self.register_handle_function("ClusterCreateVMRes", self.createVMResHandler)
+        self.register_handle_function("CoordinatorUpdateMonitorResultReq", self.updateMonitorResultHandler )
+
+
+    def updateMonitorResultHandler(self, msg, client_addr=None):
+        print("coordinator@upateMonitiorResultHandler called!")
+        vm_status_list = msg.vm_status_list
+        machine_resource_list = msg.machine_resource_list
+        print("vm_status_list: "),
+        print(vm_status_list)
+        print("machine_resource_list: "),
+        print(machine_resource_list)
+
 
     def createVMResHandler(self, msg, client_address=None):
         ''' Get new VM host node ip, and let moniter to check the VM status 
