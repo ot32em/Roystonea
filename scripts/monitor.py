@@ -86,29 +86,56 @@ class Monitor(BaseServer):
     
     def monitor( self, machine_list):
         # init memory info slot for each machine
-        remaining_memory_KB_list = [ 0 for i in xrange( len(machine_list) ) ]
-        remaining_disk_KB_list = [ 0 for i in xrange( len(machine_list) ) ]
-        used_disk_percent_list = [ 0 for i in xrange( len(machine_list) ) ]
+        machine_resource_list = [ None for i in xrange( len(machine_list) ) ]
+
+        remaining_memory_KB_list = [ None for i in xrange( len(machine_list) ) ]
+        remaining_disk_KB_list = [ None for i in xrange( len(machine_list) ) ]
+        used_disk_percent_list = [ None for i in xrange( len(machine_list) ) ]
+        total_vm_status_list = list()
 
         for i in xrange( len(machine_list) ):
             machine_addr = machine_list[i] 
+            machine_resource = dict()
+            machine_resource["addr"] = machine_addr
 
-            # memory remaining info
+            # vm_status info
             mixed_info = self.get_machine_memory_info_and_vm_status_list( machine_addr )
             vm_status_list = mixed_info['vm_status_list']
+            total_vm_status_list.append( vm_status_list )
+
+            # memory remaining info
             preserve_1G = 1 * 1024 * 1024
-            remaining_memory_KB_list[i] = mixed_info['total_memory'] - mixed_info['used_memory'] - preserve_1G
+            remaining_memory = mixed_info['total_memory'] - mixed_info['used_memory'] - preserve_1G
+            machine_resource['remaining_memory'] = remaining_memory
 
             # disk remaining info
             disk_info = self.get_machine_disk_info( machine_addr )
-            remaining_disk_KB_list[i] = disk_info['remaining_disk'] 
-            used_disk_percent_list[i] = disk_info['used_disk'] 
+            machine_resource['remaining_disk'] = disk_info['remaining_disk'] 
+            machine_resource['used_disk'] = disk_info['used_disk'] 
+            machine_resource_list.append( machine_resource )
 
-            self.update_machine_resource( hostmachine  = machine_addr,
-                                       remaining_memory_KB = remaining_memory_KB_list[i],
-                                       remaining_disk_KB = remaining_disk_KB_list[i],
-                                       used_disk_percent = used_disk_percent_list[i] )
-            self.update_vm_status_list( vm_status_list )
+
+        self.notify_db_update_all_monitor_result( total_vm_status_list = total_vm_status_list,
+                                                  machine_resource_list = machine_resource_list )
+        self.update_hierachy_all_monitor_result( machine_resource_list = machine_resource_list )
+
+    def notify_db_update_all_monitor_result( total_vm_status_list,  machine_resource_list ):
+        print("monitor@notify_db called")
+        addr = self.coordinator_addr
+        msg_values = [ total_vm_status_list, machine_resource_list]
+        msg = self.create_message( message.CoordinatorUpdateMonitorResult, msg_values )
+        self.send_message( addr, msg )
+
+    def update_hierachy_all_monitor_result( machine_resource_list ):
+        nodeunit_list = self.hierachy.findDaemonsByTypename("Node")
+        for nodename in nodeunit_list :
+            nodeunit = nodeunit_list[nodename]
+            for machine_resource in machine_resource_list :
+                if machine_resource.addr == nodeunit.addr() :
+                    nodeunit.set_memory( int( machine_resource['remaining_memory']) )
+                    nodeunit.set_disk( int( machine_resource['remaining_disk']) )
+                    nodeunit.set_used_disk( int( machine_resource['used_disk']) )
+
 
     def get_machine_memory_info_and_vm_status_list( self, machine_addr):
         result = dict()
