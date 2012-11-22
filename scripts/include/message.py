@@ -40,7 +40,7 @@ spec = {
         "ClusterCreateVMRes": ["vmid", "status"],
             
         # Coordinator
-        "CoordinatorUpdateMonitorResult": ["vm_status_list", "machine_resource_list"],
+        "CoordinatorUpdateMonitorResultReq": ["vm_status_list", "machine_resource_list"],
 
         # Algorithm
         "AlgorithmSelectClusterListReq": vm_attributes + ["cloud_addr"],

@@ -16,10 +16,13 @@ class Coordinator(BaseServer):
 
     def updateMonitorResultHandler(self, msg, client_addr=None):
         print("coordinator@upateMonitiorResultHandler called!")
+
         vm_status_list = msg.vm_status_list
         machine_resource_list = msg.machine_resource_list
+
         print("vm_status_list: "),
-        print(vm_status_list)
+        for vm in vm_status_list:
+            print( "[%s@%s]," % (vm['vmid'], vm['used_memory'])),
         print("machine_resource_list: "),
         print(machine_resource_list)
 

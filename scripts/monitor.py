@@ -75,7 +75,7 @@ class Monitor(BaseServer):
         return rack_resource_list
 
     def PollingMonitorResource(self):
-        nodes = self.hierachy.getDaemonsByType("Node")
+        nodes = self.hierachy.getDaemonsByTypename("Node")
         machine_list= list()
         for name in nodes:
             machine_list.append( nodes[ name ].hostmachine )
@@ -86,11 +86,7 @@ class Monitor(BaseServer):
     
     def monitor( self, machine_list):
         # init memory info slot for each machine
-        machine_resource_list = [ None for i in xrange( len(machine_list) ) ]
-
-        remaining_memory_KB_list = [ None for i in xrange( len(machine_list) ) ]
-        remaining_disk_KB_list = [ None for i in xrange( len(machine_list) ) ]
-        used_disk_percent_list = [ None for i in xrange( len(machine_list) ) ]
+        machine_resource_list = list()
         total_vm_status_list = list()
 
         for i in xrange( len(machine_list) ):
@@ -101,7 +97,7 @@ class Monitor(BaseServer):
             # vm_status info
             mixed_info = self.get_machine_memory_info_and_vm_status_list( machine_addr )
             vm_status_list = mixed_info['vm_status_list']
-            total_vm_status_list.append( vm_status_list )
+            total_vm_status_list = total_vm_status_list + vm_status_list
 
             # memory remaining info
             preserve_1G = 1 * 1024 * 1024
@@ -115,19 +111,18 @@ class Monitor(BaseServer):
             machine_resource_list.append( machine_resource )
 
 
-        self.notify_db_update_all_monitor_result( total_vm_status_list = total_vm_status_list,
-                                                  machine_resource_list = machine_resource_list )
-        self.update_hierachy_all_monitor_result( machine_resource_list = machine_resource_list )
+        self.notify_db_update_all_monitor_result( total_vm_status_list, machine_resource_list )
+        self.update_hierachy_all_monitor_result( machine_resource_list )
 
-    def notify_db_update_all_monitor_result( total_vm_status_list,  machine_resource_list ):
+    def notify_db_update_all_monitor_result( self, total_vm_status_list,  machine_resource_list ):
         print("monitor@notify_db called")
         addr = self.coordinator_addr
         msg_values = [ total_vm_status_list, machine_resource_list]
-        msg = self.create_message( message.CoordinatorUpdateMonitorResult, msg_values )
+        msg = self.create_message( message.CoordinatorUpdateMonitorResultReq, msg_values )
         self.send_message( addr, msg )
 
-    def update_hierachy_all_monitor_result( machine_resource_list ):
-        nodeunit_list = self.hierachy.findDaemonsByTypename("Node")
+    def update_hierachy_all_monitor_result( self, machine_resource_list ):
+        nodeunit_list = self.hierachy.getDaemonsByTypename("Node")
         for nodename in nodeunit_list :
             nodeunit = nodeunit_list[nodename]
             for machine_resource in machine_resource_list :
@@ -201,8 +196,9 @@ class Monitor(BaseServer):
                 used_memory =  used_memory + int(columns[4])
                 vm = { "vmid" : columns[0][len(xen_vm_name_prefix):], # vm1234 -> 1234
                        "hostmachine" : machine_addr,
-                       "cpuUsage" : float( columns[3] ),
-                       "memoryUsage" : float( columns[4]) }
+                       "cpu_usage" : float( columns[3] ),
+                       "used_memory" : int( columns[4]), 
+                       "memory_usage" : float( columns[5]) }
                 vm_status_list.append(vm)
         result = dict()
         result['used_memory'] = used_memory
