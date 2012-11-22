@@ -262,7 +262,7 @@ class Hierachy():
         daemons = dict()
         for name in self.daemons.keys() :
             daemon = self.daemons[name]
-            if daemon.type == typename :
+            if daemon.typename == typename :
                 daemons[daemon.name ] = daemon
         return daemons
 

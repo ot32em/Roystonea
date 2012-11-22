@@ -17,7 +17,16 @@ def shutdown_server_stack(server_stack):
     for server in reversed(server_stack):
         server.shutdown()
 
-def get_port():
+def get_ports( nums ): # provide ports that are sure not to be used
+    port = random.randrange( 20000,25000)
+    ports = list()
+    for i in xrange(nums):
+        port = get_unused_port( port )
+        ports.append( port )
+        port = port + 1
+    return ports
+
+def get_port(): # provide a base port, and this port is sure not to be used
     port = random.randrange( 20000,25000)
     port = get_unused_port( port )
     return port
@@ -40,6 +49,10 @@ def _test_port_used(port):
         return False
     except socket.error as e :
         return True
+
+
+
+    
 
 
 LOCALHOST = "127.0.0.1"
