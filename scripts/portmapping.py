@@ -12,51 +12,61 @@ class Portmapping(BaseServer):
     def __init__(self, host, port):
         super( Portmapping, self).__init__(host, port)
 
-
-    def SubsystemPortmappingTest(self):
-        print 'hi this is portmapping'
-        vmid = 472
-        guestport = 22
-        vmname = 'ot32em-8-8'
-        portstatus = 'adding'
-        hostport = 4000
+        self.hostport_lock = threading.Lock() # avoid geting duplicate hostport
 
 
-        vmip = socket.gethostbyname(vmname)
+    def register_handle_functions(self):
+        self.register_handle_function("PortmappingAddPortmappingHandler", self.AddPortmappingHandler )
+        self.register_handle_function("PortmappingDeletePortmappingHandler", self.DeletePortmappingHandler )
 
-        if portstatus == 'adding':
-            # iptable -t nat -A PREROUTING -p tcp --dport $hostpot -j DNAT --to $intraIP:$guestport
-            iptables_cmd = '%s %s PREROUTING -p tcp --dport %s -j DNAT --to %s:%s' \
-                    %(self.config['cmd_iptables'], '-A', hostport, vmip, guestport)
-            logger.info('Add port mapping for %s, from %s to %s on hostmachine'%(vmname, guestport, hostport)) 
-        elif portstatus == 'deleting':
-            # iptable -t nat -D PREROUTING -p tcp --dport $hostpot -j DNAT --to $intraIP:$guestport
-            iptables_cmd = '%s %s PREROUTING -p tcp --dport %s -j DNAT --to %s:%s' \
-                    %(cmd_iptables, '-D', hostport, vmip, guestport)
-            logger.info('Delete port mapping for %s, from %s to %s on hostmachine'%(vmname, guestport, hostport)) 
 
-        (result, value) = pexpect.run(iptables_cmd, withexitstatus = 1)
-    
-    def SubsystemPortMapping(self, req):
-        portstatus = req.data[self.config['portstatus_index']]
-        vmname = req.data[self.config['vmname_index']]
-        guestport = req.data[self.config['guestport_index']]
-        hostport = req.data[self.config['hostport_index']]
+    def AddPortmappingHandler(self, msg, client_addr=None):
+        hostport = self.get_unused_hostport()
+        vmip = self.get_vmip( msg.vmname )
+        vmport = msg.vmport
 
-        vmip = socket.gethostbyname(vmname)
+        self.add_portmapping(hostport, vmip, vmport)
+        self.notify_db_added( hostport )
 
-        if portstatus == 'adding':
-            iptables_cmd = '%s %s PREROUTING -p tcp --dport %s -j DNAT --to %s:%s' \
-                    %(self.config['cmd_iptables'], '-A', hostport, vmip, guestport)
-            logger.info('Add port mapping for %s, from %s to %s on hostmachine'%(vmname, guestport, hostport)) 
-        elif portstatus == 'deleting':
-            iptables_cmd = '%s %s PREROUTING -p tcp --dport %s -j DNAT --to %s:%s' \
-                    %(cmd_iptables, '-D', hostport, vmip, guestport)
-            logger.info('Delete port mapping for %s, from %s to %s on hostmachine'%(vmname, guestport, hostport)) 
+    def DeletePortmappingHandler(self, msg, client_addr=None):
+        hostport = self.get_unused_hostport()
+        vmip = self.get_vmip( msg.vmname )
+        vmport = msg.vmport
 
-        (result, value) = pexpect.run(iptables_cmd, withexitstatus = 1)
+        self.delete_portmapping(hostport, vmip, vmport)
+        self.notify_db_deleted( hostport )
 
-    def add_portmapping( self, hostport, ip, guestport ):
+    def iptable_cmd(self):
+        return "iptables -t nat -p tcp -j DNAT --to {vmip}:{vmport} --dport {hostport} {action}"
+
+    def get_unused_hostport(self):
+        with self.hostport_lock:
+#            connect to coordinate to scan unused hostport
+
+    def add_portmapping( self, hostport, vmip, guestport ):
+        cmd = self.iptable_cmd().format( vmip=vmip, vmport=guestport, hostport=hostport, action="-A PREROUTING")
+        pexpect.run( cmd )
+
+    def delete_portmapping( self, hostport, vmip, guestport ):
+        cmd = self.iptable_cmd().format( vmip=vmip, vmport=guestport, hostport=hostport, action="-D PREROUTING")
+        pexpect.run( cmd )
+
+    def notify_db_added( self, hostport ):
+        addr = self.coordinator_addr
+        msg_values = [hostport]
+        msg = self.create_message( message.CoordinatorUpdatePortmappingAddedReq, msg_values)
+
+    def notify_db_deleted( self, hostport ):
+        addr = self.coordinator_addr
+        msg_values = [hostport]
+        msg = self.create_message( message.CoordinatorUpdatePortmappingDeletedReq, msg_values)
+
+
+
+
+        
+                                
+        
 
     def get_vmip(self, vmname):
         try:
