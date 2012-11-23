@@ -17,7 +17,6 @@ import pexpect
 from include.base_server import BaseServer
 from include.hierachy import Hierachy
 from include import message
-from rootpath import ROYSTONEA_ROOT
 
 class Monitor(BaseServer):
     ''' custom init variable '''
