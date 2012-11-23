@@ -44,6 +44,7 @@ spec = {
         "CoordinatorUpdateMonitorResultReq": ["vm_status_list", "machine_resource_list"],
         "CoordinatorUpdatePortmappingAddedReq": ["hostport"],
         "CoordinatorUpdatePortmappingDeletedReq": ["hostport"],
+        "CoordinatorSelectAllPortmapping": [],
 
         # Algorithm
         "AlgorithmSelectClusterListReq": vm_attributes + ["cloud_addr"],
