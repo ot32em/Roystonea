@@ -52,6 +52,3 @@ def start(port, algo_addr):
     server.algorithm_addr = algo_addr
     server.run()
 
-if __name__ == "__main__":
-    Rack.cmd_start()
-
