@@ -17,7 +17,6 @@ import pexpect
 from include.base_server import BaseServer
 from include.hierachy import Hierachy
 from include import message
-from rootpath import ROYSTONEA_ROOT
 
 class Monitor(BaseServer):
     ''' custom init variable '''
@@ -26,12 +25,7 @@ class Monitor(BaseServer):
     def __init__(self, host, port):
         super(Monitor, self).__init__(host, port)
 
-        self.vmInfos = dict() # vmid as key, info as value
-        self.daemonInfos = dict() # name as key, info as value
-        self.pmInfos = dict() # hostname as key, info as value
-
         self.monitor_timeval = 10
-
         self.hierachy = Hierachy()
 
         self.register_start_function( self.PollingMonitorResource )
