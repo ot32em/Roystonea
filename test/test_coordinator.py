@@ -3,6 +3,7 @@ from Roystonea.scripts.cluster import Cluster
 from Roystonea.scripts.rack import Rack
 from Roystonea.scripts.node import Node
 from Roystonea.scripts.algorithm import Algorithm
+from Roystonea.scripts.database import VM
 from support import server_manager
 import random
 from time import sleep
@@ -10,7 +11,17 @@ from time import sleep
 HOST = "127.0.0.1"
 PORT = random.randrange(20000, 25000)
 
+def test_coordinator_handle_vm_start_request():
+    coordinator_server = Coordinator(HOST, PORT)
+    server_manager.start_server_stack([coordinator_server])
+
+    try:
+        sleep(5)
+    finally:
+        server_manager.shutdown_server_stack([coordinator_server])
+
 def test_coordinator():
+    return
 
     # server_stack
     algo_server = Algorithm(HOST, PORT + 4)
@@ -40,7 +51,10 @@ def test_coordinator():
 
     try:
         sleep(5)
-        coordinator_server.create_vm(None)
+        vm = VM("vmid", "groupid", "vmsubid", "vmtype", 
+                "config_cpu", "config_memory", "config_disk", "config_lifetime", 
+                "ownerid")
+        coordinator_server.create_vm(vm)
 
         counter = 0
         while counter < 10 and holder['createVMResHandler_get_called'] == False:
