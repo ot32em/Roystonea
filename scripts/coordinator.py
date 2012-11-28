@@ -21,14 +21,15 @@ class Coordinator(BaseServer):
 
         Currently, just write to db that the vm is ready
         '''
-        print msg
+        vm_request = self.pop_context(msg)
+        if not vm_request: return
+
+        vm_request.update_vmstatus("running")
+        print "update!"
 
     def create_vm(self, vm_request):
-        vm_request.update_vmstatus("running")
-
-        return 
         # this is for test, should be fetch from database
-        values = vm_request.to_list()
+        values = vm_request.to_create_vm_request_values()
 
         # ask algorithm
         addr = self.algorithm_addr
@@ -36,7 +37,7 @@ class Coordinator(BaseServer):
         cluster_addr = self.send_message(addr, select_cluster_msg)
 
         create_vm_msg = self.create_message(message.ClusterCreateVMReq, values)
-        self.send_message(cluster_addr, create_vm_msg, context=None)
+        self.send_message(cluster_addr, create_vm_msg, context=vm_request)
 
 def start(port, algo_addr):
     import threading

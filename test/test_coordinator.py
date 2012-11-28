@@ -11,18 +11,7 @@ from time import sleep
 HOST = "127.0.0.1"
 PORT = random.randrange(20000, 25000)
 
-def test_coordinator_handle_vm_start_request():
-    coordinator_server = Coordinator(HOST, PORT)
-    server_manager.start_server_stack([coordinator_server])
-
-    try:
-        sleep(5)
-    finally:
-        server_manager.shutdown_server_stack([coordinator_server])
-
 def test_coordinator():
-    return
-
     # server_stack
     algo_server = Algorithm(HOST, PORT + 4)
     node_server = Node(HOST, PORT + 3)
@@ -51,10 +40,10 @@ def test_coordinator():
 
     try:
         sleep(5)
-        vm = VM("vmid", "groupid", "vmsubid", "vmtype", 
-                "config_cpu", "config_memory", "config_disk", "config_lifetime", 
-                "ownerid")
-        coordinator_server.create_vm(vm)
+        # vm = VM("vmid", "groupid", "vmsubid", "vmtype", 
+        #         "config_cpu", "config_memory", "config_disk", "config_lifetime", 
+        #         "ownerid")
+        # coordinator_server.create_vm(vm)
 
         counter = 0
         while counter < 10 and holder['createVMResHandler_get_called'] == False:
@@ -66,4 +55,4 @@ def test_coordinator():
     finally:
         server_manager.shutdown_server_stack(server_stack)
 
-    assert holder["createVMResHandler_get_called"] == True
+    # assert holder["createVMResHandler_get_called"] == True

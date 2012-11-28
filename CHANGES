@@ -77,3 +77,8 @@
         build a hierachy tool
         complete monitor system
 
+2012-11-26 ~~ 2012-12-03
+    by Ray Shih:
+        move out database
+        implement observer pattern
+

@@ -2,6 +2,7 @@ import MySQLdb
 from collections import namedtuple
 from include import config
 from time import sleep
+from include.message import vm_attributes
 
 class Database(object):
     _database = None
@@ -74,7 +75,7 @@ class VM(BaseMixin, namedtuple("VM", [ "vmid",
                             "config_cpu",
                             "config_memory",
                             "config_disk",
-                            "config_lifttime",
+                            "config_lifetime",
                             "usage_cpu",
                             "usage_memory",
                             "usage_disk",
@@ -114,9 +115,15 @@ class VM(BaseMixin, namedtuple("VM", [ "vmid",
 
     def to_list(self):
         values = []
-        for f in self._fields:
-            values.append(self[f])
+        for index in range(len(self)):
+            values.append(self[index])
 
+        return values
+
+    def to_create_vm_request_values(self):
+        values = []
+        for field_name in vm_attributes:
+            values.append(getattr(self, field_name))
         return values
 
     def update_vmstatus(self, vmstatus):
