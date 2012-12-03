@@ -81,4 +81,11 @@
     by Ray Shih:
         move out database
         implement observer pattern
+        connect vm_ubuntu_manager, now can open vm from database record but with segmentation fault 
+            in coordinator
+
+        Todo:
+            shutdown vm
+            deal with segmentation fault in coordinator
+
 
