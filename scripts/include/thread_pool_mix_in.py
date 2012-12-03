@@ -51,18 +51,28 @@ class ThreadPoolMixIn(ThreadingMixIn, ThreadBaseMixIn):
         '''
         obtain request from queue instead of directly from server socket
         '''
+        import sys
         while True: 
-            ThreadingMixIn.process_request_thread( self, *self.get_request() )
+            request = self.requests.get()
+            sys.stderr.write("process request")
+            ThreadingMixIn.process_request_thread( self, *request )
     
     def handle_request(self):
+        import sys
+        sys.stderr.write(".")
+
         '''
         simply collect requests and put them on the queue for the workers.
         '''
         try:
+            sys.stderr.write("before get_request()\n")
             request, client_address = self.get_request()
+            sys.stderr.write("after get_request()\n")
         except socket.error:
             return
         if self.verify_request(request, client_address):
+            sys.stderr.write("new request from client addr: ")
+            sys.stderr.write("%d" % (client_address[1]))
             self.requests.put((request, client_address))
 
 ## end of http://code.activestate.com/recipes/574454/ }}}

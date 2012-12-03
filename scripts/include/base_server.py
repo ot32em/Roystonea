@@ -3,6 +3,7 @@ import pickle
 import threading
 import message
 import client
+import os
 from time import sleep
 from thread_pool_mix_in import ThreadPoolTCPServer
 from thread_base_mix_in import ThreadBaseMixIn
@@ -121,6 +122,7 @@ class BaseServer(ThreadBaseMixIn, object):
                 return data
             
             def _unpack_and_execute(self, data):
+                import sys
                 message_name = "Undefined"
                 try: # try statement for converting serialized data to object-structure data
                     message_name, ret = self.master.unpack_and_execute(data, self.client_address)
@@ -149,6 +151,9 @@ class BaseServer(ThreadBaseMixIn, object):
         short_name = t.name
         recvobj_class_name = recvobj.__class__.__name__
         t.name = short_name+" handling {request_type}".format(request_type = recvobj_class_name)
+        if self.handle_functions[recvobj_class_name] == None:
+            print "handle function not registered for message named %s" % (recvobj_class_name)
+            os.exit()
         return recvobj_class_name, self.handle_functions[recvobj_class_name](recvobj, client_address)  # processing request using functions binding in $dispatch_handlers
 
     def register_handle_function(self, name, function):
