@@ -56,7 +56,6 @@ class Algorithm(BaseServer):
         return
 
     def selectNodeHandler(self, msg, client_address=None):
-        print "algorithm#selectNodeHandler"
         return self.node_addr
 
     def algorithmFirstFit(self, vmInfo, resourceList, params=dict() ):

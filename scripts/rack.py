@@ -15,7 +15,6 @@ class Rack(BaseServer):
         self.register_handle_function("NodeCreateVMRes", self.createVMResHandler)
 
     def createVMReqHandler(self, msg, client_address=None):
-        print "rack#createVMReqHandler"
         values = message.values_of_message(msg)
 
         # ask algorithm
@@ -28,7 +27,6 @@ class Rack(BaseServer):
         self.send_message(node_addr, create_vm_msg, context=msg)
 
     def createVMResHandler(self, msg, client_address=None):
-        print "rack#createVMResHandler"
         context = self.pop_context(msg)
 
         if context.request_id == False:
