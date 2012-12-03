@@ -19,7 +19,7 @@ class Node(BaseServer):
         res_msg = self.create_message(message.NodeCreateVMRes, [msg.vmid, status], context=msg)
         self.send_message(msg.caller_address, res_msg)
 
-    def createVM(msg):
+    def createVM(self, msg):
         if msg.vmtype == "ubuntu":
             owner = str(msg.ownerid) # TODO
             hostmachine = "ignore now" # TODO
