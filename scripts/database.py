@@ -105,6 +105,7 @@ class VM(BaseMixin, namedtuple("VM", [ "vmid",
     def pooling_vmstatus_prepare_to_start(cls):
         records = cls.find_all_by_vmstatus("prepare_to_start")
         for record in records:
+            if record == None: continue
             cls.trigger_event("start_vm_record_inserted", record)
 
     @classmethod

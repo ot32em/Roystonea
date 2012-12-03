@@ -66,8 +66,14 @@ def start_node():
     with cd(APP_ROOT):
         run("sudo python royctl.py run node 'start(8001)'")
 
-def start_server(name, port):
+def start_server(name, port=None):
+    port_dict = {
+            "rack": 7001,
+            "cluster": 6001,
+            "coordinator": 5001
+            }
     with cd(APP_ROOT):
+        port = port or port_dict[name]
         run("sudo python royctl.py run %(NAME)s 'start(%(PORT)s, (%(HOST)s, 5000))'" % ({'HOST': '"127.0.0.1"', 'PORT': port, 'NAME': name}))
 
 '''
