@@ -62,9 +62,9 @@ def start_algo():
         run("sudo python royctl.py run algorithm 'start(5000, (%(HOST)s, 6001), (%(HOST)s, 7001), (%(HOST)s, 8001))'" % ({'HOST': '"127.0.0.1"'}))
         #                                                       cluster             rack                node
 
-def start_node():
+def node(cmd):
     with cd(APP_ROOT):
-        run("sudo python royctl.py node start")
+        run("sudo python royctl.py node %(cmd)s" % ({'cmd': cmd}))
 
 def start_server(name, port=None):
     port_dict = {
