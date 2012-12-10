@@ -1,4 +1,4 @@
-import SocketServer
+import SocketServer, socket
 import pickle
 import threading
 import message
@@ -26,7 +26,7 @@ class BaseServer(ThreadBaseMixIn, object):
     level = 'prototype'
     shutdown_timeout = 5
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, certfile):
         self.host = host
         self.port = int(port)
         self.handle_functions = {}
@@ -35,6 +35,17 @@ class BaseServer(ThreadBaseMixIn, object):
         self.living_threads = {}
         self.request_count = 1
         self.request_context = {}
+
+        bindsocket = socket.socket()
+        bindsocket.bind(host, port)
+        bindsocket.listen(4) # need to confirm
+        newsocket, fromaddr = bindsocket.accept()
+        self.socket = ssl.wrap_socket(
+                newsocket,
+                server_side=True,
+                certfile=certfile,
+                ssl_version=ssl.PROTOCOL_SSLv23
+                )
 
     def addr(self):
         ''' Get address: (host, port) '''
