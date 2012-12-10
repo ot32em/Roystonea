@@ -82,3 +82,10 @@
         move out database
         implement observer pattern
 
+2012-12-04 ~~ 2012-12-10
+    by Ray Shih:
+        implement the Daemon start and stop
+        TODO:
+            implement all daemon functionality for all server
+
+
