@@ -64,7 +64,7 @@ def start_algo():
 
 def start_node():
     with cd(APP_ROOT):
-        run("sudo python royctl.py run node 'start(8001)'")
+        run("sudo python royctl.py node start")
 
 def start_server(name, port=None):
     port_dict = {

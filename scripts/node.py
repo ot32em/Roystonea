@@ -2,6 +2,7 @@ from include.base_server import BaseServer
 from include import client
 from include import message
 from vm_manager.vm_ubuntu_manager import VMUbuntuManager
+from pydaemon
 
 class Node(BaseServer):
 
@@ -34,7 +35,35 @@ class Node(BaseServer):
                     hostmachine)
         vm_manager.start()
 
+pidfile = "/tmp/roystonea.node.pid"
+default_port = 8001
 
-def start(port):
-    server = Node("127.0.0.1", port)
-    server.run()
+class NodeDaemon(pydaemon.Daemon):
+    port = default_port
+
+    def run(self):
+        server = Node("127.0.0.1", self.port)
+
+        def sigterm_handler(signal, frame):
+            server.shutdown()
+
+        signal.signal(signal.SIGTERM, sigterm_handler)
+
+        server.run()
+
+def getDaemon():
+    return NodeDaemon(pidfile = pidfile)
+
+def start(options):
+    print "start node server"
+    port = default_port
+    if options['daemonize']:
+        daemon = getDaemon()
+        daemon.start()
+    else:
+        server = Node("127.0.0.1", port)
+        server.run()
+
+def stop(options):
+    daemon = getDaemon()
+    daemon.stop()

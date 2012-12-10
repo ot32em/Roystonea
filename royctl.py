@@ -4,6 +4,13 @@ import imp
 '''
     some tool
 '''
+
+def server_control(server_type, cmd, options={}):
+    package_name = "scripts.%s" % (server_type)
+    scripts = __import__(package_name)
+    func = eval("%(server)s.%(cmd)s" % ({'server': package_name, 'cmd': cmd}))
+    func(options)
+
 def handleArguments(arg):
     if len(arg) <= 1 or arg[1] in helpCommands():
         help()
@@ -17,6 +24,11 @@ def handleArguments(arg):
         run(script_name, message)
     elif arg[1] in terminalCommands():
         terminal()
+    else:
+        server_type = arg[1]
+        cmd = arg[2]
+        server_control(server_type, cmd)
+        
 
 def end():
     raise SystemExit
@@ -30,9 +42,6 @@ def stopCommands():     return ('stop')
 def statusCommands():     return ('status')
 def runCommads():       return ('_run')
 def terminalCommands(): return ('_terminal')
-
-
-
 
 '''
     real actions
@@ -84,8 +93,6 @@ def status():
 
 def terminal():
     print('terminal')
-
-
 
 if __name__ == '__main__':
     handleArguments( sys.argv )
