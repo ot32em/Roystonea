@@ -35,7 +35,10 @@ class Algorithm(BaseServer):
         self.node_addr = None
         self.rack_addr = None
         self.cluster_addr = None
+<<<<<<< HEAD
         
+=======
+>>>>>>> 19ec7390d48240103afe4473a8cca46e534fdd70
         self.monitor_addr = None
 
     def register_handle_functions(self):
@@ -165,6 +168,4 @@ def start(port, cluster_addr, rack_addr, node_addr):
     server.cluster_addr = cluster_addr
     server.run()
 
-if __name__ == '__main__':
-    Algorithm.cmd_start()
 

@@ -1,20 +1,13 @@
 from include.base_server import BaseServer
 from include import message
 from include import config
-from collections import namedtuple
-import MySQLdb
+from database import VM
 
 class Coordinator(BaseServer):
 
     def __init__(self, host, port):
         super(Coordinator, self).__init__(host, port)
         self.algorithm_addr = None 
-
-    #     self.register_start_function(self.pooling_vm_request)
-    # def pooling_vm_request():
-    #     while ...
-    #         if ...
-    #             self.create_vm(params)
 
     def register_handle_functions(self):
         self.register_handle_function("ClusterCreateVMRes", self.createVMResHandler)
@@ -33,22 +26,28 @@ class Coordinator(BaseServer):
         print("machine_resource_list: "),
         print(machine_resource_list)
 
+<<<<<<< HEAD
+=======
+
+    def register_start_functions(self):
+        VM.register_event_callback("start_vm_record_inserted", self.create_vm)
+        self.register_start_function(VM.start_pooling)
+>>>>>>> 19ec7390d48240103afe4473a8cca46e534fdd70
 
     def createVMResHandler(self, msg, client_address=None):
         ''' Get new VM host node ip, and let moniter to check the VM status 
 
         Currently, just write to db that the vm is ready
         '''
+        vm_request = self.pop_context(msg)
+        if not vm_request: return
 
-        # self.update_database
+        vm_request.update_vmstatus("running")
+        print "update!"
 
-        print msg
-
-    def create_vm(self, params):
+    def create_vm(self, vm_request):
         # this is for test, should be fetch from database
-        values = ["vmid", "groupid", "vmsubid", "vmtype", 
-                "config_cpu", "config_memory", "config_disk", "config_lifetime", 
-                "ownerid"]
+        values = vm_request.to_create_vm_request_values()
 
         # ask algorithm
         addr = self.algorithm_addr
@@ -56,6 +55,7 @@ class Coordinator(BaseServer):
         cluster_addr = self.send_message(addr, select_cluster_msg)
 
         create_vm_msg = self.create_message(message.ClusterCreateVMReq, values)
+<<<<<<< HEAD
         self.send_message(cluster_addr, create_vm_msg, context=None)
 
 class Database(object):
@@ -123,6 +123,9 @@ class VM(namedtuple("VM", [ "vmid",
                 break
 
         return objects
+=======
+        self.send_message(cluster_addr, create_vm_msg, context=vm_request)
+>>>>>>> 19ec7390d48240103afe4473a8cca46e534fdd70
 
 def start(port, algo_addr):
     import threading
@@ -139,9 +142,6 @@ def start(port, algo_addr):
 
     sleep(5)
     server.create_vm(None)
-
-def db():
-    print VM.find_all_by_vmstatus("prepare_to_start")
 
 def load_setting():
     server = Coordinator("127.0.0.1", 5001)

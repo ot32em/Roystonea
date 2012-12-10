@@ -24,7 +24,7 @@ class BaseServer(ThreadBaseMixIn, object):
     '''
 
     level = 'prototype'
-    shutdown_timeout = 2
+    shutdown_timeout = 5
 
     def __init__(self, host, port):
         self.host = host
@@ -169,6 +169,9 @@ class BaseServer(ThreadBaseMixIn, object):
         short_name = t.name
         recvobj_class_name = recvobj.__class__.__name__
         t.name = short_name+" handling {request_type}".format(request_type = recvobj_class_name)
+        if self.handle_functions[recvobj_class_name] == None:
+            print "handle function not registered for message named %s" % (recvobj_class_name)
+            return
         return recvobj_class_name, self.handle_functions[recvobj_class_name](recvobj, client_address)  # processing request using functions binding in $dispatch_handlers
 
     def register_handle_function(self, name, function):
@@ -245,7 +248,18 @@ class BaseServer(ThreadBaseMixIn, object):
                     break;
                 if input == "status" :
                     print("level: %s" % server.level)
-                    print("address: %s:%s" % (server.host, server.port ) )
+                    print("shutdown_timeout: %s" % server.shutdown_timeout)
+                    print("host: %s" % server.host )
+                    print("port: %s" % server.port )
+
+                    print("handle_funtions:")
+                    print(server.handle_functions)
+                    print("start_functions")
+                    print(server.start_functions)
+                    print("server")
+                    print(server.server)
+                    print("living_threads")
+                    print(server.living_threads)
             server.shutdown()
 
         except IndexError as e:

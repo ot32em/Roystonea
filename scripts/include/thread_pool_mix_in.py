@@ -52,9 +52,11 @@ class ThreadPoolMixIn(ThreadingMixIn, ThreadBaseMixIn):
         obtain request from queue instead of directly from server socket
         '''
         while True: 
-            ThreadingMixIn.process_request_thread( self, *self.get_request() )
+            request = self.requests.get()
+            ThreadingMixIn.process_request_thread( self, *request )
     
     def handle_request(self):
+
         '''
         simply collect requests and put them on the queue for the workers.
         '''

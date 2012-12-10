@@ -10,11 +10,6 @@ class Rack(BaseServer):
 
         self.algorithm_addr = None 
 
-        self.memory = -1
-        self.disk= -1
-        self.minimal_memory = -1
-        self.minimal_disk = -1
-
     def register_handle_functions(self):
         self.register_handle_function("RackCreateVMReq", self.createVMReqHandler)
         self.register_handle_function("NodeCreateVMRes", self.createVMResHandler)
@@ -24,6 +19,16 @@ class Rack(BaseServer):
         msg_values = vm_attr + [ self.addr() ]
         nodeListReq = self.create_message(message.AlgorithmSelectNodeListReq, msg_values )
         return self.send_message( addr, nodeListReq )
+<<<<<<< HEAD
+=======
+
+    def askAlgorithmName(self):
+        req = self.create_message( message.AlgorithmAskNameReq , [] )
+        res = self.send_message( self.algorithm_addr, req )
+        print("in rack askAlgorithmName method, dump res")
+        print( res )
+        return res
+>>>>>>> 19ec7390d48240103afe4473a8cca46e534fdd70
 
     def createVMReqHandler(self, msg, client_address=None):
         values = message.values_of_message(msg)
@@ -51,4 +56,7 @@ def start(port, algo_addr):
     server = Rack("127.0.0.1", port)
     server.algorithm_addr = algo_addr
     server.run()
+<<<<<<< HEAD
 
+=======
+>>>>>>> 19ec7390d48240103afe4473a8cca46e534fdd70
