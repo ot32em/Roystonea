@@ -30,6 +30,7 @@ class Database(object):
     def store_result(self):
         return self.db.store_result()
 
+
 class BaseMixin(object):
     event_handlers_dict = {}
 
@@ -86,10 +87,10 @@ class VM(BaseMixin, namedtuple("VM", [ "vmid",
     database = Database.singleton()
 
     @classmethod
-    def find_all_by_vmstatus(self, status):
+    def find_all_by_vmstatus(cls, status):
         query = "SELECT * FROM vm WHERE vmstatus = '%s'" % status
-        self.database.query(query)
-        result = self.database.store_result()
+        cls.database.query(query)
+        result = cls.database.store_result()
 
         objects = []
         while True:

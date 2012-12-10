@@ -3,6 +3,7 @@ import pexpect
 from include.base_server import BaseServer
 from include import message
 from include.logger import logger
+from database import Database,BaseMixin
 
 class Portmapping(BaseServer):
     ''' custom init variable '''
@@ -23,6 +24,11 @@ class Portmapping(BaseServer):
     def register_handle_functions(self):
         self.register_handle_function("PortmappingAddPortmappingHandler", self.AddPortmappingHandler )
         self.register_handle_function("PortmappingDeletePortmappingHandler", self.DeletePortmappingHandler )
+
+    def register_start_functions(self):
+        PortmappingDB.register_event_callback( "new_portmapping_inserted", self.AddPortmappingHandler )
+        self.register_start_function( Portmapping.start_pooling )
+        
 
     def load_iptable(self):
         self.iptable.load()
@@ -191,6 +197,62 @@ class Iptable():
         del self.ip_dict[vmip][vmport]
         if not self.ip_dict[vmip]:
             del self.ip_dict[vmip]
+
+
+class PortmappingDB( BaseMixin, namedtuple("PortmappingDB", ["portid",
+                                                             "portlabel",
+                                                             "vmid",
+                                                             "ownerid",
+                                                             "portstatus",
+                                                             "hostport",
+                                                             "guestport",
+                                                             "ip_intranet",
+                                                             "time_created",
+                                                             "vmname"] ) ) :
+    database = Database.singleton()
+    port_status_enum = ["adding", "using", "deleting", "deleted"]
+    port_table_name = "portmapping"
+    pooling_delay = 10
+    
+
+    @classmethod
+    def find_all_by_portstatus(cls, status):
+        if status not in cls.port_status_enum :
+            raise Exception("unvalid port status")
+        query = "select * from `{table}` where `status` = '{s}'".format( table=cls.port_table_name
+                                                                         s=status) 
+        cls.database.query(query)
+        result = cls.database.store_result()
+        objs = list()
+        while True:
+            row = result.fetch_row()
+            if len(row) > 0 :
+                objs.append( PortmappingDB( *row[0] ) )
+            else :
+                break
+        return objs
+
+    @classmethod
+    def pooling_portstatus_adding(cls):
+        records = cls.find_all_by_portstatus("adding")
+        for record in records :
+            if record == None: continue
+            cls.trigger_event("new_portmapping_inserted", record )
+
+    @classmethod
+    def start_pooling(cls):
+        while True:
+            cls.pooling_portstatus_adding()
+            sleep(cls.pooling_delay)
+
+    def update_portstatus(self, status):
+        query = "update `{table}` set `{status_field}`='{status_value}' where `portid`='{portid}'".format(
+                 table=cls.table_name, status_field='port_status', status_value=status, portid=self.portid )
+        self.database.query( query )
+
+
+
+
 
 
 if __name__ == '__main__':
