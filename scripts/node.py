@@ -2,7 +2,7 @@ from include.base_server import BaseServer
 from include import client
 from include import message
 from vm_manager.vm_ubuntu_manager import VMUbuntuManager
-from pydaemon
+import pydaemon
 
 class Node(BaseServer):
 
@@ -57,6 +57,7 @@ def getDaemon():
 def start(options):
     print "start node server"
     port = default_port
+    if not options.has_key('daemonize'): options['daemonize'] = True 
     if options['daemonize']:
         daemon = getDaemon()
         daemon.start()
