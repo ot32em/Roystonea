@@ -44,11 +44,13 @@ class NodeDaemon(pydaemon.Daemon):
     def run(self):
         server = Node("127.0.0.1", self.port)
 
-        def sigterm_handler(signal, frame):
-            server.shutdown()
+        def register_sigterm_handler():
+            def sigterm_handler(signal, frame):
+                server.shutdown()
 
-        signal.signal(signal.SIGTERM, sigterm_handler)
+            signal.signal(signal.SIGTERM, sigterm_handler)
 
+        server.register_start_function(register_sigterm_handler)
         server.run()
 
 def getDaemon():
