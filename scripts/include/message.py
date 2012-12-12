@@ -18,10 +18,6 @@ vm_attributes = ["vmid", "groupid", "vmsubid",
 pm_attributes = ["hostmachine", "remainingMemory", "totalMemory",
                  "remainingDisk", "totalDisk", "usagePercentDisk"]
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 19ec7390d48240103afe4473a8cca46e534fdd70
 spec = {
         "ToyReq": ["data"],
         "ToyRes": ["data"],
@@ -61,8 +57,6 @@ spec = {
         "AlgorithmAskNameReq": [],
 
         # Monitor
-<<<<<<< HEAD
-=======
         "MonitorUnitListRes": ["unit_list"],
         "MonitorAskClusterListReq": ["cloud_unit"],
         "MonitorAskRackListReq": ["cluster_unit"],
@@ -70,7 +64,6 @@ spec = {
         "MonitorAskNodeListRes": ["cluster_resource_list"],
         "MonitorAskNodeListRes": ["rack_resource_list"],
         "MonitorAskNodeListRes": ["node_resource_list"],
->>>>>>> 19ec7390d48240103afe4473a8cca46e534fdd70
         "MonitorAskClusterResourceListReq": ["cloud_addr"],
         "MonitorAskRackResourceListReq": ["cluster_addr"],
         "MonitorAskNodeResourceListReq": ["rack_addr"],

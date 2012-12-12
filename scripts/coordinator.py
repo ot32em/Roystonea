@@ -11,7 +11,8 @@ class Coordinator(BaseServer):
 
     def register_handle_functions(self):
         self.register_handle_function("ClusterCreateVMRes", self.createVMResHandler)
-        self.register_handle_function("CoordinatorUpdateMonitorResultReq", self.updateMonitorResultHandler )
+        self.register_handle_function("CoordinatorUpdateHostMachineResourceResultReq", self.updateMonitorResultHandler )
+        self.register_handle_function("CoordinatorUpdateVmStatusListReq", self.updateMonitorResultHandler )
 
 
     def updateMonitorResultHandler(self, msg, client_addr=None):

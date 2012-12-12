@@ -25,17 +25,9 @@ class Monitor(BaseServer):
     def __init__(self, host, port):
         super(Monitor, self).__init__(host, port)
 
-<<<<<<< HEAD
         self.monitor_timeval = 10
         self.hierachy = Hierachy()
 
-=======
-        self.vmInfos = dict() # vmid as key, info as value
-        self.daemonInfos = dict() # name as key, info as value
-        self.pmInfos = dict() # hostname as key, info as value
-        self.monitor_timeval = 10
-        self.hierachy = Hierachy()
->>>>>>> 19ec7390d48240103afe4473a8cca46e534fdd70
         self.register_start_function( self.PollingMonitorResource )
 
     def register_handle_functions(self):
@@ -43,8 +35,6 @@ class Monitor(BaseServer):
         self.register_handle_function("MonitorAskRackResourceListReq", self.askRackResourceListHandler)
         self.register_handle_function("MonitorAskClusterResourceListReq", self.askClusterResourceListHandler)
 
-<<<<<<< HEAD
-=======
     def register_start_functions(self):
         pass
 
@@ -60,7 +50,6 @@ class Monitor(BaseServer):
         respondMsg = message.MonitorAskNodeResourceListRes( pmResourceList = pmList )
         return respondMsg
 
->>>>>>> 19ec7390d48240103afe4473a8cca46e534fdd70
     def askNodeResourceListHandler(self, msg, client_addr=None ):
         rack_addr = msg.rack_addr
         
@@ -233,7 +222,7 @@ class Monitor(BaseServer):
         print(" hostmachine: %s, remain-mem: %s, remain-disk: %s, usedDisk%%: %s " 
             % (hostmachine, remaining_memory_KB, remaining_disk_KB, used_disk_percent ) )
         return
-        req = Message.UpdateHostMachineResourceReq( hostmachine = hostmachine,
+        req = Message.CoordinatorUpdateHostMachineResourceReq( hostmachine = hostmachine,
                                                     remaining_memory_KB =remaining_memory_KB,
                                                     remaining_disk_KB = remaining_disk_KB,
                                                     used_disk_percent = used_disk_percent )
@@ -249,12 +238,6 @@ class Monitor(BaseServer):
         req = Message.CoordinatorUpdateVmStatusListReq( vm_status_list = vm_list)
         coordinator = self.hierachy.getCoordinatorDaemon()
         Client.sendonly_message( coordinator.addr() , req )
-<<<<<<< HEAD
-=======
-
-if __name__ == '__main__':
-     Monitor.cmd_start()
->>>>>>> 19ec7390d48240103afe4473a8cca46e534fdd70
 
 
 def start(port):
