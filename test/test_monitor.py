@@ -3,6 +3,7 @@ from Roystonea.scripts.coordinator import Coordinator
 from Roystonea.scripts.include.hierachy import *
 from support import server_manager as st
 from time import sleep
+import copy
 
 def test_monitor():
     host = st.LOCALHOST
@@ -20,11 +21,10 @@ def test_monitor():
     test_hierachy.add_daemon( node1 )
     test_hierachy.add_daemon( node2 )
     test_hierachy.add_daemon( node3 )
-    m.hiearchy = test_hierachy
+    m.hierachy = test_hierachy 
 
     ss = [m,c]
     st.start_server_stack( ss, True, 4 )
-    m.monitor( ["roystonea01","roystonea02", "roystonea03"])
 
 
     sleep(30)
