@@ -108,6 +108,8 @@ class Monitor(BaseServer):
             machine_resource_list.append( machine_resource )
 
 
+        print("prepare pass total_vm_status_list size: %i to method" % len( total_vm_status_list) )
+        print("prepare pass machine_resource_list size: %i to method" % len( machine_resource_list ) )
         self.notify_db_update_all_monitor_result( total_vm_status_list, machine_resource_list )
         self.update_hierachy_all_monitor_result( machine_resource_list )
 
