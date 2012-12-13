@@ -20,11 +20,14 @@ class Coordinator(BaseServer):
         vm_status_list = msg.vm_status_list
         machine_resource_list = msg.machine_resource_list
 
-        print("vm_status_list: "),
         for vm in vm_status_list:
-            print( "[%s@%s]," % (vm['vmid'], vm['used_memory'])),
-        print("machine_resource_list: "),
-        print(machine_resource_list)
+            sql = "update `vm` set `usage_cpu`='%f', `usage_memory`='%i', `hostmachine`='%s' where `vmid`='%s'" % 
+                ( vm['cpu_usage'], vm['memory_usage'], vm['hostmachine'], vm['vmid'] )
+            print( sql )
+        for machine_resource in machine_resource_list :
+            sql = "update `resource` set `disk_remaining`='%i' where `hostname`='%s'" % 
+                ( machine_resource['remaining_disk'], machine_resource['addr'] )
+            print(sql)
 
 
     def register_start_functions(self):
