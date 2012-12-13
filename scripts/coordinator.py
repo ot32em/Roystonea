@@ -11,8 +11,14 @@ class Coordinator(BaseServer):
 
     def register_handle_functions(self):
         self.register_handle_function("ClusterCreateVMRes", self.createVMResHandler)
-        self.register_handle_function("CoordinatorUpdateHostMachineResourceResultReq", self.updateMonitorResultHandler )
-        self.register_handle_function("CoordinatorUpdateVmStatusListReq", self.updateMonitorResultHandler )
+        self.register_handle_function("CoordinatorUpdateHostMachineResourceReq", self.updateMachineResourceHandler )
+        self.register_handle_function("CoordinatorUpdateVmStatusListReq", self.updateVmStatusHandler )
+
+    def updateMachineResourceHandler(self, msg, client_addr=None):
+        print("coordinator@updateMachneResourceHandler called!")
+
+    def updateVmStatusHandler(self, msg, client_addr=None):
+        print("coordinator@upateVmStatusHandler called!")
 
 
     def updateMonitorResultHandler(self, msg, client_addr=None):
@@ -49,8 +55,10 @@ class Coordinator(BaseServer):
 
         # ask algorithm
         addr = self.algorithm_addr
-        select_cluster_msg = self.create_message(message.AlgorithmSelectClusterReq, values)
-        cluster_addr = self.send_message(addr, select_cluster_msg)
+        select_cluster_msg = self.create_message(message.AlgorithmSelectClusterListReq, values)
+        addr_result = self.send_message(addr, select_cluster_msg)
+
+        cluster_addr = addr_result[0]
 
         create_vm_msg = self.create_message(message.ClusterCreateVMReq, values)
         self.send_message(cluster_addr, create_vm_msg, context=vm_request)
