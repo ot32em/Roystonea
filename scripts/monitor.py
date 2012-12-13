@@ -76,6 +76,7 @@ class Monitor(BaseServer):
         machine_list= list()
         for name in nodes:
             machine_list.append( nodes[ name ].hostmachine )
+            print("hostmachine name: %s added" % name )
         while 1:
             self.monitor( machine_list )
             time.sleep( self.monitor_timeval)

@@ -18,6 +18,8 @@ def test_monitor():
     node2 = NodeDaemonUnit( "node2", host, port+3, "roystonea02" )
     node3 = NodeDaemonUnit( "node3", host, port+4, "roystonea03" )
     test_hierachy.add_daemon( node1 )
+    test_hierachy.add_daemon( node2 )
+    test_hierachy.add_daemon( node3 )
     m.hiearchy = test_hierachy
 
     ss = [m,c]
