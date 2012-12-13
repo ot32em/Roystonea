@@ -2,6 +2,7 @@ from include.base_server import BaseServer
 from include import message
 from include import config
 from database import VM
+from database import Database
 
 class Coordinator(BaseServer):
 
@@ -16,6 +17,7 @@ class Coordinator(BaseServer):
 
     def updateMonitorResultHandler(self, msg, client_addr=None):
         print("coordinator@upateMonitiorResultHandler called!")
+        db = Database.singleton()
 
         vm_status_list = msg.vm_status_list
         machine_resource_list = msg.machine_resource_list
@@ -24,10 +26,12 @@ class Coordinator(BaseServer):
             sql = "update `vm` set `usage_cpu`='%f', `usage_memory`='%i', `hostmachine`='%s' where `vmid`='%s'" %  \
                 ( vm['cpu_usage'], vm['used_memory'], vm['hostmachine'], vm['vmid'] )
             print( sql )
+            db.query( sql )
         for machine_resource in machine_resource_list :
             sql = "update `resource` set `disk_remaining`='%i' where `hostname`='%s'" %  \
                 ( machine_resource['remaining_disk'], machine_resource['addr'] )
             print(sql)
+            db.query( sql )
 
 
     def register_start_functions(self):
