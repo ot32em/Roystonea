@@ -28,8 +28,8 @@ class Coordinator(BaseServer):
             print( sql )
             db.query( sql )
         for machine_resource in machine_resource_list :
-            sql = "update `resource` set `disk_remaining`='%i' where `hostname`='%s'" %  \
-                ( machine_resource['remaining_disk'], machine_resource['addr'] )
+            sql = "update `resource` set `memory_remaining`='%i', `disk_remaining`='%i' where `hostname`='%s'" %  \
+                ( machine_resource['remaining_memory'], machine_resource['remaining_disk'], machine_resource['addr'] )
             print(sql)
             db.query( sql )
 
