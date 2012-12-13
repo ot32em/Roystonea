@@ -126,7 +126,7 @@ class Monitor(BaseServer):
         for nodename in nodeunit_list :
             nodeunit = nodeunit_list[nodename]
             for machine_resource in machine_resource_list :
-                if machine_resource.addr == nodeunit.addr() :
+                if machine_resource['addr'] == nodeunit.addr() :
                     nodeunit.set_memory( int( machine_resource['remaining_memory']) )
                     nodeunit.set_disk( int( machine_resource['remaining_disk']) )
                     nodeunit.set_used_disk( int( machine_resource['used_disk']) )
