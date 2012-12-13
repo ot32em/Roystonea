@@ -218,26 +218,6 @@ class Monitor(BaseServer):
         result['used_disk'] = float( columns[4][:-1] )
         return result
 
-    def update_machine_resource( self, hostmachine, remaining_memory_KB, remaining_disk_KB, used_disk_percent) :
-        print(" hostmachine: %s, remain-mem: %s, remain-disk: %s, usedDisk%%: %s " 
-            % (hostmachine, remaining_memory_KB, remaining_disk_KB, used_disk_percent ) )
-        return
-        req = Message.CoordinatorUpdateHostMachineResourceReq( hostmachine = hostmachine,
-                                                    remaining_memory_KB =remaining_memory_KB,
-                                                    remaining_disk_KB = remaining_disk_KB,
-                                                    used_disk_percent = used_disk_percent )
-        coordinator = self.hierachy.getCoordinatorDaemon()
-        Client.sendonly_message( (coordinator.host, coordinator.post), req )
-
-    def update_vm_status_list( self, vm_list ):
-        for vm in vm_list :
-            print(" vm(%s), at %s, current cpu usage: %s, memory usage: %s " 
-                % (vm['vmid'], vm['hostmachine'], vm['cpuUsage'], vm['memoryUsage'] ) )
-        return
-        
-        req = Message.CoordinatorUpdateVmStatusListReq( vm_status_list = vm_list)
-        coordinator = self.hierachy.getCoordinatorDaemon()
-        Client.sendonly_message( coordinator.addr() , req )
 
 
 def start(port):

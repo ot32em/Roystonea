@@ -25,6 +25,7 @@ def test_monitor():
     m.monitor( ["roystonea01","roystonea02", "roystonea03"])
 
 
+    sleep(30)
     st.shutdown_server_stack( ss )
 
 

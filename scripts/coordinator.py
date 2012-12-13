@@ -11,14 +11,7 @@ class Coordinator(BaseServer):
 
     def register_handle_functions(self):
         self.register_handle_function("ClusterCreateVMRes", self.createVMResHandler)
-        self.register_handle_function("CoordinatorUpdateHostMachineResourceReq", self.updateMachineResourceHandler )
-        self.register_handle_function("CoordinatorUpdateVmStatusListReq", self.updateVmStatusHandler )
-
-    def updateMachineResourceHandler(self, msg, client_addr=None):
-        print("coordinator@updateMachneResourceHandler called!")
-
-    def updateVmStatusHandler(self, msg, client_addr=None):
-        print("coordinator@upateVmStatusHandler called!")
+        self.register_handle_function("CoordinatorUpdateMonitorReulstReq", self.updateMonitorResultHandler )
 
 
     def updateMonitorResultHandler(self, msg, client_addr=None):
@@ -35,6 +28,7 @@ class Coordinator(BaseServer):
 
 
     def register_start_functions(self):
+        return
         VM.register_event_callback("start_vm_record_inserted", self.create_vm)
         self.register_start_function(VM.start_pooling)
 
