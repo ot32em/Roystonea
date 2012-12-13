@@ -22,7 +22,7 @@ class Coordinator(BaseServer):
 
         for vm in vm_status_list:
             sql = "update `vm` set `usage_cpu`='%f', `usage_memory`='%i', `hostmachine`='%s' where `vmid`='%s'" %  \
-                ( vm['cpu_usage'], vm['memory_usage'], vm['hostmachine'], vm['vmid'] )
+                ( vm['cpu_usage'], vm['used_memory'], vm['hostmachine'], vm['vmid'] )
             print( sql )
         for machine_resource in machine_resource_list :
             sql = "update `resource` set `disk_remaining`='%i' where `hostname`='%s'" %  \
