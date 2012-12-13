@@ -210,7 +210,7 @@ class Monitor(BaseServer):
         dfCommand = "ssh {_machine_addr} df {shareFileSystemPath}".format(
             _machine_addr = machine_addr, shareFileSystemPath = "/mnt/images/sfs" )
 
-        resultLine = pexpect.run(dfCommand).strip().split("\n")
+        resultLines = pexpect.run(dfCommand).strip().split("\n")
         columns = space_pattern.split( resultLines[1]) # discard first title line
 
         result = dict()

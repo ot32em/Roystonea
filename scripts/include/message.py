@@ -46,9 +46,9 @@ spec = {
         "CoordinatorSelectAllPortmapping": [],
 
         # Algorithm
-        "AlgorithmSelectClusterListReq": vm_attributes + ["cloud_addr"],
-        "AlgorithmSelectRackListReq": vm_attributes + ["cluster_addr"],
-        "AlgorithmSelectNodeListReq": vm_attributes + ["rack_addr"],
+        "AlgorithmSelectClusterListReq": vm_attributes,
+        "AlgorithmSelectRackListReq": vm_attributes,
+        "AlgorithmSelectNodeListReq": vm_attributes,
         "AlgorithmSelectNodeListRes": ["node_addr_list"],
         "AlgorithmSelectRes": ["addressList"],
 

@@ -53,7 +53,6 @@ class Coordinator(BaseServer):
         # this is for test, should be fetch from database
         values = vm_request.to_create_vm_request_values()
 
-        print(values)
 
         # ask algorithm
         addr = self.algorithm_addr

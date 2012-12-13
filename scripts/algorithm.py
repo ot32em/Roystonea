@@ -35,10 +35,6 @@ class Algorithm(BaseServer):
         self.node_addr = None
         self.rack_addr = None
         self.cluster_addr = None
-<<<<<<< HEAD
-        
-=======
->>>>>>> 19ec7390d48240103afe4473a8cca46e534fdd70
         self.monitor_addr = None
 
     def register_handle_functions(self):
@@ -48,7 +44,7 @@ class Algorithm(BaseServer):
 
     def selectNodeListHandler(self, msg, client_address=None):
         # get resource list
-        node_resource_list = self.ask_children_resource_list( msg.rack_addr, parent_type="rack" )
+        node_resource_list = self.ask_children_resource_list( msg.caller_address, parent_type="rack" )
         
         # get vm_attr
         vm_attr = msg
@@ -60,7 +56,7 @@ class Algorithm(BaseServer):
 
 
     def selectClusterListHandler(self, msg, client_address=None):
-        node_resource_list = self.ask_children_resource_list( msg.cloud_addr, parent_type="cloud" )
+        node_resource_list = self.ask_children_resource_list( msg.caller_address, parent_type="cloud" )
         
         # get vm_attr
         vm_attr = msg
@@ -71,7 +67,7 @@ class Algorithm(BaseServer):
         return result_ordered_addr_list 
 
     def selectRackListHandler(self, msg, client_address=None):
-        node_resource_list = self.ask_children_resource_list( msg.cluster_addr, parent_type="cluster" )
+        node_resource_list = self.ask_children_resource_list( msg.caller_address, parent_type="cluster" )
         
         # get vm_attr
         vm_attr = msg
